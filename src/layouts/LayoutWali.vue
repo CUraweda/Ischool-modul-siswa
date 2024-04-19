@@ -89,7 +89,7 @@
           </q-item-section>
 
           <q-item-section class="text-bold" style="font-size: 1rem">
-            Panduan Pekanan
+            Rencana Pekanan
           </q-item-section>
         </q-item>
         <q-item

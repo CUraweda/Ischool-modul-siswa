@@ -5,30 +5,19 @@
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
         <q-tab name="innerAlarms" icon="history_edu" label="Narasi" />
         <q-tab name="innerMovies" icon="text_snippet" label="Portofolio" />
-        <q-tab name="ortu" icon="people" label="Komentar Orang tua" />
+        <!-- <q-tab name="ortu" icon="people" label="Komentar Orang tua" /> -->
       </q-tabs>
     </template>
 
     <template v-slot:after>
-      <q-tab-panels
-        v-model="innerTab"
-        animated
-        transition-prev="slide-down"
-        transition-next="slide-up"
-      >
+      <q-tab-panels v-model="innerTab" animated transition-prev="slide-down" transition-next="slide-up">
         <q-tab-panel name="innerMails">
           <NumberRaport :TabPilihan="TabPilihan" />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
           <div>
-            <q-tabs
-              v-model="tab2"
-              inline-label
-              outside-arrows
-              mobile-arrows
-              class="bg-blue-5 text-white shadow-2"
-            >
+            <q-tabs v-model="tab2" inline-label outside-arrows mobile-arrows class="bg-blue-5 text-white shadow-2">
               <q-tab name="page1" label="Tahsin" />
               <q-tab name="page2" label="akhlak & Perilaku" />
               <q-tab name="page3" label="kepemimpinan" />
@@ -41,14 +30,11 @@
               <q-tab name="page10" label="sass" />
               <q-tab name="page11" label="karya seni" />
               <q-tab name="page12" label="english" />
+              <q-tab name="page13" label="Komentar Ortu" />
             </q-tabs>
           </div>
           <q-space />
           <q-separator />
-
-          <div class="text-h4 q-mb-md" style="margin-top: 20px">
-            Raport Narasi
-          </div>
           <q-card>
             <q-tab-panels v-model="tab2" animated>
               <q-tab-panel name="page1">
@@ -95,52 +81,66 @@
                 <Pemimpin sub="11" />
               </q-tab-panel>
               <q-tab-panel name="page13">
-                <Pemimpin sub="12" />
+                <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
+                <div class="tw-flex tw-w-full">
+                  <div class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md" style="min-height: 200px;">
+                    <p>
+                      {{ submittedComment }}
+
+                    </p>
+                    <div v-if="!submittedComment && parseInt(role) === 8">
+                      <q-input v-model="editedComment" filled outlined label="Edit Komentar"
+                        placeholder="Edit komentar Anda di sini..." type="textarea" />
+                      <q-btn @click="submitComment" class="q-mt-md text-right" color="primary" label="Simpan" />
+                    </div>
+                  </div>
+                </div>
               </q-tab-panel>
             </q-tab-panels>
-
             <q-separator />
           </q-card>
         </q-tab-panel>
 
         <q-tab-panel name="innerMovies">
+          <div>
+            <q-tabs v-model="tab3" dense class="text-white bg-blue-5" active-color="white" indicator-color="primary"
+              align="justify">
+              <q-tab name="porto" label="Raport Portofolio" />
+              <q-tab name="ortu" label="Komentar ortu" />
+              
+            </q-tabs>
+          </div>
+
           <q-card>
-            <div style="width: 100%; height: 600px">
+            <q-tab-panels v-model="tab3" animated>
+              <q-tab-panel name="porto">
+                <div style="width: 100%; height: 600px">
               <RapotPortofolio />
             </div>
+              </q-tab-panel>
+
+              <q-tab-panel name="ortu">
+                <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
+                <div class="tw-flex tw-w-full">
+                  <div class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md" style="min-height: 200px;">
+                    <p>
+                      {{ submittedComment }}
+
+                    </p>
+                    <div v-if="!submittedComment && parseInt(role) === 8">
+                      <q-input v-model="editedComment" filled outlined label="Edit Komentar"
+                        placeholder="Edit komentar Anda di sini..." type="textarea" />
+                      <q-btn @click="submitComment" class="q-mt-md text-right" color="primary" label="Simpan" />
+                    </div>
+                  </div>
+                </div>
+              </q-tab-panel>
+            </q-tab-panels>
+           
           </q-card>
         </q-tab-panel>
 
-        <q-tab-panel name="ortu">
-          <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
-          <div class="tw-flex tw-w-full">
-            <div class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md" style="min-height: 200px;">
-              <p>
-                {{ submittedComment }}
-             
-              </p>
-              <div v-if="!submittedComment && parseInt(role) === 8">
-                <q-input
-                  v-model="editedComment"
-                  filled
-                  outlined
-                  label="Edit Komentar"
-                  placeholder="Edit komentar Anda di sini..."
-                  type="textarea"
-                />
-                <q-btn
-                  @click="submitComment"
-                  class="q-mt-md text-right"
-                  color="primary"
-                  label="Simpan"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="tw-flex tw-w-full justify-end tw-p-5">
-            <!-- <q-btn color="secondary" label="Simpan" /> -->
-          </div>
-        </q-tab-panel>
+
       </q-tab-panels>
     </template>
   </q-splitter>
@@ -176,7 +176,7 @@ export default {
             },
           }
         );
-       
+
         (this.submittedComment = response.data.data[0].parent_comments),
           sessionStorage.setItem(
             "student_class_id",
@@ -190,10 +190,10 @@ export default {
     async submitComment() {
       const student_class_id = sessionStorage.getItem("student_class_id");
       const RaportId = sessionStorage.getItem("raportId");
-     
+
       const token = sessionStorage.getItem("token");
       try {
-      
+
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
@@ -207,7 +207,7 @@ export default {
             },
           }
         );
-      
+
         this.getCommnentParent();
         this.editedComment = "";
       } catch (error) {
@@ -231,13 +231,14 @@ export default {
     Pemimpin,
     Berfikir,
     NumberRaport,
-   
+
     RapotPortofolio,
   },
 
   setup(props) {
     return {
       tab: ref("mails"),
+      tab3: ref("porto"),
       tab2: ref("page1"),
       innerTab: ref("innerMails"),
       shape: ref("line"),

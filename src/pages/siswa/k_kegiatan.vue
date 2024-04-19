@@ -74,12 +74,12 @@ import { defineComponent, ref } from 'vue'
 import NavigationBar from '../../components/NavigationBar.vue'
 import NavbarSiswa from '../../components/siswa/HederSiswa.vue'
 
-// The function below is used to set up our demo data
-const CURRENT_DAY = new Date()
-function getCurrentDay(day) {
-  const newDay = new Date(CURRENT_DAY)
+
+function getCurrentDay(day, date) {
+  const newDay = new Date(date)
   newDay.setDate(day)
   const tm = parseDate(newDay)
+  console.log('ini tm' , tm);
   return tm.date
 }
 
@@ -98,7 +98,6 @@ export default defineComponent({
       year: ref(''),
       month: ref(''),
       token: sessionStorage.getItem("token")
-
     }
   },
 
@@ -261,14 +260,15 @@ export default defineComponent({
 
         const dataKegiatan = await Promise.all(
           data.map((item, index) => {
-          console.log(new Date(item.start_date).getDate());
+            const warna = item.color
+            const [colorCode, colorName] = warna.split("_");
             const rest = {
               id: index,
               title: item.agenda,
               details: item.agenda,
-              start: getCurrentDay(new Date(item.start_date).getDate()),
-              end: getCurrentDay(new Date(item.end_date).getDate()),
-              bgcolor: 'blue',
+              start: getCurrentDay(new Date(item.start_date).getDate(), item.start_date),
+              end: getCurrentDay(new Date(item.end_date).getDate(), item.end_date),
+              bgcolor: colorName,
             }
             return rest
           })
