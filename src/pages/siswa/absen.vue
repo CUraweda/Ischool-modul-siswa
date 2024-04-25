@@ -161,7 +161,6 @@ function getCurrentDay(day, date) {
   const newDay = new Date(date);
   newDay.setDate(day);
   const tm = parseDate(newDay);
-  console.log("ini tm", tm);
   return tm.date;
 }
 
@@ -362,7 +361,7 @@ export default defineComponent({
                   Item.status === "Hadir"
                     ? "green"
                     : Item.status === "Izin"
-                    ? "yellow"
+                    ? "amber"
                     : Item.status === "Sakit"
                     ? "blue"
                     : Item.status === "Alfa"
@@ -372,7 +371,7 @@ export default defineComponent({
               return rest;
           })
         );
-          console.log(dataPresensi);
+         
         this.events = dataPresensi;
         this.getTotalPresensi(dataPresensi);
       } catch (error) {

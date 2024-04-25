@@ -31,6 +31,7 @@
               <q-tab name="page11" label="karya seni" />
               <q-tab name="page12" label="english" />
               <q-tab name="page13" label="Komentar Ortu" />
+              <q-tab name="page14" label="Komentar Guru" />
             </q-tabs>
           </div>
           <q-space />
@@ -96,6 +97,22 @@
                   </div>
                 </div>
               </q-tab-panel>
+              <q-tab-panel name="page14">
+                <div class="text-h4 q-mb-md">Komentar Guru</div>
+                <div class="tw-flex tw-w-full">
+                  <div class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md" style="min-height: 200px;">
+                    <p>
+                      {{ submittedComment }}
+
+                    </p>
+                    <div v-if="!submittedComment && parseInt(role) === 8">
+                      <q-input v-model="editedComment" filled outlined label="Edit Komentar"
+                        placeholder="Edit komentar Anda di sini..." type="textarea" />
+                      <q-btn @click="submitComment" class="q-mt-md text-right" color="primary" label="Simpan" />
+                    </div>
+                  </div>
+                </div>
+              </q-tab-panel>
             </q-tab-panels>
             <q-separator />
           </q-card>
@@ -106,7 +123,8 @@
             <q-tabs v-model="tab3" dense class="text-white bg-blue-5" active-color="white" indicator-color="primary"
               align="justify">
               <q-tab name="porto" label="Raport Portofolio" />
-              <q-tab name="ortu" label="Komentar ortu" />
+              <q-tab name="ortu" label="Komentar Grtu" />
+              <q-tab name="guru" label="Komentar Guru" />
               
             </q-tabs>
           </div>
@@ -121,6 +139,22 @@
 
               <q-tab-panel name="ortu">
                 <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
+                <div class="tw-flex tw-w-full">
+                  <div class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md" style="min-height: 200px;">
+                    <p>
+                      {{ submittedComment }}
+
+                    </p>
+                    <div v-if="!submittedComment && parseInt(role) === 8">
+                      <q-input v-model="editedComment" filled outlined label="Edit Komentar"
+                        placeholder="Edit komentar Anda di sini..." type="textarea" />
+                      <q-btn @click="submitComment" class="q-mt-md text-right" color="primary" label="Simpan" />
+                    </div>
+                  </div>
+                </div>
+              </q-tab-panel>
+              <q-tab-panel name="guru">
+                <div class="text-h4 q-mb-md">Komentar Guru</div>
                 <div class="tw-flex tw-w-full">
                   <div class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md" style="min-height: 200px;">
                     <p>

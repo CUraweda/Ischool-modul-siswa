@@ -1,31 +1,3 @@
-<template>
-  <div class="container">
-    <!-- <NavbarSiswa /> -->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="text-center bg-blue-2 tw-min-h-screen">
-          <q-card-section>
-            <div class="text-center">
-              <p>
-                <span
-                  class="text-center text-black text-bold"
-                  style="font-size: x-large"
-                  >RENCANA PEKANAN</span
-                >
-              </p>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <q-card style="height: 600px" class="tw-p-3">
-              <FullCalendar :options="calendarOptions" style="height: 550px" />
-            </q-card>
-          </q-card-section>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -44,13 +16,9 @@ export default {
         weekends: false,
         locale: idLocale,
         slotMinTime: "07:30:00",
-        slotMaxTime: "16:30:00",
-       
-        headerToolbar: {
-          start: "today",
-          center: "title",
-          end: "prev next",
-        },
+        slotMaxTime: '16:30:00',
+        // eventMinHeight: 20,
+      
 
         events: [
           {
@@ -73,3 +41,14 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="flex tw-w-full tw-flex-col tw-justify-center tw-items-center tw-mt-10">
+    <div class="tw-w-5/6 " style="height: 600px">
+      <div class="flex tw-w-full tw-flex-col tw-justify-center tw-items-center tw-mt-10">
+        <span class="tw-text-3xl text-center">Kalender Pekanan</span>
+      </div>
+      <FullCalendar :options="calendarOptions" class="tw-h-full"/>
+    </div>
+  </div>
+</template>

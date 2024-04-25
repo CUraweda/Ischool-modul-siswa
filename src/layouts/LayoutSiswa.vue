@@ -205,6 +205,7 @@ export default {
                 const level = response.data.data[0].student.level
                 sessionStorage.setItem('idSiswa', id)
                 sessionStorage.setItem('level', level)
+                console.log(response);
 
             } catch (error) {
                 console.log(error);

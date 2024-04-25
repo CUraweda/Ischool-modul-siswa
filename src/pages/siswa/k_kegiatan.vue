@@ -144,6 +144,15 @@ export default defineComponent({
   },
 
   methods: {
+    onToday() {
+      this.$refs.calendar.moveToToday();
+    },
+    onPrev() {
+      this.$refs.calendar.prev();
+    },
+    onNext() {
+      this.$refs.calendar.next();
+    },
     getCurrentDateTime() {
       const now = new Date();
       const options = { month: "long", year: "numeric" };
