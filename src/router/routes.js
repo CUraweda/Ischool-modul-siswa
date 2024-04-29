@@ -63,9 +63,10 @@ const routes = [
         component: () => import("pages/siswa/k_kegiatan.vue"),
         meta: { requiresAuth: true },
       },
+      
       {
         path: "/siswa/jkegiatan",
-        component: () => import("pages/siswa/j_kegiatan.vue"),
+        component: () => import("pages/siswa/kalenderPekanan.vue"),
         meta: { requiresAuth: true },
       },
       {

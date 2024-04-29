@@ -2,47 +2,87 @@
   <div class="container">
     <!-- <NavbarSiswa/> -->
     <div>
-      <div >
+      <div>
         <q-card class="text-center bg-blue-2">
           <q-card-section>
             <div class="text-center tw-mb-5">
               <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large">KEHADIRAN SISWA</span><br />
-                <span class="text-center text-black text-bold" style="font-size: larger">
-                  Bulan {{ currentmonth }}</span>
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: x-large"
+                  >KEHADIRAN SISWA</span
+                ><br />
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: larger"
+                >
+                  Bulan {{ currentmonth }}</span
+                >
               </p>
             </div>
             <div>
-              <q-card class="my-card tw-h-full flex tw-w-full ">
-                <q-card-section class=" tw-w-full">
+              <q-card class="my-card tw-h-full flex tw-w-full">
+                <q-card-section class="tw-w-full">
                   <div class="subcontent tw-w-full">
-                    <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" style="color: green" flat />
+                    <navigation-bar
+                      @today="onToday"
+                      @prev="onPrev"
+                      @next="onNext"
+                      style="color: green"
+                      flat
+                    />
 
                     <div class="row justify-center">
-                      <div style="width: 90%;">
-                        <q-calendar-month ref="calendar" v-model="selectedDate" animated bordered focusable hoverable
-                          no-active-date :day-min-height="80" :day-height="0" @change="onChange" @moved="onMoved"
-                          @click-date="onClickDate" @click-day="onClickDay" @click-workweek="onClickWorkweek"
-                          @click-head-workweek="onClickHeadWorkweek" @click-head-day="onClickHeadDay">
+                      <div style="width: 90%">
+                        <q-calendar-month
+                          ref="calendar"
+                          v-model="selectedDate"
+                          animated
+                          bordered
+                          focusable
+                          hoverable
+                          no-active-date
+                          :day-min-height="80"
+                          :day-height="0"
+                          @change="onChange"
+                          @moved="onMoved"
+                          @click-date="onClickDate"
+                          @click-day="onClickDay"
+                          @click-workweek="onClickWorkweek"
+                          @click-head-workweek="onClickHeadWorkweek"
+                          @click-head-day="onClickHeadDay"
+                        >
                           <template #week="{ scope: { week, weekdays } }">
-                            <template v-for="(computedEvent, index) in getWeekEvents(
-                                  week,
-                                  weekdays
-                                )" :key="index">
-                              <div :class="badgeClasses(computedEvent)" :style="badgeStyles(computedEvent, week.length)">
-                                <div v-if="computedEvent.event &&
-                                  computedEvent.event.details
-                                  " class="title q-calendar__ellipsis">
+                            <template
+                              v-for="(computedEvent, index) in getWeekEvents(
+                                week,
+                                weekdays
+                              )"
+                              :key="index"
+                            >
+                              <div
+                                :class="badgeClasses(computedEvent)"
+                                :style="badgeStyles(computedEvent, week.length)"
+                              >
+                                <div
+                                  v-if="
+                                    computedEvent.event &&
+                                    computedEvent.event.details
+                                  "
+                                  class="title q-calendar__ellipsis tw-h-5"
+                                >
                                   {{
                                     computedEvent.event.title +
-                                    (computedEvent.event.time
-                                      ? " - " + computedEvent.event.time
-                                      : "")
+                                    " - " +
+                                    computedEvent.event.transport
                                   }}
-                                  <q-tooltip>{{
-                                    computedEvent.event.details
-                                  }}</q-tooltip>
+
                                 </div>
+                                  <q-tooltip class="text-body2 bg-primary">{{
+                                    computedEvent.event.title +
+                                    " - " +
+                                    computedEvent.event.transport
+                                  }}</q-tooltip>
                               </div>
                             </template>
                           </template>
@@ -50,7 +90,6 @@
                       </div>
                     </div>
                   </div>
-
                 </q-card-section>
               </q-card>
             </div>
@@ -64,15 +103,17 @@
                         <tbody>
                           <tr>
                             <td class="text-left">Izin</td>
-                            <td class="text-right">{{totalPresensi.izin}}</td>
+                            <td class="text-right">{{ totalPresensi.izin }}</td>
                           </tr>
                           <tr>
                             <td class="text-left">Sakit</td>
-                            <td class="text-right">{{totalPresensi.sakit}}</td>
+                            <td class="text-right">
+                              {{ totalPresensi.sakit }}
+                            </td>
                           </tr>
                           <tr>
                             <td class="text-left">Alfa</td>
-                            <td class="text-right">{{totalPresensi.alfa}}</td>
+                            <td class="text-right">{{ totalPresensi.alfa }}</td>
                           </tr>
                         </tbody>
                       </q-markup-table>
@@ -82,10 +123,11 @@
                 <div class="col-md-9 col-12 text-bold tw-p-2">
                   <q-card class="tw-h-52">
                     <q-card-section>
-                      <p class="text-left">rekapan hadir tepat waktu dan telat</p>
+                      <p class="text-left">
+                        rekapan hadir tepat waktu dan telat
+                      </p>
                     </q-card-section>
                   </q-card>
-
                 </div>
               </div>
             </div>
@@ -112,12 +154,11 @@ import "@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass";
 
 import { defineComponent, ref } from "vue";
 import NavigationBar from "../../components/NavigationBar.vue";
-import NavbarSiswa from "../../components/siswa/HederSiswa.vue"
+import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
 
 // The function below is used to set up our demo data
-const CURRENT_DAY = new Date();
-function getCurrentDay(day) {
-  const newDay = new Date(CURRENT_DAY);
+function getCurrentDay(day, date) {
+  const newDay = new Date(date);
   newDay.setDate(day);
   const tm = parseDate(newDay);
   return tm.date;
@@ -128,16 +169,16 @@ export default defineComponent({
   components: {
     NavigationBar,
     QCalendarMonth,
-    NavbarSiswa
+    NavbarSiswa,
   },
   data() {
     return {
       selectedDate: today(),
       events: ref([]),
-      currentmonth: ref(''),
-      year: ref(''),
-      month: ref(''),
-      totalPresensi: ref('-')
+      currentmonth: ref(""),
+      year: ref(""),
+      month: ref(""),
+      totalPresensi: ref("-"),
     };
   },
   mounted() {
@@ -150,17 +191,25 @@ export default defineComponent({
     },
     month(newVal) {
       this.getPresensi();
-    }
-
+    },
   },
   methods: {
-
+    
+    onToday() {
+      this.$refs.calendar.moveToToday();
+    },
+    onPrev() {
+      this.$refs.calendar.prev();
+    },
+    onNext() {
+      this.$refs.calendar.next();
+    },
     getCurrentDateTime() {
       const now = new Date();
-      const options = { month: 'long', year: 'numeric' };
-      this.currentmonth = now.toLocaleDateString('id-ID', options);
-      this.year = now.getFullYear()
-      this.month = now.getMonth() + 1
+      const options = { month: "long", year: "numeric" };
+      this.currentmonth = now.toLocaleDateString("id-ID", options);
+      this.year = now.getFullYear();
+      this.month = now.getMonth() + 1;
     },
 
     getWeekEvents(week, weekdays) {
@@ -268,95 +317,85 @@ export default defineComponent({
       );
     },
 
-    onToday() {
-      this.$refs.calendar.moveToToday();
-    },
-    onPrev() {
-      this.$refs.calendar.prev();
-    },
-    onNext() {
-      this.$refs.calendar.next();
-    },
     onMoved(data) {
-      const tanggalBaru = new Date(data.date)
-      this.year = tanggalBaru.getFullYear()
-      this.month = tanggalBaru.getMonth() + 1
-      const options = { month: 'long', year: 'numeric' };
-      this.currentmonth = tanggalBaru.toLocaleDateString('id-ID', options);
-      this.getPresensi()
-    },
-    onChange(data) {
-      console.log("onChange", data);
-    },
-    onClickDate(data) {
-      console.log("onClickDate", data);
-    },
-    onClickDay(data) {
-      console.log("onClickDay", data);
-    },
-    onClickWorkweek(data) {
-      console.log("onClickWorkweek", data);
-    },
-    onClickHeadDay(data) {
-      console.log("onClickHeadDay", data);
-    },
-    onClickHeadWorkweek(data) {
-      console.log("onClickHeadWorkweek", data);
+      const tanggalBaru = new Date(data.date);
+      this.year = tanggalBaru.getFullYear();
+      this.month = tanggalBaru.getMonth() + 1;
+      const options = { month: "long", year: "numeric" };
+      this.currentmonth = tanggalBaru.toLocaleDateString("id-ID", options);
+      this.getPresensi();
     },
 
     async getPresensi() {
       try {
-        const token = sessionStorage.getItem('token')
-        const idSiswa = sessionStorage.getItem('idSiswa')
-        const response = await this.$api.get(`student-attendance/show-by-student-month/${idSiswa}?year=${this.year}&month=${this.month}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        const token = sessionStorage.getItem("token");
+        const idSiswa = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-attendance/show-by-student/${idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        const data = response.data.data
-      
+        );
+        const data = response.data.data;
+       
+
         const dataPresensi = await Promise.all(
           data.map((Item, index) => {
-            const date = new Date(Item.att_date)
-
-            if (date.getMonth() + 1 != this.month) {
-              return null
-            } else {
-              const rest = {
+        
+            const rest = {
                 id: index,
                 title: Item.status,
                 details: Item.status,
-                start: getCurrentDay(date.getDate()),
-                end: getCurrentDay(date.getDate()),
-                bgcolor: Item.status === 'Hadir' ? "green" : Item.status === 'Izin' ? 'yellow' : Item.status === 'Sakit' ? 'blue': Item.status === 'Alfa' ? 'red' : 'cyan',
-              }
-              return rest
-            }
+                transport: Item.remark ? Item.remark : '',
+                start: getCurrentDay(
+                new Date(Item.att_date).getDate(),
+                Item.att_date
+              ),
+                end: getCurrentDay(
+                new Date(Item.att_date).getDate(),
+                Item.att_date
+              ),
+                bgcolor:
+                  Item.status === "Hadir"
+                    ? "green"
+                    : Item.status === "Izin"
+                    ? "amber"
+                    : Item.status === "Sakit"
+                    ? "blue"
+                    : Item.status === "Alfa"
+                    ? "red"
+                    : "cyan",
+              };
+              return rest;
           })
         );
-
-        this.events = dataPresensi
-        this.getTotalPresensi(dataPresensi)
-
+         
+        this.events = dataPresensi;
+        this.getTotalPresensi(dataPresensi);
       } catch (error) {
         console.log(error);
       }
     },
 
     async getTotalPresensi(data) {
-      let counts = data.reduce((acc, item) => {
-        if (item.title === 'Sakit') {
-          acc.sakit++;
-        } else if (item.title === 'Izin') {
-          acc.izin++;
-        } else if (item.title === 'Alfa') {
-          acc.alfa++;
-        }
-        return acc;
-      }, { sakit: 0, izin: 0, alfa: 0 });
+      let counts = data.reduce(
+        (acc, item) => {
+          if (item.title === "Sakit") {
+            acc.sakit++;
+          } else if (item.title === "Izin") {
+            acc.izin++;
+          } else if (item.title === "Alfa") {
+            acc.alfa++;
+          }
+          return acc;
+        },
+        { sakit: 0, izin: 0, alfa: 0 }
+      );
 
-      this.totalPresensi = counts
-    }
+      this.totalPresensi = counts;
+    },
   },
 });
 </script>
@@ -365,14 +404,13 @@ export default defineComponent({
 .my-event
   position: relative
   display: inline-flex
-  white-space: nowrap
+  white-space: normal
   font-size: 12px
-  height: 16px
-  max-height: 16px
+  min-height: 30px
   margin: 1px 0 0 0
   justify-content: center
-  text-overflow: ellipsis
-  overflow: hidden
+  text-overflow: clip
+  overflow: visible
   cursor: pointer
 
 .title

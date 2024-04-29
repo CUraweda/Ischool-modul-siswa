@@ -59,7 +59,7 @@
                     </q-item-section>
 
                     <q-item-section class="text-bold" style="font-size: 1rem">
-                        Jadwal Kegiatan
+                        Rencana Pekanan
                     </q-item-section>
                 </q-item>
                 <q-item to="/siswa/tugas" class="text-blue-4" active-class="text-orange bg-blue-1" clickable v-ripple>
@@ -205,6 +205,7 @@ export default {
                 const level = response.data.data[0].student.level
                 sessionStorage.setItem('idSiswa', id)
                 sessionStorage.setItem('level', level)
+                console.log(response);
 
             } catch (error) {
                 console.log(error);
