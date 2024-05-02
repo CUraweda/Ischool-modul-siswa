@@ -27,58 +27,33 @@
                         List
                       </div>
                       <div
-                        class="text-right text-bold"
+                        class="text-right text-bold tw-my-5"
                         style="font-size: x-large"
                       >
-                        <q-btn
-                          dense
-                          round
-                          color="blue-2"
-                          icon="add"
-                          @click="showAddDialog = true"
-                          style="margin-right: 10px; margin-bottom: 10px"
-                        />
+                      <q-btn color="secondary" label="Tambah"  @click="showAddDialog = true" />
+                       
                       </div>
                     </div>
                   </div>
                   <q-markup-table separator="cell">
                     <thead>
                       <tr>
-                        <th class="text-center" style="width: 10px">No</th>
-                        <th class="text-center" style="width: 500px">
-                          Kegiatan
-                        </th>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Kegiatan</th>
                         <th class="text-center">Tanggal</th>
-                        <th class="text-center" style="width: 100px">Action</th>
+                        <th class="text-center">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        v-for="(activity, index) in filteredActivities"
-                        :key="index"
-                      >
-                        <td class="text-center">{{ index + 1 }}</td>
-                        <td class="text-left">{{ activity.name }}</td>
-                        <td class="text-right">{{ activity.tanggal }}</td>
-                        <td class="text-right">
-                          <q-btn
-                            round
-                            dense
-                            color="blue-2"
-                            icon="file_download"
-                          />
-                          <q-btn
-                            dense
-                            round
-                            color="blue-2"
-                            icon="file_upload"
-                            class="tw-ml-2"
-                            @click="fileUploadModalOpen = true"
-                          />
-                        </td>
-                      </tr>
+                     <!-- <tr v-for="(item, index) in data" :key="item.id">
+                      <td></td>
+                      <td>sads</td>
+                      <td>sads</td>
+                      <td>sads</td>
+                     </tr> -->
                     </tbody>
                   </q-markup-table>
+                
                 </div>
               </q-card-section>
             </q-card>
@@ -88,27 +63,86 @@
     </div>
     <!-- Dialog untuk menambahkan aktivitas -->
     <q-dialog v-model="showAddDialog" persistent>
-      <q-card>
+      <q-card style="width: 700px; max-width: 80vw">
         <q-card-section>
           <q-input v-model="newActivityName" label="Kegiatan" />
           <q-input v-model="newActivityDate" label="Tanggal" type="date" />
           <q-uploader
-            v-model="uploadedFiles"
-            label="Unggah File"
-            accept=".jpg, .png"
-            color="blue-2"
-            @added="fileAdded"
-          />
+            style="width: 100%"
+            label="Custom header"
+            accept=".pdf, .docx, .word,"
+          >
+            <template v-slot:header="scope">
+              <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+                <q-btn
+                  v-if="scope.queuedFiles.length > 0"
+                  icon="clear_all"
+                  @click="scope.removeQueuedFiles"
+                  round
+                  dense
+                  flat
+                >
+                  <q-tooltip>Clear All</q-tooltip>
+                </q-btn>
+                <q-btn
+                  v-if="scope.uploadedFiles.length > 0"
+                  icon="done_all"
+                  @click="scope.removeUploadedFiles"
+                  round
+                  dense
+                  flat
+                >
+                  <q-tooltip>Remove Uploaded Files</q-tooltip>
+                </q-btn>
+                <q-spinner
+                  v-if="scope.isUploading"
+                  class="q-uploader__spinner"
+                />
+                <div class="col">
+                  <div class="q-uploader__title">Upload your files</div>
+                  <div class="q-uploader__subtitle">
+                    {{ scope.uploadSizeLabel }}
+                  </div>
+                </div>
+                <q-btn
+                  v-if="scope.canAddFiles"
+                  type="a"
+                  icon="add_box"
+                  @click="scope.pickFiles"
+                  round
+                  dense
+                  flat
+                >
+                  <q-uploader-add-trigger />
+                  <q-tooltip>Pick Files</q-tooltip>
+                </q-btn>
+                <q-btn
+                  v-if="scope.canUpload"
+                  icon="cloud_upload"
+                  @click="submitNewActivity(scope)"
+                  round
+                  dense
+                  flat
+                >
+                  <q-tooltip>Upload Files</q-tooltip>
+                </q-btn>
 
-          <!-- <q-file outlined v-model="selectedFile">
-            <template v-slot:prepend>
-              <q-icon name="attach_file" />
+                <q-btn
+                  v-if="scope.isUploading"
+                  icon="clear"
+                  @click="scope.abort"
+                  round
+                  dense
+                  flat
+                >
+                  <q-tooltip>Abort Upload</q-tooltip>
+                </q-btn>
+              </div>
             </template>
-          </q-file> -->
+          </q-uploader>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn label="Cancel" color="secondary" @click="cancelAddActivity" />
-          <q-btn label="Submit" color="primary" @click="submitNewActivity" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -122,21 +156,15 @@ import Swal from "sweetalert2";
 export default {
   setup() {
     return {
-      activity : ref([]),
-      showAddDialog : ref(false),
+      activity: ref(),
+      data: ref(),
+      showAddDialog: ref(false),
       newActivityName: ref(""),
       newActivityDate: ref(""),
-      uploadedFiles:ref([])
-    }
+      uploadedFiles: ref([]),
+    };
   },
-  // data() {
-  //   return {
-  //     showAddDialog: false,
-  //     newActivityName: "",
-  //     newActivityDate:"",
-  //     activity: []
-  //   };
-  // },
+
   mounted() {
     this.fetchData();
   },
@@ -144,7 +172,8 @@ export default {
     async fetchData() {
       try {
         const token = sessionStorage.getItem("token");
-        const idSiswa = sessionStorage.getItem('idSiswa')
+        const idSiswa = sessionStorage.getItem("idSiswa");
+
         const response = await this.$api.get(
           `achievement/show-by-student/${idSiswa}`,
           {
@@ -154,30 +183,25 @@ export default {
             },
           }
         );
-        if (response.status == 200) {
-          console.log("hallo");
-          console.log(response);
-        }
+        this.data = response.data.data;
+        console.log(response);
       } catch (err) {
         console.error(err);
       }
     },
-    async fileAdded (files){
-      this.uploadedFiles = files
-    },
-    async submitNewActivity() {
-      const filesToUpload = this.uploadedFiles;
-      // console.log(filesToUpload[0]);
-      const idSiswa = sessionStorage.getItem('idSiswa')
-      // console.log(idSiswa);
-      
-    
+
+    async submitNewActivity(scope) {
+      const filesToUpload = scope.queuedFiles;
+
+      const idSiswa = sessionStorage.getItem("idSiswa");
+
       const formData = new FormData();
       formData.append("student_id", idSiswa);
       formData.append("achievement_desc", this.newActivityName);
       formData.append("issued_at", this.newActivityDate);
-      formData.append("file", filesToUpload[0]);
-    ;
+      filesToUpload.forEach((file) => {
+        formData.append("file", file);
+      });
 
       try {
         const token = sessionStorage.getItem("token");
@@ -192,21 +216,16 @@ export default {
             },
           }
         );
-        if (response.status == 200) {
-          Swal.fire({
-            title: "Success!",
-            text: `Rating buku ${this.bookdata.book.title} berhasil ditambahkan`,
-            icon: "success",
-          });
-        }
+
+        this.showAddDialog = false;
       } catch (err) {
-        console.error(err);
+        console.log(err);
       }
     },
 
-    async cancelAddActivity (){
-      this.showAddDialog = false
-    }
+    async cancelAddActivity() {
+      this.showAddDialog = false;
+    },
   },
 };
 </script>

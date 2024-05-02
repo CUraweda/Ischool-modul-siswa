@@ -108,6 +108,11 @@ const routes = [
         component: () => import("pages/wali/raport.vue"),
       },
       {
+        path: "/wali/bsampah",
+        component: () => import("pages/wali/b_sampah.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
         path: "/wali/billing",
         component: () => import("pages/wali/billing.vue"),
       },
@@ -129,7 +134,7 @@ const routes = [
       },
       {
         path: "/wali/ppekanan",
-        component: () => import("pages/wali/p_pekanan.vue"),
+        component: () => import("pages/wali/kalenderPekanan.vue"),
       },
       {
         path: "/wali/achievement",

@@ -5,7 +5,7 @@
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
         <q-tab name="innerAlarms" icon="history_edu" label="Narasi" />
         <q-tab name="innerMovies" icon="text_snippet" label="Portofolio" />
-        <!-- <q-tab name="ortu" icon="people" label="Komentar Orang tua" /> -->
+        <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" />
       </q-tabs>
     </template>
 
@@ -30,8 +30,8 @@
               <q-tab name="page10" label="sass" />
               <q-tab name="page11" label="karya seni" />
               <q-tab name="page12" label="english" />
-              <q-tab name="page13" label="Komentar Ortu" />
               <q-tab name="page14" label="Komentar Guru" />
+              <q-tab name="page13" label="Komentar Ortu" />
             </q-tabs>
           </div>
           <q-space />
@@ -123,9 +123,10 @@
             <q-tabs v-model="tab3" dense class="text-white bg-blue-5" active-color="white" indicator-color="primary"
               align="justify">
               <q-tab name="porto" label="Raport Portofolio" />
-              <q-tab name="ortu" label="Komentar Grtu" />
+              <q-tab name="porto-siswa" label="Upload Portofolio Siswa" />
               <q-tab name="guru" label="Komentar Guru" />
-              
+              <q-tab name="ortu" label="Komentar Ortu" />
+
             </q-tabs>
           </div>
 
@@ -133,10 +134,9 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-              <RapotPortofolio />
-            </div>
+                  <RapotPortofolio />
+                </div>
               </q-tab-panel>
-
               <q-tab-panel name="ortu">
                 <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
                 <div class="tw-flex tw-w-full">
@@ -169,10 +169,35 @@
                   </div>
                 </div>
               </q-tab-panel>
+              <q-tab-panel name="porto-siswa">
+                <div class="text-h4 q-mb-md">Upload Portofolio Siswa</div>
+                <div class="tw-flex tw-w-full tw-flex-col">
+                  <div class="tw-w-full flex tw-my-3 tw-justify-end">
+
+                    <q-btn color="secondary" label="download template" />
+                  </div>
+                  <q-uploader url="http://localhost:4444/upload" label="Upload files" color="primary" square flat
+                    bordered class="tw-w-full" />
+                </div>
+              </q-tab-panel>
             </q-tab-panels>
-           
+
           </q-card>
         </q-tab-panel>
+        <q-tab-panel name="raport-merge">
+          <q-card>
+            <q-tab-panels v-model="tab3" animated>
+              <q-tab-panel name="porto">
+                <div style="width: 100%; height: 600px">
+                  <RapotPortofolio />
+                </div>
+              </q-tab-panel>
+
+            </q-tab-panels>
+
+          </q-card>
+        </q-tab-panel>
+
 
 
       </q-tab-panels>

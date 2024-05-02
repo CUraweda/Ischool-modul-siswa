@@ -56,7 +56,7 @@
                           </div>
                         </td>
                       </tr>
-                      <tr>
+                      <!-- <tr>
                         <td>1</td>
                         <td>1</td>
                         <td>1</td>
@@ -64,7 +64,7 @@
                         <td>1</td>
                         <td>1</td>
                         <td>1</td>
-                      </tr>
+                      </tr> -->
                     </tbody>
                   </q-markup-table>
                 </div>
@@ -276,7 +276,7 @@ export default {
 
         const formData = new FormData();
         filesToUpload.forEach((file) => {
-          formData.append("up_file", file);
+          formData.append("down_file", file);
         });
 
         const response = await this.$api.put(

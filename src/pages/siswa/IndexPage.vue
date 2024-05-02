@@ -26,16 +26,16 @@
                           <tbody>
                             <tr>
                               <td class="text-left">Hadir</td>
-                              <td class="text-right">{{ presensi?.hadir }}</td>
+                              <td class="text-right">{{ hadir }}</td>
                             </tr>
 
                             <tr>
                               <td class="text-left">Sakit</td>
-                              <td class="text-right">{{ presensi?.sakit }}</td>
+                              <td class="text-right">{{ sakit }}</td>
                             </tr>
                             <tr>
-                              <td class="text-left">Alfa</td>
-                              <td class="text-right">{{ presensi?.tanpa_keterangan }}</td>
+                              <td class="text-left">Izin</td>
+                              <td class="text-right">{{ izin }}</td>
                             </tr>
                           </tbody>
                         </q-markup-table>
@@ -248,10 +248,13 @@ export default {
   },
   setup() {
     return {
-      presensi: ref(),
+      presensi: ref({}),
       agenda: ref(),
       achevment: ref(),
       overview: ref(),
+      hadir: ref(0),
+      izin: ref(0),
+      sakit: ref(0),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
       token: ref(sessionStorage.getItem("token")),
       pengumuman: ref([])
@@ -276,13 +279,23 @@ export default {
     },
     async getPresensi() {
       try {
-        const response = await this.$api.get(`student-attendance/recap-by-student/${this.idSiswa}`, {
+        const response = await this.$api.get(`student-attendance/show-by-student/${this.idSiswa}`, {
           headers: {
             'Authorization': `Bearer ${this.token}`
           }
         })
-
-        this.presensi = response.data.data
+        const filterHadir = response.data.data.filter(
+            (a) => a.status === "Hadir"
+          );
+          const filterIzin = response.data.data.filter(
+            (a) => a.status === "Izin"
+          );
+          const filterSakit = response.data.data.filter(
+            (a) => a.status === "Sakit"
+          );
+          this.hadir = filterHadir.length
+          this.izin = filterIzin.length
+          this.sakit = filterSakit.length
 
       } catch (err) {
         console.log(err);
@@ -355,7 +368,12 @@ export default {
         console.log(err);
       }
     }
-  }
+  },
+  watch: {
+    presensi(newVal) {
+       
+      }
+    },
 
 };
 </script>

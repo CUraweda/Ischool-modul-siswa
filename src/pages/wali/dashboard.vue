@@ -298,42 +298,6 @@ export default {
     const rekapSampah = ref(0);
     const uploaderRef = ref(null);
 
-    // const getDataSiswa = async () => {
-    //   try {
-    //     const token = sessionStorage.getItem("token");
-    //     const idSiswa = sessionStorage.getItem("idUser");
-
-    //     // Use getCurrentInstance to get access to the current component instance
-    //     const instance = getCurrentInstance();
-    //     const response =
-    //       await instance.appContext.config.globalProperties.$api.get(
-    //         `user-access/show-by-user/${idSiswa}`,
-    //         {
-    //           headers: {
-    //             Authorization: `Bearer ${token}`,
-    //           },
-    //         }
-    //       );
-
-    //     const data = response.data.data;
-
-    //     dataSiswa.value = await Promise.all(
-    //       data.map((Item) => {
-    //         return {
-    //           label: Item.student.nickname,
-    //           value: Item.student.id,
-    //         };
-    //       })
-    //     );
-    //     const value = JSON.parse(sessionStorage.getItem("newValue"));
-    //     sessionStorage.setItem("idSiswa", data[0].student_id);
-    //     idSiswas.value = data[0].student_id;
-    //     selectedStudent.value = value ? value : dataSiswa.value[0];
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-
     const getRekapSampahbulan = async () => {
       const idSiswa =
         sessionStorage.getItem("idSiswa") !== null

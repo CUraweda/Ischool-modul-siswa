@@ -108,6 +108,21 @@
           </q-item-section>
         </q-item>
         <q-item
+          to="/wali/bsampah"
+          class="text-blue-4"
+          active-class="text-orange bg-blue-1"
+          clickable
+          v-ripple
+        >
+          <q-item-section avatar>
+            <q-icon name="recycling" style="font-size: 2rem" />
+          </q-item-section>
+
+          <q-item-section class="text-bold" style="font-size: 1rem">
+            Bank Sampah
+          </q-item-section>
+        </q-item>
+        <q-item
           to="/wali/tugas"
           class="text-blue-4"
           active-class="text-orange"

@@ -15,8 +15,8 @@
           <q-card-section>
             <q-card style="height: 700px" class="tw-p-3 tw-overflow-auto">
               <div class="tw-w-full flex tw-justify-end text-right">
-                <q-select class="tw-w-32" filled v-model="tahun" :options="options" label="Tahun" />
-                <q-select class="tw-w-32" filled v-model="smt" :options="options2" label="Semester" />
+                <q-select class="tw-w-32" filled v-model="model" :options="options" label="Filled" />
+                <q-select class="tw-w-32" filled v-model="model" :options="options" label="Filled" />
                 
               </div>
               <FullCalendar :options="calendarOptions"  :key="calendarKey" />
@@ -64,21 +64,13 @@ export default {
           alert("Event: " + info.event.title); // Show an alert when an event is clicked
         },
       },
-      tahun: ref('2023/2024'),
-      smt: ref('1'),
-      options: [
-        '2023/2024', '2024/2025'
-      ],
-      options2: [
-        '1', '2'
-      ],
     };
   },
   methods: {
     async getKalender() {
       try {
         const response = await this.$api.get(
-          `timetable/show-by-class/11?semester=${this.smt}&academic=${this.tahun}`,
+          `timetable/show-by-class/11?semester=1&academic=2023/2024`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -108,13 +100,7 @@ export default {
   watch: {
       dataKalender(newVal) {
         this.calendarOptions.events = newVal
-      },
-      // tahun(newVal){
-      //   getKalender()
-      // },
-      // smt(newVal){
-      //   getKalender()
-      // }
+      }
     },
   mounted() {
     this.getKalender()
