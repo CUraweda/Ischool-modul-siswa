@@ -66,7 +66,7 @@
                         </th>
                         <th class="text-center">Durasi</th>
                         <th class="text-center">Total Durasi</th>
-                        <th class="text-center">Keterangan</th>
+                        <!-- <th class="text-center">Keterangan</th> -->
                         <th class="text-center">Status</th>
                         <th class="text-center" style="width: 100px"></th>
                       </tr>
@@ -82,7 +82,7 @@
                         <td class="text-right">
                           {{ activity?.duration }}
                         </td>
-                        <td class="text-right">{{ activity?.remark }}</td>
+                        <!-- <td class="text-right">{{ activity?.remark }}</td> -->
                         <td class="text-right"> {{ activity?.status }}</td>
                         <td class="text-right">
                           <q-btn
