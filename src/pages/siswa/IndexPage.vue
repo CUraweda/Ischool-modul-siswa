@@ -37,6 +37,10 @@
                               <td class="text-left">Izin</td>
                               <td class="text-right">{{ izin }}</td>
                             </tr>
+                            <tr>
+                              <td class="text-left">Alfa</td>
+                              <td class="text-right">{{ alfa }}</td>
+                            </tr>
                           </tbody>
                         </q-markup-table>
                       </div>
@@ -51,9 +55,8 @@
                 <q-card-section>
                   <div class="row flex tw-flex-col justify-center items-center">
                     <p>
-                    <p><span style="font-size: 200%" class="text-bold">Asesment</span></p>
-                    <br />
-                    <span> Semester 1 </span>
+                    <p><span style="font-size: 200%" class="text-bold">Raport Digital</span></p>
+
                     </p>
                     <div class="row flex justify-center items-center tw-w-full">
 
@@ -66,23 +69,26 @@
                           <tbody>
                             <tr>
                               <td class="text-left">Narasi</td>
-                              <td class="text-right">23 juni 2023</td>
+
                               <td>
-                                <q-btn round color="blue-2" icon="file_download" />
+                                <q-btn round color="green" icon="file_download"
+                                  @click="downloadTask(raport?.narrative_path)" :disable="!raport?.narrative_path" />
                               </td>
                             </tr>
                             <tr>
                               <td class="text-left">Portofolio</td>
-                              <td class="text-right">23 juni 2023</td>
+
                               <td>
-                                <q-btn round color="blue-2" icon="file_download" />
+                                <q-btn round color="green" icon="file_download"
+                                  @click="downloadTask(raport?.portofolio_path)" :disable="!raport?.portofolio_path" />
                               </td>
                             </tr>
                             <tr>
                               <td class="text-left">Raport Angka</td>
-                              <td class="text-right">23 juni 2023</td>
+
                               <td>
-                                <q-btn round color="blue-2" icon="file_download" />
+                                <q-btn round color="green" icon="file_download"
+                                  @click="downloadTask(raport?.number_path)" :disable="!raport?.number_path" />
                               </td>
                             </tr>
                           </tbody>
@@ -116,31 +122,26 @@
               </q-card>
             </div>
           </div>
-          <div class=" flex tw-flex-wrap tw-mt-2 row">
+          <div class=" flex tw-flex-wrap tw-mt-2 row ">
             <div class="tw-w-1/3 tw-p-3  col-12 col-md">
 
-              <q-card class="bg-yellow-1 ">
+              <q-card class="bg-yellow-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
 
                       <q-img src="../../assets/camper.png" style="width: 60%" />
                     </div>
-                    <div class="col-md-8 text-left">
+                    <div class="col-md-8 text-left ">
                       <p style="font-size: 200%" class="text-bold">Agenda Kegiatan</p>
-                      <q-markup-table class="bg-yellow-1 text-bold" flat>
-                        <tbody>
-                          <tr>
-                            <td class="text-left"></td>
-                            <td class="text-right"></td>
-                          </tr>
-                          <tr>
-                            <td class="text-left"></td>
-                            <td class="text-right"></td>
-                          </tr>
+                      <div v-for="(item, index) in agenda" :key="item.id" class="tw-ml-3">
+                        <li>
+                          {{ getDateTime(item?.start_date) }} - {{ getDateTime(item?.end_date) }} : {{
+                                item?.agenda
+                              }}
+                        </li>
 
-                        </tbody>
-                      </q-markup-table>
+                      </div>
                     </div>
                   </div>
                 </q-card-section>
@@ -148,7 +149,7 @@
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
 
-              <q-card class="bg-light-blue-1 ">
+              <q-card class="bg-light-blue-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
@@ -178,7 +179,7 @@
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
 
-              <q-card class="bg-light-blue-1 ">
+              <q-card class="bg-light-blue-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
@@ -197,11 +198,11 @@
                           </tr>
                           <tr>
                             <td class="text-left" style="font-size: medium">
-                             {{ getDateTime(achevment?.issued_at) }}
+                              {{ getDateTime(achevment?.issued_at) }}
 
                             </td>
                           </tr>
-                          
+
                         </tbody>
                       </q-markup-table>
                     </div>
@@ -252,22 +253,19 @@ export default {
       agenda: ref(),
       achevment: ref(),
       overview: ref(),
+      raport: ref(),
       hadir: ref(0),
       izin: ref(0),
+      alfa: ref(0),
       sakit: ref(0),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
       token: ref(sessionStorage.getItem("token")),
       pengumuman: ref([])
     }
   },
-  mounted() {
-    this.getPresensi()
-    this.getAgenda()
-    this.getPengumuman()
-    this.getAchevment()
-    this.getOverview()
-  },
+
   methods: {
+
     getDateTime(date) {
       const now = new Date(date);
       const formattedDate = now.toLocaleDateString("id-ID", {
@@ -285,43 +283,67 @@ export default {
           }
         })
         const filterHadir = response.data.data.filter(
-            (a) => a.status === "Hadir"
-          );
-          const filterIzin = response.data.data.filter(
-            (a) => a.status === "Izin"
-          );
-          const filterSakit = response.data.data.filter(
-            (a) => a.status === "Sakit"
-          );
-          this.hadir = filterHadir.length
-          this.izin = filterIzin.length
-          this.sakit = filterSakit.length
+          (a) => a.status === "Hadir"
+        );
+        const filterIzin = response.data.data.filter(
+          (a) => a.status === "Izin"
+        );
+        const filterSakit = response.data.data.filter(
+          (a) => a.status === "Sakit"
+        );
+        const filterAlfa = response.data.data.filter(
+          (a) => a.status === "Alfa"
+        );
+        this.hadir = filterHadir.length
+        this.izin = filterIzin.length
+        this.sakit = filterSakit.length
+        this.alfa = filterAlfa.length
 
       } catch (err) {
         console.log(err);
       }
     },
     async getAgenda() {
-      const level = sessionStorage.getItem('level')
       try {
-        const response = await this.$api.get(`/edu-calendar/show-ongoing?level=${level}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `edu-calendar-detail?search_query=&page=0&limit=100`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
+        );
+
+
+        const data = response.data.data.result;
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+
+        let futureDate = new Date();
+        futureDate.setDate(currentDate.getDate() + 5);
+        futureDate.setHours(23, 59, 59, 999);
+
+        const filterData = data?.filter(item => {
+          let itemDate = new Date(item?.start_date)
+          return itemDate >= currentDate && itemDate <= futureDate
         })
 
-        this.presensi = response.data.data
+        if(filterData?.length > 5){
+          filterData = filterData.slice(0, 5);
+        }
 
-      } catch (err) {
-        console.log(err);
-      }
+        
+        this.agenda = filterData
+        console.log(filterData);
+
+      } catch (error) { }
     },
     async getPengumuman() {
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
-      const endDate = new Date(today.getTime() + (5 * 24 * 60 * 60 * 1000));
+      const endDate = new Date(today.getTime() + (14 * 24 * 60 * 60 * 1000));
       const formattedStartDate = startDate.toISOString().slice(0, 10);
       const formattedEndDate = endDate.toISOString().slice(0, 10);
 
@@ -331,7 +353,7 @@ export default {
             'Authorization': `Bearer ${this.token}`
           }
         })
-       
+
         this.pengumuman = response.data.data
       } catch (err) {
         console.log(err);
@@ -345,9 +367,9 @@ export default {
             'Authorization': `Bearer ${this.token}`
           }
         })
-       
+
         this.achevment = response.data.data
-       
+
       } catch (err) {
         console.log(err);
       }
@@ -360,20 +382,82 @@ export default {
             'Authorization': `Bearer ${this.token}`
           }
         })
-        console.log(response.data.data);
+
         this.overview = response.data.data
-       
-       
+
+
       } catch (err) {
         console.log(err);
       }
-    }
-  },
-  watch: {
-    presensi(newVal) {
-       
+    },
+    async getSiswaById() {
+
+      try {
+        const response = await this.$api.get(`/student/show/${this.idSiswa}`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+        const id = response.data.data[0].studentclasses[0].class_id
+        sessionStorage.setItem('idClass', id)
+
+
+      } catch (err) {
+        console.log(err);
       }
     },
+    async getRaport() {
+      try {
+        const response = await this.$api.get(`/student-report/show-by-student?id=${this.idSiswa}&semester=1`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+        console.log(response.data.data[0]);
+        this.raport = response.data.data[0]
+
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async downloadTask(path) {
+      try {
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop();
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName);
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
+  },
+  mounted() {
+    this.getRaport()
+    this.getSiswaById()
+    this.getPresensi()
+    this.getAgenda()
+    this.getPengumuman()
+    this.getAchevment()
+    this.getOverview()
+  },
 
 };
 </script>

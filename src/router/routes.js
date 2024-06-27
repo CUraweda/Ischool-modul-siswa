@@ -71,7 +71,7 @@ const routes = [
       },
       {
         path: "/siswa/pbuku",
-        component: () => import("pages/siswa/p_buku.vue"),
+        component: () => import("pages/siswa/comingSoon.vue"),
         meta: { requiresAuth: true },
       },
       {

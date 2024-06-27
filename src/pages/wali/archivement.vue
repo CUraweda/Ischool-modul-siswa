@@ -30,8 +30,11 @@
                         class="text-right text-bold tw-my-5"
                         style="font-size: x-large"
                       >
-                      <q-btn color="secondary" label="Tambah"  @click="showAddDialog = true" />
-                       
+                        <q-btn
+                          color="secondary"
+                          label="Tambah"
+                          @click="showAddDialog = true"
+                        />
                       </div>
                     </div>
                   </div>
@@ -45,15 +48,22 @@
                       </tr>
                     </thead>
                     <tbody>
-                     <!-- <tr v-for="(item, index) in data" :key="item.id">
-                      <td></td>
-                      <td>sads</td>
-                      <td>sads</td>
-                      <td>sads</td>
-                     </tr> -->
+                      <tr v-for="(item, index) in data" :key="item.id">
+                        <td>{{ index + 1 }}</td>
+                        <td>{{ item?.achievement_desc }}</td>
+                        <td>{{ formatDate(item?.issued_at) }}</td>
+                        <td>
+                          <q-btn
+                            class="q-mx-sm"
+                            icon="download"
+                            color="green"
+                            @click="downloadTask(item?.certificate_path)"
+                            :disable="!item.certificate_path"
+                          />
+                        </td>
+                      </tr>
                     </tbody>
                   </q-markup-table>
-                
                 </div>
               </q-card-section>
             </q-card>
@@ -169,13 +179,20 @@ export default {
     this.fetchData();
   },
   methods: {
+    formatDate(dateTimeString) {
+      const date = new Date(dateTimeString);
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear().toString();
+      return `${day}-${month}-${year}`;
+    },
     async fetchData() {
       try {
         const token = sessionStorage.getItem("token");
         const idSiswa = sessionStorage.getItem("idSiswa");
 
         const response = await this.$api.get(
-          `achievement/show-by-student/${idSiswa}`,
+          `achievement/show-all-by-student/${idSiswa}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -184,7 +201,7 @@ export default {
           }
         );
         this.data = response.data.data;
-        console.log(response);
+        console.log(response.data.data);
       } catch (err) {
         console.error(err);
       }
@@ -225,6 +242,34 @@ export default {
 
     async cancelAddActivity() {
       this.showAddDialog = false;
+    },
+    async downloadTask(path) {
+      try {
+        const token = sessionStorage.getItem('token')
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop();
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName);
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
     },
   },
 };

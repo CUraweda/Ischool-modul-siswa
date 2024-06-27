@@ -1,50 +1,45 @@
 <template>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 ">
       <div class="text-center bg-blue-2 tw-min-h-screen">
         <q-card-section>
           <div class="text-center">
             <p>
-              <span
-                class="text-center text-black text-bold"
-                style="font-size: x-large"
-                >DASHBOARD WALI MURID</span
-              >
+              <span class="text-center text-black text-bold" style="font-size: x-large">DASHBOARD ORANG TUA</span>
             </p>
           </div>
-          <!-- Student Selection Dropdown -->
-          <!-- <q-select
-            v-model="selectedStudent"
-            :options="dataSiswa"
-            label="Pilih Siswa"
-            outlined
-            class="tw-mb-3"
-          ></q-select> -->
-          <!-- <div v-if="selectedSiswa"> -->
+
           <div class="tw-mt-3 tw-flex tw-flex-wrap row">
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
+            <div class="tw-w-1/3 tw-p-3 col-12 col-md ">
               <q-card class="bg-green-1 tw-w-full tw-h-80">
                 <q-card-section>
                   <div class="row flex tw-flex-col justify-center items-center">
-                    <p><span style="font-size: xx-large">Absensi</span></p>
+                    <p><span style="font-size: 200%" class="text-bold">Presensi</span></p>
                     <div class="row flex justify-center items-center tw-w-full">
+
                       <div class="img">
                         <q-img src="../../assets/sadeicon.png" />
                       </div>
                       <div class="col-md col-12 text-left">
+
                         <q-markup-table class="bg-green-1" flat>
                           <tbody>
                             <tr>
                               <td class="text-left">Hadir</td>
-                              <td class="text-right">{{ dataHadir }}</td>
+                              <td class="text-right">{{ hadir }}</td>
                             </tr>
+
                             <tr>
                               <td class="text-left">Sakit</td>
-                              <td class="text-right">{{ dataSakit }}</td>
+                              <td class="text-right">{{ sakit }}</td>
                             </tr>
                             <tr>
                               <td class="text-left">Izin</td>
-                              <td class="text-right">{{ dataIzin }}</td>
+                              <td class="text-right">{{ izin }}</td>
+                            </tr>
+                            <tr>
+                              <td class="text-left">Alfa</td>
+                              <td class="text-right">{{ alfa }}</td>
                             </tr>
                           </tbody>
                         </q-markup-table>
@@ -55,55 +50,45 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
+
               <q-card class="bg-pink-1 tw-w-full tw-h-80">
                 <q-card-section>
                   <div class="row flex tw-flex-col justify-center items-center">
                     <p>
-                      <span style="font-size: xx-large">Asesmen</span>
-                      <br />
-                      <span> Semester 1 </span>
+                    <p><span style="font-size: 200%" class="text-bold">Raport Digital</span></p>
+
                     </p>
                     <div class="row flex justify-center items-center tw-w-full">
+
                       <div class="img">
-                        <q-img
-                          src="../../assets/Asesmen.png"
-                          style="width: 70%"
-                        />
+                        <q-img src="../../assets/Asesmen.png" style="width: 70%" />
                       </div>
                       <div class="col-md-8 text-left">
+
                         <q-markup-table class="bg-pink-1" flat>
                           <tbody>
                             <tr>
                               <td class="text-left">Narasi</td>
-                              <td class="text-right">23 juni 2023</td>
+
                               <td>
-                                <q-btn
-                                  round
-                                  color="blue-2"
-                                  icon="file_download"
-                                />
+                                <q-btn round color="green" icon="file_download"
+                                  @click="downloadTask(raport?.narrative_path)" :disable="!raport?.narrative_path" />
                               </td>
                             </tr>
                             <tr>
                               <td class="text-left">Portofolio</td>
-                              <td class="text-right">23 juni 2023</td>
+
                               <td>
-                                <q-btn
-                                  round
-                                  color="blue-2"
-                                  icon="file_download"
-                                />
+                                <q-btn round color="green" icon="file_download"
+                                  @click="downloadTask(raport?.portofolio_path)" :disable="!raport?.portofolio_path" />
                               </td>
                             </tr>
                             <tr>
                               <td class="text-left">Raport Angka</td>
-                              <td class="text-right">23 juni 2023</td>
+
                               <td>
-                                <q-btn
-                                  round
-                                  color="blue-2"
-                                  icon="file_download"
-                                />
+                                <q-btn round color="green" icon="file_download"
+                                  @click="downloadTask(raport?.number_path)" :disable="!raport?.number_path" />
                               </td>
                             </tr>
                           </tbody>
@@ -115,86 +100,74 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
+
               <q-card class="bg-light-green-1 tw-w-full tw-h-80">
                 <q-card-section>
-                  <P class="text-bold text-left"
-                    >Overview <br />
-                    Tema : <span class="text-blue">Lingkungan Hidup</span>
-                    <br />
-                    Pemahaman Bermakna : <br />
-                    periode : <br />
-                    TUP :
-                    <span class="text-blue"></span>
-                  </P>
+                  <p style="font-size: 200%" class="text-bold">Overview</p>
+                  <div class="text-left">
+                    <p>Tema : {{ overview?.topic }}</p>
+                    <p>Pemahaman : {{ overview?.meaningful_understanding }}</p>
+                    <p>Periode : {{ overview?.period }}</p>
+                    <p>TUP:</p>
+                  </div>
 
                   <div class="text-justify" style="width: 95%">
-                    <p>
-                      Bertani atau berkebun ini juga merupakan salah satu contoh
-                      pendidikan lingkungan hidup. Kegiatan ini memiliki tujuan
-                      untuk mencintai lingkungan dan bisa menghargai alam.
-                      <br />Kegiatannya bisa dilakukan semacam menanam bunga di
-                      halaman sekolah misalnya. Atau membersihkan sampah yang
-                      ada di sekitar sekolah sehingga lingkungan nampak bersih
-                      dan asri.
-                    </p>
+                    <q-scroll-area style="height: 19vh" class="q-pa-sm">
+                      <p>
+                        {{ overview?.tup }}
+                      </p>
+                    </q-scroll-area>
                   </div>
                 </q-card-section>
               </q-card>
             </div>
           </div>
-          <div class="flex tw-flex-wrap tw-mt-2 row">
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-yellow-1">
+          <div class=" flex tw-flex-wrap tw-mt-2 row ">
+            <div class="tw-w-1/3 tw-p-3  col-12 col-md">
+
+              <q-card class="bg-yellow-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
+
                       <q-img src="../../assets/camper.png" style="width: 60%" />
                     </div>
-                    <div class="col-md-8 text-left">
-                      <p>
-                        <span style="font-size: xx-large">Agenda Kegiatan</span>
-                      </p>
-                      <q-markup-table class="bg-yellow-1 text-bold" flat>
-                        <tbody>
-                          <tr>
-                            <td class="text-left"></td>
-                            <td class="text-right"></td>
-                          </tr>
-                          <tr>
-                            <td class="text-left"></td>
-                            <td class="text-right"></td>
-                          </tr>
-                        </tbody>
-                      </q-markup-table>
+                    <div class="col-md-8 text-left ">
+                      <p style="font-size: 200%" class="text-bold">Agenda Kegiatan</p>
+                      <div v-for="(item, index) in agenda" :key="item.id" class="tw-ml-3">
+                        <li>
+                          {{ getDateTime(item?.start_date) }} - {{ getDateTime(item?.end_date) }} : {{
+                                item?.agenda
+                              }}
+                        </li>
+
+                      </div>
                     </div>
                   </div>
                 </q-card-section>
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-light-blue-1">
+
+              <q-card class="bg-light-blue-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
-                      <q-img
-                        src="../../assets/book/total.png"
-                        style="width: 60%"
-                      />
+
+                      <q-img src="../../assets/book/total.png" style="width: 60%" />
                     </div>
                     <div class="col-md-8 text-left">
-                      <p>
-                        <span style="font-size: xx-large">Bank Sampah</span>
-                      </p>
+                      <p style="font-size: 200%" class="text-bold">Bank Sampah</p>
                       <q-markup-table class="bg-light-blue-1" flat>
                         <tbody>
                           <tr>
                             <td class="text-left">Terkumpul</td>
-                            <td class="text-right">{{ rekapSampah }}</td>
+                            <td class="text-right">0</td>
                             <td class="text-left">kg</td>
                           </tr>
                           <tr>
                             <td class="text-left">Target</td>
-                            <td class="text-right">5</td>
+                            <td class="text-right">0</td>
                             <td class="text-left">Hari</td>
                           </tr>
                         </tbody>
@@ -205,37 +178,31 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-light-blue-1">
+
+              <q-card class="bg-light-blue-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
-                      <q-img
-                        src="../../assets/Achievement.png"
-                        style="width: 60%"
-                      />
+
+                      <q-img src="../../assets/Achievement.png" style="width: 60%" />
                     </div>
                     <div class="col-md-8 text-left">
-                      <p>
-                        <span style="font-size: xx-large">Achievement</span>
-                      </p>
+                      <p style="font-size: 200%" class="text-bold">Achievement</p>
+
                       <q-markup-table class="bg-light-blue-1" flat>
                         <tbody>
                           <tr>
                             <td class="text-left" style="font-size: medium">
-                              Upload Sertifikat
-                            </td>
-                            <td>
-                              <q-btn
-                                round
-                                color="blue-2"
-                                icon="file_upload"
-                                @click="fileUploadModalOpen = true"
-                              />
+                              {{ achevment?.achievement_desc }}
                             </td>
                           </tr>
                           <tr>
-                            <td class="text-left"></td>
+                            <td class="text-left" style="font-size: medium">
+                              {{ getDateTime(achevment?.issued_at) }}
+
+                            </td>
                           </tr>
+
                         </tbody>
                       </q-markup-table>
                     </div>
@@ -246,146 +213,100 @@
           </div>
 
           <div class="tw-w-full tw-p-3">
-            <q-card class="tw-h-40">
+
+            <q-card class="">
               <q-card-section class="text-left">
                 <p class="text-left">
                   <br />
-                  <span class="text-bold">Pengumuman</span><br />- Tugas Mata
-                  Pelajaran Matematika - Hal 23 - 24
+                  <span class="text-bold">Pengumuman</span>
                 </p>
+
+                <div v-for="(item, index) in pengumuman" :key="item.id" class="tw-ml-3">
+                  <li>
+                    {{ getDateTime(item?.date_start) }} - {{ getDateTime(item?.date_end) }} : {{ item?.announcement_desc
+                    }}
+                  </li>
+
+                </div>
+
               </q-card-section>
             </q-card>
           </div>
-          <!-- </div> -->
         </q-card-section>
       </div>
     </div>
-    <q-dialog v-model="fileUploadModalOpen">
-      <q-card>
-        <q-card-section>
-          <q-uploader ref="uploader" multiple @added="onFileAdded" />
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            label="Cancel"
-            color="negative"
-            @click="closeFileUploadModal"
-          />
-          <q-btn label="Upload" color="primary" @click="uploadFiles" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
-import { ref, onMounted, getCurrentInstance, watch } from "vue";
+
+import NavbarSiswa from "../../components/siswa/HederSiswa.vue"
+import { ref } from 'vue'
+
 export default {
   components: {
-    NavbarSiswa,
+    NavbarSiswa
   },
   setup() {
-    const dataSiswa = ref([]);
-    const selectedSiswa = ref(false);
-    const fileUploadModalOpen = ref(false);
-    const selectedStudent = ref(null);
-    const idSiswas = ref();
-    const dataHadir = ref(0);
-    const dataIzin = ref(0);
-    const dataSakit = ref(0);
-    const rekapSampah = ref(0);
-    const uploaderRef = ref(null);
+    return {
+      presensi: ref({}),
+      agenda: ref(),
+      achevment: ref(),
+      overview: ref(),
+      raport: ref(),
+      hadir: ref(0),
+      izin: ref(0),
+      alfa: ref(0),
+      sakit: ref(0),
+      idSiswa: ref(sessionStorage.getItem("idSiswa")),
+      token: ref(sessionStorage.getItem("token")),
+      pengumuman: ref([])
+    }
+  },
 
-    const getRekapSampahbulan = async () => {
-      const idSiswa =
-        sessionStorage.getItem("idSiswa") !== null
-          ? sessionStorage.getItem("idSiswa")
-          : idSiswas.value;
+  methods: {
 
-      const token = sessionStorage.getItem("token");
+    getDateTime(date) {
+      const now = new Date(date);
+      const formattedDate = now.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      return formattedDate;
+    },
+    async getPresensi() {
       try {
-        if (idSiswa !== undefined) {
-          const response = await axios.get(
-            `https://api-dev.curaweda.com:7000/api/waste-collection/recap-week-by-student/${idSiswa}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const totalWeight = response.data.data.reduce(
-            (total, day) => total + (day.weight === null ? 0 : day.weight),
-            0
-          );
-          rekapSampah.value = totalWeight;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const getRekapAbsensi = async () => {
-      const idSiswa =
-        sessionStorage.getItem("idSiswa") !== null
-          ? sessionStorage.getItem("idSiswa")
-          : idSiswas.value;
-      const token = sessionStorage.getItem("token");
-      try {
-        if (idSiswa !== undefined) {
-          const response = await axios.get(
-            `https://api-dev.curaweda.com:7000/api/student-attendance/show-by-student/${idSiswa}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const filterHadir = response.data.data.filter(
-            (a) => a.status === "Hadir"
-          );
-          const filterIzin = response.data.data.filter(
-            (a) => a.status === "Izin"
-          );
-          const filterSakit = response.data.data.filter(
-            (a) => a.status === "Sakit"
-          );
-          dataHadir.value = filterHadir.length;
-          dataIzin.value = filterIzin.length;
-          dataSakit.value = filterSakit.length;
-        }
-
-        // rekapSampah.value = response.data.data
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const getDataSiswa2 = async () => {
-      const idUser = sessionStorage.getItem("idUser");
-      const token = sessionStorage.getItem("token");
-      try {
-        const response = await axios.get(
-          `https://api-dev.curaweda.com:7000/api/user-access/show-by-user/${idUser}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await this.$api.get(`student-attendance/show-by-student/${this.idSiswa}`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
           }
+        })
+        const filterHadir = response.data.data.filter(
+          (a) => a.status === "Hadir"
         );
-        const level = response.data.data[0].student.level;
-        sessionStorage.setItem("level", level);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+        const filterIzin = response.data.data.filter(
+          (a) => a.status === "Izin"
+        );
+        const filterSakit = response.data.data.filter(
+          (a) => a.status === "Sakit"
+        );
+        const filterAlfa = response.data.data.filter(
+          (a) => a.status === "Alfa"
+        );
+        this.hadir = filterHadir.length
+        this.izin = filterIzin.length
+        this.sakit = filterSakit.length
+        this.alfa = filterAlfa.length
 
-    const getAgenda = async () => {
-      const level = sessionStorage.getItem("level");
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getAgenda() {
       try {
-        const response = await axios.get(
-          `https://api-dev.curaweda.com:7000/api/edu-calendar/show-ongoing?level=${level}`,
+        const response = await this.$api.get(
+          `edu-calendar-detail?search_query=&page=0&limit=100`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -393,65 +314,154 @@ export default {
           }
         );
 
-        // this.presensi = response.data.data
+
+        const data = response.data.data.result;
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+
+        let futureDate = new Date();
+        futureDate.setDate(currentDate.getDate() + 5);
+        futureDate.setHours(23, 59, 59, 999);
+
+        const filterData = data?.filter(item => {
+          let itemDate = new Date(item?.start_date)
+          return itemDate >= currentDate && itemDate <= futureDate
+        })
+
+        if(filterData?.length > 5){
+          filterData = filterData.slice(0, 5);
+        }
+
+        
+        this.agenda = filterData
+        console.log(filterData);
+
+      } catch (error) { }
+    },
+    async getPengumuman() {
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startDate = new Date();
+      const endDate = new Date(today.getTime() + (14 * 24 * 60 * 60 * 1000));
+      const formattedStartDate = startDate.toISOString().slice(0, 10);
+      const formattedEndDate = endDate.toISOString().slice(0, 10);
+
+      try {
+        const response = await this.$api.get(`/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+
+        this.pengumuman = response.data.data
       } catch (err) {
         console.log(err);
       }
-    };
-    const closeFileUploadModal = () => {
-      fileUploadModalOpen.value = false;
-    };
-    const openFileUploadModal = () => {
-      fileUploadModalOpen.value = true;
-    };
-    const onFileAdded = (files) => {
-        uploaderRef.value = files
-    };
-    const uploadFiles = () => {
-      console.log(uploaderRef.value[0]);
-      // Pastikan untuk memeriksa apakah ada file yang dipilih sebelum mengunggah
-      if (uploaderRef.value.length > 0) {
-        // Lakukan logika pengungahan di sini
-        console.log("Uploading files:", uploaderRef.value[0]);
-        // closeFileUploadModal(); // Tutup dialog setelah pengungahan selesai
-      } else {
-        console.log("No files selected for upload.");
-      }
-    };
-    // Call getDataSiswa when component is mounted
-    onMounted(() => {
-     
-      getRekapSampahbulan();
-      getRekapAbsensi();
-    });
-    watch(selectedStudent, (newVal, oldVal) => {
-      sessionStorage.setItem("newValue", JSON.stringify(newVal));
-      sessionStorage.setItem("idSiswa", newVal.value);
-      getRekapSampahbulan();
-      getDataSiswa2();
-      getRekapAbsensi();
-      // Update selectedSiswa.value or perform any other actions
-      selectedSiswa.value = true;
-    });
+    },
+    async getAchevment() {
 
-    return {
-      dataSiswa,
-      selectedSiswa,
-      rekapSampah,
-      dataHadir,
-      dataIzin,
-      dataSakit,
-      selectedStudent,
-     
-      openFileUploadModal,
-      fileUploadModalOpen,
-      onFileAdded,
-      closeFileUploadModal,
-      uploadFiles
-    };
+      try {
+        const response = await this.$api.get(`/achievement/show-by-student/${this.idSiswa}`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+
+        this.achevment = response.data.data
+
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getOverview() {
+
+      try {
+        const response = await this.$api.get(`/overview/show-active`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+
+        this.overview = response.data.data
+
+
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getSiswaById() {
+
+      try {
+        const response = await this.$api.get(`/student/show/${this.idSiswa}`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+        const id = response.data.data[0].studentclasses[0].class_id
+        sessionStorage.setItem('idClass', id)
+
+
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getRaport() {
+      try {
+        const response = await this.$api.get(`/student-report/show-by-student?id=${this.idSiswa}&semester=1`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
+        console.log(response.data.data[0]);
+        this.raport = response.data.data[0]
+
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async downloadTask(path) {
+      try {
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop();
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName);
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
   },
+  mounted() {
+    this.getRaport()
+    this.getSiswaById()
+    this.getPresensi()
+    this.getAgenda()
+    this.getPengumuman()
+    this.getAchevment()
+    this.getOverview()
+  },
+
 };
 </script>
+
 
 <style>
 /* Extra small devices (phones, 600px and down) */

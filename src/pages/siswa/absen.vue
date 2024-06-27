@@ -1,140 +1,137 @@
 <template>
   <div class="container">
     <!-- <NavbarSiswa/> -->
-    <div>
-      <div>
-        <q-card class="text-center bg-blue-2">
-          <q-card-section>
-            <div class="text-center tw-mb-5">
-              <p>
-                <span
-                  class="text-center text-black text-bold"
-                  style="font-size: x-large"
-                  >KEHADIRAN SISWA</span
-                ><br />
-                <span
-                  class="text-center text-black text-bold"
-                  style="font-size: larger"
-                >
-                  Bulan {{ currentmonth }}</span
-                >
-              </p>
-            </div>
-            <div>
-              <q-card class="my-card tw-h-full flex tw-w-full">
-                <q-card-section class="tw-w-full">
-                  <div class="subcontent tw-w-full">
-                    <navigation-bar
-                      @today="onToday"
-                      @prev="onPrev"
-                      @next="onNext"
-                      style="color: green"
-                      flat
-                    />
+    <q-card class="text-center bg-blue-2 flex tw-flex-col tw-min-h-screen">
+      <q-card-section>
+        <div class="text-center tw-mb-5">
+          <p>
+            <span
+              class="text-center text-black text-bold"
+              style="font-size: x-large"
+              >KEHADIRAN SISWA</span
+            ><br />
+            <span
+              class="text-center text-black text-bold"
+              style="font-size: larger"
+            >
+              Bulan {{ currentmonth }}</span
+            >
+          </p>
+        </div>
+        <div>
+          <q-card class="my-card tw-h-full flex tw-w-full">
+            <q-card-section class="tw-w-full">
+              <div class="subcontent tw-w-full">
+                <navigation-bar
+                  @today="onToday"
+                  @prev="onPrev"
+                  @next="onNext"
+                  style="color: green"
+                  flat
+                />
 
-                    <div class="row justify-center">
-                      <div style="width: 90%">
-                        <q-calendar-month
-                          ref="calendar"
-                          v-model="selectedDate"
-                          animated
-                          bordered
-                          focusable
-                          hoverable
-                          no-active-date
-                          :day-min-height="80"
-                          :day-height="0"
-                          @change="onChange"
-                          @moved="onMoved"
-                          @click-date="onClickDate"
-                          @click-day="onClickDay"
-                          @click-workweek="onClickWorkweek"
-                          @click-head-workweek="onClickHeadWorkweek"
-                          @click-head-day="onClickHeadDay"
+                <div class="row justify-center">
+                  <div style="width: 100%">
+                    <q-calendar-month
+                      ref="calendar"
+                      v-model="selectedDate"
+                      animated
+                      bordered
+                      focusable
+                      hoverable
+                      no-active-date
+                      :day-min-height="100"
+                      :day-height="0"
+                      @change="onChange"
+                      @moved="onMoved"
+                      @click-date="onClickDate"
+                      @click-day="onClickDay"
+                      @click-workweek="onClickWorkweek"
+                      @click-head-workweek="onClickHeadWorkweek"
+                      @click-head-day="onClickHeadDay"
+                    >
+                      <template #week="{ scope: { week, weekdays } }">
+                        <template
+                          v-for="(computedEvent, index) in getWeekEvents(
+                            week,
+                            weekdays
+                          )"
+                          :key="index"
                         >
-                          <template #week="{ scope: { week, weekdays } }">
-                            <template
-                              v-for="(computedEvent, index) in getWeekEvents(
-                                week,
-                                weekdays
-                              )"
-                              :key="index"
+                          <div
+                            :class="badgeClasses(computedEvent)"
+                            :style="badgeStyles(computedEvent, week.length)"
+                          >
+                            <div
+                              v-if="
+                                computedEvent.event &&
+                                computedEvent.event.details
+                              "
+                              class="title q-calendar__ellipsis tw-h-5"
                             >
-                              <div
-                                :class="badgeClasses(computedEvent)"
-                                :style="badgeStyles(computedEvent, week.length)"
-                              >
-                                <div
-                                  v-if="
-                                    computedEvent.event &&
-                                    computedEvent.event.details
-                                  "
-                                  class="title q-calendar__ellipsis tw-h-5"
-                                >
-                                  {{
-                                    computedEvent.event.title +
-                                    " - " +
-                                    computedEvent.event.transport
-                                  }}
+                              {{
+                                computedEvent.event.title +
+                                " - " +
+                                computedEvent.event.transport
+                              }}
 
-                                </div>
-                                  <q-tooltip class="text-body2 bg-primary">{{
-                                    computedEvent.event.title +
-                                    " - " +
-                                    computedEvent.event.transport
-                                  }}</q-tooltip>
-                              </div>
-                            </template>
-                          </template>
-                        </q-calendar-month>
-                      </div>
-                    </div>
+                            </div>
+                              <q-tooltip class="text-body2 bg-primary">{{
+                                computedEvent.event.title +
+                                " - " +
+                                computedEvent.event.transport
+                              }}</q-tooltip>
+                          </div>
+                        </template>
+                      </template>
+                    </q-calendar-month>
                   </div>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+        <br />
+        <div class="text-center">
+          <!-- <div class="row flex">
+            <div class="col-md-3 col-12 text-bold tw-p-2">
+              <q-card class="tw-h-52 flex justify-center items-center">
+                <q-card-section class="tw-w-full">
+                  <q-markup-table>
+                    <tbody>
+                      <tr>
+                        <td class="text-left">Izin</td>
+                        <td class="text-right">{{ totalPresensi.izin }}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-left">Sakit</td>
+                        <td class="text-right">
+                          {{ totalPresensi.sakit }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-left">Alfa</td>
+                        <td class="text-right">{{ totalPresensi.alfa }}</td>
+                      </tr>
+                    </tbody>
+                  </q-markup-table>
                 </q-card-section>
               </q-card>
             </div>
-            <br />
-            <div class="text-center">
-              <div class="row flex">
-                <div class="col-md-3 col-12 text-bold tw-p-2">
-                  <q-card class="tw-h-52 flex justify-center items-center">
-                    <q-card-section class="tw-w-full">
-                      <q-markup-table>
-                        <tbody>
-                          <tr>
-                            <td class="text-left">Izin</td>
-                            <td class="text-right">{{ totalPresensi.izin }}</td>
-                          </tr>
-                          <tr>
-                            <td class="text-left">Sakit</td>
-                            <td class="text-right">
-                              {{ totalPresensi.sakit }}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="text-left">Alfa</td>
-                            <td class="text-right">{{ totalPresensi.alfa }}</td>
-                          </tr>
-                        </tbody>
-                      </q-markup-table>
-                    </q-card-section>
-                  </q-card>
-                </div>
-                <div class="col-md-9 col-12 text-bold tw-p-2">
-                  <q-card class="tw-h-52">
-                    <q-card-section>
-                      <p class="text-left">
-                        rekapan hadir tepat waktu dan telat
-                      </p>
-                    </q-card-section>
-                  </q-card>
-                </div>
-              </div>
+            <div class="col-md-9 col-12 text-bold tw-p-2">
+              <q-card class="tw-h-52">
+                <q-card-section>
+                  <p class="text-left">
+                    rekapan hadir tepat waktu dan telat
+                  </p>
+                </q-card-section>
+              </q-card>
             </div>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
+          </div> -->
+        </div>
+      </q-card-section>
+    </q-card>
+   
   </div>
 </template>
 

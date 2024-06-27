@@ -31,31 +31,22 @@
                             <th class="text-center" style="width: 10px">No</th>
                             <th class="text-left">Date</th>
                             <th class="text-left">Billing Type</th>
-                            <th class="text-left">Total</th>
                             <th class="text-left">Receipt</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr
-                            v-for="(item, index) in dataBilling"
-                            :key="item.id"
-                          >
+                          <tr v-for="(item, index) in " :key="item.id">
                             <td class="text-left">{{ index + 1 }}</td>
                             <td class="text-left">
-                              {{ formatDate(item?.createdAt) }}
+                              sda
+                              <!-- {{ formatDate(item?.createdAt) }} -->
                             </td>
-                            <td class="text-left">
-                              {{ item?.paymentcategory.billing_cycle }}
-                            </td>
-                            <td class="text-left">
-                              Rp.{{ item?.bill_amount.toLocaleString("id-ID") }}
-                            </td>
+                            <td class="text-left">{{ item?.month?.name }}</td>
                             <td class="text-left">
                               <q-btn
                                 outline
                                 style="color: grey"
                                 label="Download"
-                                :disable="!item?.invoice"
                               />
                             </td>
                           </tr>
@@ -74,29 +65,51 @@
                             </p>
                           </div>
                           <q-separator color="white" inset />
-                          <div class="q-mx-md tw-flex tw-flex-col text-left text-white">
-                           
-                            <div
-                              v-for="(item, index) in nilaiBilling"
-                              :key="index"
+                          <div class="q-mx-md tw-flex tw-flex-col text-left">
+                            <p class="text-bold q-mt-md text-white text-left">
+                              <span style="font-size: medium"
+                                >Payment Options</span
+                              >
+                              <template
+                                v-for="(billing, index) in nilaiBilling"
+                                :key="index"
+                              >
+                                <q-checkbox
+                                  v-model="billing.isChecked"
+                                  :label="`SPP ${
+                                    billing.month.name
+                                  } Rp. ${billing.bill_amount.toLocaleString(
+                                    'id-ID'
+                                  )}`"
+                                  style="
+                                    font-size: 8px;
+                                    margin-bottom: 3px;
+                                    margin-right: 0px;
+                                  "
+                                ></q-checkbox>
+                              </template>
+                            </p>
+                            <span style="font-size: smaller"
+                              >Payment deadline</span
                             >
-                              <q-checkbox
-                                :label="`${item?.paymentcategory?.billing_cycle} Rp. ${item?.bill_amount}`"
-                              />
-                            </div>
-
+                            <span
+                              class="text-warning"
+                              style="font-size: smaller"
+                              >10 Desember 2023</span
+                            >
                             <p
                               class="text-white"
                               style="font-size: larger; margin-top: 10px"
                             >
-                              <!-- <span style="color: black"
+                              <span style="color: black"
                                 >Total: Rp.
                                 {{ totalAmount.toLocaleString("id-ID") }}</span
-                              > -->
+                              >
                             </p>
                             <q-btn
                               class="full-width q-mt-lg"
                               outline
+                              style="color: black"
                               label="Pay Now"
                               @click="showDialog = true"
                             />
@@ -134,10 +147,80 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
+import axios from "axios";
 
 export default {
+  methods: {
+    formatDate(dateTimeString) {
+      const date = new Date(dateTimeString);
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear().toString();
+      return `${day}-${month}-${year}`;
+    },
+  },
   setup() {
+    const nilaiBilling = ref([]);
+    const dataBilling = ref([]);
+    const showDialog = ref(false);
+
+    const getBilling = async () => {
+      const idSiswa = sessionStorage.getItem("idSiswa");
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          `https://api-dev.curaweda.com:7000/api/monthly/show-by-student/${idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        
+        const filterDataBilling = response.data.data.filter(
+          (a) => a.payment_status !== "Paid"
+        );
+        const filterDataBillingSudahBayar = response.data.data.filter(
+          (a) => a.payment_status === "Paid"
+        );
+        console.log(filterDataBilling);
+        dataBilling = filterDataBillingSudahBayar;
+        nilaiBilling.value = filterDataBilling;
+        // rekapSampah.value = response.data.data
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    onMounted(() => {
+      getBilling();
+    });
+    const januaryCheckbox = ref(false);
+    const februaryCheckbox = ref(false);
+    const marchCheckbox = ref(false);
+    const amountPerMonth = 500000;
+    const totalAmount = ref(0);
+
+    const calculateTotal = () => {
+      totalAmount.value = nilaiBilling.value.reduce((total, billing) => {
+        if (billing.isChecked) {
+          return total + billing.bill_amount;
+        } else {
+          return total;
+        }
+      }, 0);
+    };
+    watch([januaryCheckbox, februaryCheckbox, marchCheckbox], () => {
+      calculateTotal();
+    });
+    watch(
+      nilaiBilling,
+      () => {
+        calculateTotal();
+      },
+      { deep: true }
+    );
     return {
       tab: ref("mails"),
       innerTab: ref("innerMails"),
@@ -147,50 +230,15 @@ export default {
       shape: ref(),
       shape2: ref(),
       model: ref(null),
-      dataBilling: ref(),
-      showDialog: ref(false),
-      nilaiBilling: ref(),
-      billing: ref(),
+      januaryCheckbox,
+      nilaiBilling,
+      dataBilling : ref(),
+      februaryCheckbox,
+      marchCheckbox,
+      totalAmount,
+      calculateTotal,
+      showDialog,
     };
-  },
-
-  methods: {
-    formatDate(dateTimeString) {
-      const date = new Date(dateTimeString);
-      const day = date.getDate().toString().padStart(2, "0");
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const year = date.getFullYear().toString();
-      return `${day}-${month}-${year}`;
-    },
-
-    async getDataBiling() {
-      const idSiswa = sessionStorage.getItem("idSiswa");
-      const token = sessionStorage.getItem("token");
-
-      try {
-        const response = await this.$api.get(
-          `monthly/show-by-student/${idSiswa}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const filterDataBilling = response.data.data.filter(
-          (a) => a.payment_status !== "Paid"
-        );
-
-        this.dataBilling = response.data.data;
-        this.nilaiBilling = filterDataBilling;
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  },
-
-  mounted() {
-    this.getDataBiling();
   },
 };
 </script>

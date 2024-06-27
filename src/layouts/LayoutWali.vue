@@ -74,7 +74,7 @@
           </q-item-section>
 
           <q-item-section class="text-bold" style="font-size: 1rem">
-            Kalender Kegiatan Semester
+            Kalender Kegiatan
           </q-item-section>
         </q-item>
         <q-item
@@ -244,6 +244,7 @@ export default {
     setInterval(() => {
       this.getCurrentDateTime();
     }, 60000);
+    this. getSiswaById()
   },
 
   methods: {
@@ -315,8 +316,25 @@ export default {
           sessionStorage.setItem("idSiswa", dataSelect.value);
           this.selectedStudent = dataSelect;
         }
+        this.getSiswaById(idSiswa)
       } catch (error) {
         console.log(error);
+      }
+    },
+    async getSiswaById(idSiswa) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await this.$api.get(`/student/show/${idSiswa}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response.data.data[0].studentclasses[0].class_id);
+        const id = response.data?.data[0]?.studentclasses[0]?.class_id;
+        sessionStorage.setItem("idClass", id);
+        
+      } catch (err) {
+        console.log(err);
       }
     },
   },
