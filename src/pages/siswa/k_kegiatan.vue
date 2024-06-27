@@ -277,7 +277,7 @@ export default defineComponent({
     async getKalenderKegitan() {
       try {
         const response = await this.$api.get(
-          `edu-calendar-detail?search_query=&page=0&limit=10`,
+          `edu-calendar-detail?search_query=&page=0&limit=400`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,

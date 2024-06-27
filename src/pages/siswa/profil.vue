@@ -17,7 +17,7 @@
       </div>
 
       <div class="tw-mt-10">
-        <p class="text-bold text-h5 tw-mb-5">Data User</p>
+        <p class="text-bold text-h5 tw-mb-5">Data Pengguna</p>
         <q-markup-table class="tw-w-full">
           <thead>
             <tr>
