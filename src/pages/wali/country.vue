@@ -66,7 +66,8 @@
                         </th>
                         <th class="text-center">Durasi</th>
                         <th class="text-center">Total Durasi</th>
-                        <th class="text-center">Keterangan</th>
+                        <!-- <th class="text-center">Keterangan</th> -->
+                        <th class="text-center">Status</th>
                         <th class="text-center" style="width: 100px"></th>
                       </tr>
                     </thead>
@@ -81,7 +82,8 @@
                         <td class="text-right">
                           {{ activity?.duration }}
                         </td>
-                        <td class="text-right">{{ activity?.remark }}</td>
+                        <!-- <td class="text-right">{{ activity?.remark }}</td> -->
+                        <td class="text-right"> {{ activity?.status }}</td>
                         <td class="text-right">
                           <q-btn
                             :disable="!activity?.certificate_path"
@@ -174,7 +176,7 @@ export default {
         );
         formData.append("duration", this.durasi);
         formData.append("remark", this.keterangan);
-     
+
         const response = await this.$api.post(
           `for-country-detail/create`,
           formData,
@@ -205,7 +207,7 @@ export default {
         );
         this.activity = response.data?.data[0];
         this.countryActivity = response.data?.data[0]?.forcountrydetails;
-       
+
       } catch (err) {
         console.log(err);
       }
