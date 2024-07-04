@@ -15,6 +15,7 @@
         animated
         transition-prev="slide-down"
         transition-next="slide-up"
+        style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
           <NumberRaport :TabPilihan="TabPilihan" />
@@ -29,13 +30,13 @@
               mobile-arrows
               class="bg-blue-5 text-white shadow-2"
             >
-              <q-tab
+              <!-- <q-tab
                 v-for="(item, index) in kategori"
                 :key="item.id"
                 :name="'page' + index"
                 :label="item.category"
-              />
-
+              /> -->
+            <q-tab name="page15" label="Narasi"/>
               <q-tab name="page14" label="Komentar Guru" />
               <q-tab name="page13" label="Komentar Ortu" />
             </q-tabs>
@@ -44,13 +45,13 @@
           <q-separator />
           <q-card>
             <q-tab-panels v-model="tab2" animated>
-              <q-tab-panel
+              <!-- <q-tab-panel
                 v-for="(item, index) in kategori"
                 :key="item.id"
                 :name="'page' + index"
               >
                 <Pemimpin :sub="item.id" />
-              </q-tab-panel>
+              </q-tab-panel> -->
 
               <q-tab-panel name="page13">
                 <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
@@ -91,6 +92,16 @@
                     <p>
                       {{ dataRapot?.nar_teacher_comments }}
                     </p>
+                  </div>
+                </div>
+              </q-tab-panel>
+              <q-tab-panel name="page15" style="height: 600px">
+                <div class="tw-flex tw-w-full" style="height: 100%">
+                  <div
+                    class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
+                    style="height: 100%"
+                  >
+                    <Narasi :TabPilihan="TabPilihan"></Narasi>
                   </div>
                 </div>
               </q-tab-panel>
@@ -304,6 +315,7 @@ import Akhlak from "./raport/narasiAkhlak.vue";
 import Pemimpin from "./raport/narasiPemimpin.vue";
 import Berfikir from "./raport/narasiBerfikir.vue";
 import NumberRaport from "./raport/numberRaport.vue";
+import Narasi from "./raport/narasi.vue";
 import RapotPortofolio from "./raport/rapotPortofolio.vue";
 import Swal from "sweetalert2";
 
@@ -342,7 +354,7 @@ export default {
           this.dataRapot = response?.data?.data[0];
           this.submittedComment = response?.data?.data[0]?.nar_parent_comments;
           this.submittedCommentPorto = response?.data?.data[0]?.por_parent_comments;
-         
+
           sessionStorage.setItem("raportId", response.data.data[0].id);
           this.reportId = response.data.data[0].id;
         } else {
@@ -485,6 +497,7 @@ export default {
     Akhlak,
     Pemimpin,
     Berfikir,
+    Narasi,
     NumberRaport,
     RapotPortofolio,
   },
@@ -493,7 +506,7 @@ export default {
     return {
       tab: ref("mails"),
       tab3: ref("porto"),
-      tab2: ref("page1"),
+      tab2: ref("page15"),
       innerTab: ref("innerMails"),
       shape: ref("line"),
       splitterModel: ref(20),
