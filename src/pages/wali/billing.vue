@@ -26,7 +26,7 @@
                         </p>
 
                         <div class="text-center text-bold q-pt-sm no-shadow">
-                          <q-btn @click="showDialog = true" class="text-bold no-shadow" style="background: rgb(248, 87, 87); color: white; width: 100%" label="Payment" />
+                          <q-btn @click="showDialog = true" class="text-bold no-shadow" style="background: rgb(50,205,50); color: white; width: 100%" label="Bayar"  :disable="bayarGa"/>
                       </div>
                         </div>
 
@@ -49,15 +49,15 @@
                         </template>
 
                         <thead>
-                          <tr>
+                          <tr class="q-gutter-sm">
                             <th v-if="bill == 'unpaid'" class="text-center" style="width: 10px">
                               <q-checkbox v-model="allSelected" @update:model-value="toggleAll" />
                             </th>
-                            <th class="text-center" style="width: 10px">No</th>
-                            <th class="text-left">Date</th>
-                            <th class="text-left">Billing Type</th>
-                            <th class="text-left">Total</th>
-                            <th v-if="bill != 'unpaid'" class="text-left">Receipt</th>
+                            <th class="text-center" style="width: 10px">Nomor</th>
+                            <th class="text-center">Jatuh Tempo</th>
+                            <th class="text-center">Tipe Pembayaran</th>
+                            <th class="text-center">Total</th>
+                            <th v-if="bill != 'unpaid'" class="text-center">Kuitansi</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -65,17 +65,17 @@
                             <q-td v-if="bill == 'unpaid'" >
                               <q-checkbox v-model="item.selected"  @update:model-value="updateAllSelected" />
                             </q-td>
-                            <td class="text-left">{{ index + 1 }}</td>
-                            <td class="text-left">
+                            <td class="text-center">{{ index + 1 }}</td>
+                            <td class="text-center">
                               {{ formatDate(item?.createdAt) }}
                             </td>
-                            <td class="text-left">
+                            <td class="text-center">
                               {{ item?.paymentcategory.billing_cycle }}
                             </td>
-                            <td class="text-left">
+                            <td class="text-center">
                               Rp.{{ item?.bill_amount.toLocaleString("id-ID") }}
                             </td>
-                            <td v-if="bill != 'unpaid'" class="text-left">
+                            <td v-if="bill != 'unpaid'" class="text-center">
                               <q-btn
                                 outline
                                 style="color: grey"
@@ -279,15 +279,15 @@ export default {
       bill: ref("monthly"),
       bill_options: [
         {
-          label: "Monthly",
+          label: "Bulanan",
           value: "monthly",
         },
         {
-          label: "Non Monthly",
+          label: "Non Bulanan",
           value: "non-monthly",
         },
         {
-          label: "Unpaid",
+          label: "Belum Dibayar",
           value: "unpaid",
         },
       ],
@@ -295,8 +295,14 @@ export default {
   },
 
   computed: {
+    bayarGa() {
+      return this.selectedRows.length === 0
+    },
+
     selectedRows() {
-      return this.dataBilling.filter(item => item.selected);
+      const dataBilling = this.dataBilling? this.dataBilling : [];
+      const data = dataBilling.filter(item => item.selected);
+      return data? data : [];
     }
   },
 
