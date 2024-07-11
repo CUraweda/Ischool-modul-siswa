@@ -1,4 +1,5 @@
 <template>
+  <div class="text-h4 text-bold text-left q-mb-md">Raport Narasi</div>
   <div
     v-if="!tersedia"
     class="flex tw-flex-col tw-items-center q-pb-none"
@@ -17,8 +18,17 @@
 
 <script>
 import { ref } from "vue";
+
 export default {
-  props: ["sub"],
+  name: "NumberRapot",
+  props: {
+    sub: String,  // Assuming 'sub' is a prop with type String
+    TabPilihan: {
+      type: String,
+      required: true,
+    }
+  },
+
   data() {
     return {
       pdfUrl: ref(),
@@ -26,35 +36,48 @@ export default {
     };
   },
 
-  methods: {
-    async getPortofolioRapot() {
-      const token = sessionStorage.getItem("token");
-      const idReport = sessionStorage.getItem("raportId");
+  setup(props) {
+    return {
+      shape: ref("line"),
+      idSiswa: ref(sessionStorage.getItem("idSiswa")),
+      token: ref(sessionStorage.getItem("token")),
+      dataRaport: ref(),
+      dataPresensi: ref(),
+      dataPersonality: ref(),
+      semester: ref(sessionStorage.getItem("smt")),
+    };
+  },
 
+  watch: {
+    semester(newVal) {
+      this.getRaport();
+    },
+  },
+
+  methods: {
+    async getNumberRaport() {
+      const idUser = sessionStorage.getItem("idSiswa");
+      const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.get(
-          `portofolio-report/show-all-by-student-report/${idReport}`,
+          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        const data = response.data.data;
-        let filteredData;
-        if (Array.isArray(data)) {
-          filteredData = data.filter((item) => item.type === this.sub);
-          const path = filteredData[0].file_path;
-          if (path) {
+        const dataState = response.data.data;
+        const path = dataState[0].narrative_path;
+        if (path) {
           this.tersedia = true;
           this.downloadTask(path);
         }
-        }
-
       } catch (error) {
         console.log(error);
       }
     },
+
     async downloadTask(path) {
       try {
         const token = sessionStorage.getItem("token");
@@ -70,13 +93,14 @@ export default {
         const blob = new Blob([response.data], { type: "application/pdf" }); //
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrl = blobUrl;
-      } catch (error) {
+        } catch (error) {
         console.error("Error downloading file:", error);
       }
     },
   },
+
   mounted() {
-    this.getPortofolioRapot();
+    this.getNumberRaport();
   },
 };
 </script>
