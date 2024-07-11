@@ -7,7 +7,7 @@
             <div class="text-center">
               <p>
                 <span class="text-center text-black text-bold" style="font-size: x-large"
-                  >BILLING</span
+                  >PEMBAYARAN</span
                 >
               </p>
             </div>
@@ -18,15 +18,20 @@
                     <div class="col-md-9 col-9">
                       <div class="row justify-between">
                         <p class="text-left q-ml-md q-mt-sm text-grey">
-                          <span style="font-size: large">Billing History</span>
+                          <span style="font-size: large">Histori Pembayaran</span>
                           <br />
                           <span style="font-size: smaller">
-                            manage Billing information and view receips</span
+                            Kelola informasi penagihan dan lihat tanda terima</span
                           >
                         </p>
 
                         <div class="text-center text-bold q-pt-sm no-shadow">
-                          <q-btn @click="showDialog = true" class="text-bold no-shadow" style="background: rgb(50,205,50); color: white; width: 100%" label="Bayar"  :disable="bayarGa"/>
+                          <q-btn
+                          @click="showDialog = true"
+                          class="text-bold no-shadow"
+                          :style="{ background: bayarGa ? 'gray' : 'rgb(50,205,50)', color: 'white', width: '100%' }"
+                          label="Bayar"
+                          :disable="bayarGa"/>
                       </div>
                         </div>
 
