@@ -57,6 +57,7 @@
                       />
                     </div>
                   </div>
+                  <q-scroll-area style="height: 400px; border: 10pxl; outline: #E0E0E0 solid 2px;">
                   <q-markup-table separator="cell">
                     <thead>
                       <tr>
@@ -83,7 +84,7 @@
                           {{ activity?.duration }}
                         </td>
                         <!-- <td class="text-right">{{ activity?.remark }}</td> -->
-                        <td class="text-right"> {{ activity?.status }}</td>
+                        <td class="text-right"> {{ activity?.remark }}</td>
                         <td class="text-right">
                           <q-btn
                             :disable="!activity?.certificate_path"
@@ -97,6 +98,7 @@
                       </tr>
                     </tbody>
                   </q-markup-table>
+                </q-scroll-area>
                 </div>
               </q-card-section>
             </q-card>
