@@ -73,7 +73,7 @@
           </q-item-section>
 
           <q-item-section class="text-bold" style="font-size: 1rem">
-            Billing Info
+             Info Pembayaran
           </q-item-section>
         </q-item>
 

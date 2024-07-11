@@ -150,7 +150,7 @@
           </q-item-section>
 
           <q-item-section class="text-bold" style="font-size: 1rem">
-            Billing Info
+            Info Pembayaran
           </q-item-section>
         </q-item>
         <q-item
@@ -332,7 +332,7 @@ export default {
         console.log(response.data.data[0].studentclasses[0].class_id);
         const id = response.data?.data[0]?.studentclasses[0]?.class_id;
         sessionStorage.setItem("idClass", id);
-        
+
       } catch (err) {
         console.log(err);
       }
