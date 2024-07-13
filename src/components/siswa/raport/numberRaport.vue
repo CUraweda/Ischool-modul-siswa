@@ -140,7 +140,6 @@ export default {
           }
         );
         const dataState = response.data.data;
-        console.log("🚀 ~ getNumberRaport ~ dataState:", dataState)
         const path = dataState[0].number_path;
         if (path) {
           this.tersedia = true;
@@ -164,7 +163,8 @@ export default {
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrl = blobUrl;
       } catch (error) {
-        console.error("Error downloading file:", error);
+        const status = error.response?.status
+        if (status == 403 || status == 404) this.tersedia = false 
       }
     },
   },

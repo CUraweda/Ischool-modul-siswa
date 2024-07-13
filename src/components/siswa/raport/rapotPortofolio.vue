@@ -71,7 +71,8 @@ export default {
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrl = blobUrl;
       } catch (error) {
-        console.error("Error downloading file:", error);
+        const status = error.response?.status
+        if (status == 403 || status == 404) this.tersedia = false 
       }
     },
   },
