@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       pdfUrl: ref(), // ganti dengan path ke file PDF Anda
-      tersedia: false,
+      tersedia: true,
     };
   },
 
@@ -145,7 +145,9 @@ export default {
         if (path) {
           this.tersedia = true;
           this.downloadTask(path);
-        }
+          } else {
+            this.tersedia = false;
+          }
       } catch (error) {
         console.log(error);
       }
@@ -164,6 +166,7 @@ export default {
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrl = blobUrl;
       } catch (error) {
+        this.tersedia = false;
         console.error("Error downloading file:", error);
       }
     },
