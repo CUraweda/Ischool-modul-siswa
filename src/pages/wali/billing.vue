@@ -27,26 +27,32 @@
 
                         <div class="text-center text-bold q-pt-sm no-shadow">
                           <q-btn
-                          @click="showDialog = true"
-                          class="text-bold no-shadow"
-                          :style="{ background: bayarGa ? 'gray' : 'rgb(50,205,50)', color: 'white', width: '100%' }"
-                          label="Bayar"
-                          :disable="bayarGa"/>
-                      </div>
+                            @click="showDialog = true"
+                            class="text-bold no-shadow"
+                            :style="{
+                              background: bayarGa ? 'gray' : 'rgb(50,205,50)',
+                              color: 'white',
+                              width: '100%',
+                            }"
+                            label="Bayar"
+                            :disable="bayarGa"
+                          />
                         </div>
+                      </div>
 
-                        <q-btn-toggle
-                          v-model="bill"
-                          spread
-                          no-caps
-                          :toggle-color="bill !== 'unpaid' ? 'blue-2 text-black' : 'red-5 text-black'"
-                          class="no-shadow q-mt-lg q-px-md"
-                          color="grey-3"
-                          text-color="black"
-                          :options="bill_options"
-                        />
-                      <q-markup-table flat  class="q-px-lg">
-
+                      <q-btn-toggle
+                        v-model="bill"
+                        spread
+                        no-caps
+                        :toggle-color="
+                          bill !== 'unpaid' ? 'blue-2 text-black' : 'red-5 text-black'
+                        "
+                        class="no-shadow q-mt-lg q-px-md"
+                        color="grey-3"
+                        text-color="black"
+                        :options="bill_options"
+                      />
+                      <q-markup-table flat class="q-px-lg">
                         <template v-slot:body-cell="props">
                           <q-td :props="props">
                             <q-checkbox v-model="props.row.selected" />
@@ -55,37 +61,57 @@
 
                         <thead>
                           <tr class="q-gutter-sm">
-                            <th v-if="bill == 'unpaid'" class="text-center" style="width: 10px">
-                              <q-checkbox v-model="allSelected" @update:model-value="toggleAll" />
+                            <th
+                              v-if="bill == 'unpaid'"
+                              class="text-center"
+                              style="width: 10px"
+                            >
+                              <q-checkbox
+                                v-model="allSelected"
+                                @update:model-value="toggleAll"
+                              />
                             </th>
                             <th class="text-center" style="width: 10px">Nomor</th>
+                            <th class="text-center">Nama</th>
                             <th class="text-center">Jatuh Tempo</th>
                             <th class="text-center">Tipe Pembayaran</th>
                             <th class="text-center">Total</th>
+                            <th class="text-center">Status</th>
                             <th v-if="bill != 'unpaid'" class="text-center">Kuitansi</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr v-for="(item, index) in dataBilling" :key="item.id">
-                            <q-td v-if="bill == 'unpaid'" >
-                              <q-checkbox v-model="item.selected"  @update:model-value="updateAllSelected" />
+                            <q-td v-if="bill == 'unpaid'">
+                              <q-checkbox
+                                v-model="item.selected"
+                                @update:model-value="updateAllSelected"
+                              />
                             </q-td>
                             <td class="text-center">{{ index + 1 }}</td>
                             <td class="text-center">
-                              {{ formatDate(item?.createdAt) }}
+                              {{ item?.studentpaymentbill.name }}
                             </td>
                             <td class="text-center">
-                              {{ item?.paymentcategory.billing_cycle }}
+                              {{ formatDate(item?.studentpaymentbill.due_date) }}
                             </td>
                             <td class="text-center">
-                              Rp.{{ item?.bill_amount.toLocaleString("id-ID") }}
+                              {{ item?.studentpaymentbill.paymentpost.billing_cycle }}
+                            </td>
+                            <td class="text-center">
+                              Rp.{{
+                                item?.studentpaymentbill.total.toLocaleString("id-ID")
+                              }}
+                            </td>
+                            <td class="text-center">
+                              {{ item?.status }}
                             </td>
                             <td v-if="bill != 'unpaid'" class="text-center">
                               <q-btn
                                 outline
                                 style="color: grey"
                                 label="Download"
-                                :disable="!item?.invoice"
+                                :disable="!item?.evidence_path"
                               />
                             </td>
                           </tr>
@@ -145,29 +171,28 @@
     <!-- Dialog -->
     <q-dialog v-model="showDialog">
       <q-card style="width: 500px; max-width: 80vw">
-
         <q-card-section>
-          <p>{{ selectedRows.length }} baris bayaran dipilih:</p>
-        <ul>
-          <!-- <li v-for="(row, index) in selectedRows" :key="index">
+          <p class="bg-blue-2 text-center">Membayar {{ selectedRows.length }} tagihan</p>
+          <ul>
+            <!-- <li v-for="(row, index) in selectedRows" :key="index">
             {{ row.id }} - {{ formatDate(row.createdAt) }} - {{ row.paymentcategory.billing_cycle }}
           </li> -->
 
-          <tr v-for="(item, index) in selectedRows" :key="index">
-            <td class="text-left q-mx-sm q-px-sm">{{ index + 1 }}</td>
-            <!-- <td class="text-left q-mx-sm q-px-sm">
-              {{ formatDate(item?.createdAt) }}
-            </td> -->
-            <td class="text-left q-mx-sm q-px-sm">
-              {{ item?.paymentcategory.billing_cycle }}
-            </td>
-            <br>
-            <td class="text-left q-mx-sm q-px-sm">
-              Rp.{{ item?.bill_amount.toLocaleString("id-ID") }}
-            </td>
-          </tr>
-
-        </ul>
+            <tr
+              v-for="(item, index) in selectedRows"
+              :key="index"
+              class="row q-gutter-xs q-mt-xs"
+            >
+              <td class="text-center">Tagihan</td>
+              <td class="text-center">
+                {{ item?.studentpaymentbill.name }}
+              </td>
+              <td class="text-center"></td>
+              <td class="text-right justify-end">
+                Senilai Rp.{{ item?.studentpaymentbill.total.toLocaleString("id-ID") }}
+              </td>
+            </tr>
+          </ul>
         </q-card-section>
 
         <q-card-section>
@@ -179,7 +204,12 @@
         </q-card-section>
 
         <q-card-section class="q-px-xl">
-          <q-uploader style="width: 100%" label="Custom header"  accept=".jpg, .jpeg, .png">
+          <q-uploader
+            style="width: 100%"
+            label="Custom header"
+            accept=".jpg, .jpeg, .png"
+            :max-file-size="1048576"
+          >
             <template v-slot:header="scope">
               <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
                 <q-btn
@@ -245,10 +275,11 @@
               </div>
             </template>
           </q-uploader>
+          *Ukuran maksimal file 1 MB
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
+          <!-- <q-btn flat label="OK" v-close-popup /> -->
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -257,13 +288,14 @@
 
 <script>
 import { ref } from "vue";
+import Swal from "sweetalert2";
 
 export default {
   data() {
     return {
       allSelected: false,
       selected: false,
-     }
+    };
   },
 
   setup() {
@@ -281,15 +313,15 @@ export default {
       showDialog: ref(false),
       nilaiBilling: ref(),
       billing: ref(),
-      bill: ref("monthly"),
+      bill: ref("bulanan"),
       bill_options: [
         {
           label: "Bulanan",
-          value: "monthly",
+          value: "bulanan",
         },
         {
           label: "Non Bulanan",
-          value: "non-monthly",
+          value: "non-bulanan",
         },
         {
           label: "Belum Dibayar",
@@ -301,14 +333,14 @@ export default {
 
   computed: {
     bayarGa() {
-      return this.selectedRows.length === 0
+      return this.selectedRows.length === 0;
     },
 
     selectedRows() {
-      const dataBilling = this.dataBilling? this.dataBilling : [];
-      const data = dataBilling.filter(item => item.selected);
-      return data? data : [];
-    }
+      const dataBilling = this.dataBilling ? this.dataBilling : [];
+      const data = dataBilling.filter((item) => item.selected);
+      return data ? data : [];
+    },
   },
 
   methods: {
@@ -325,18 +357,30 @@ export default {
       const token = sessionStorage.getItem("token");
 
       try {
-        const response = await this.$api.get(`${this.bill}/show-by-student/${idSiswa}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const filterDataBilling = response.data.data.filter(
-          (a) => a.payment_status === "Paid"
+        const response = await this.$api.get(
+          `/student-bills/get-by-student-id/${idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              cycle: this.bill,
+            },
+          }
         );
 
-        this.dataBilling = filterDataBilling;
-        console.log(response);
+        const filterDataBilling = response.data.data.filter(
+          (a) => a.paidoff_at !== null
+        );
+
+        const dataBillingWithSelection = filterDataBilling.map((item) => ({
+          ...item,
+          selected: false,
+        }));
+
+        this.dataBilling = dataBillingWithSelection;
+        // console.log("🚀 ~ getDataBiling ~ dataBilling:", this.dataBilling);
+        // console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -347,29 +391,24 @@ export default {
       const token = sessionStorage.getItem("token");
 
       try {
-        const responseMonthly = await this.$api.get(`monthly/show-by-student/${idSiswa}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const responseNonMonthly = await this.$api.get(`non-monthly/show-by-student/${idSiswa}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const filterDataBillingMonthly = responseMonthly.data.data.filter(
-          (a) => a.payment_status !== "Paid"
+        const response = await this.$api.get(
+          `/student-bills/get-by-student-id/${idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              status: "belum lunas",
+            },
+          }
         );
 
-        const filterDataBillingNonMonthly = responseNonMonthly.data.data.filter(
-          (a) => a.payment_status !== "Paid"
-        );
+        const filterDataBilling = response.data.data.filter((a) => a.paidoff_at === null);
 
-        const filterDataBilling = [...filterDataBillingMonthly, ...filterDataBillingNonMonthly]
-
-        const dataBillingWithSelection = filterDataBilling.map(item => ({ ...item, selected: false }));
+        const dataBillingWithSelection = filterDataBilling.map((item) => ({
+          ...item,
+          selected: false,
+        }));
 
         this.dataBilling = dataBillingWithSelection;
         // console.log(response);
@@ -379,15 +418,59 @@ export default {
     },
 
     toggleAll(value) {
-      this.dataBilling.forEach(item => {
+      this.dataBilling.forEach((item) => {
         item.selected = value;
       });
     },
 
     updateAllSelected() {
-      this.allSelected = this.dataBilling.every(item => item.selected);
+      this.allSelected = this.dataBilling.every((item) => item.selected);
     },
 
+    async uploadFiles(scope) {
+      const token = sessionStorage.getItem("token");
+      try {
+        const filesToUpload = scope.queuedFiles;
+        const taskIds = this.selectedRows.map((row) => row.id);
+        const taskIdsString = taskIds.join("-");
+        // console.log(taskIdsString); // Output: "1-2-3"
+
+        const formData = new FormData();
+        filesToUpload.forEach((file) => {
+          formData.append("evidence", file);
+        });
+        const response = await this.$api.put(
+          `/student-bills/up-evidence/${taskIdsString}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        this.showDialog = false;
+        this.bill = "bulanan"
+        this.getDataBiling();
+        Swal.fire({
+          title: "File Bukti berhasil di upload !",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "Oke",
+        });
+      } catch (error) {
+        this.showDialog = false;
+        console.error("Error uploading files:", error); // Handle error if necessary
+
+        Swal.fire({
+          title: "Gagal mengupload File Bukti!",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "Oke",
+        });
+      }
+    },
   },
 
   watch: {
@@ -395,15 +478,43 @@ export default {
       handler(value) {
         if (value != "unpaid") {
           this.allSelected = false;
-          this.dataBilling = '';
+          this.dataBilling = "";
           this.getDataBiling();
           // console.log("🚀 ~ handler ~ this.nilaiBilling:", this.dataBilling)
-          } else if (value === "unpaid") {
+        } else if (value === "unpaid") {
           this.getDataUnpaidBiling();
           // console.log("🚀 ~ handler ~ this.nilaiBilling:", this.dataBilling)
         }
       },
     },
+
+    async downloadTask(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await this.$api.get(`student-task/download?filepath=${path}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: "blob",
+        });
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop();
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName);
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
+    uploadEvidence() {},
   },
 
   mounted() {

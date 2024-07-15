@@ -365,6 +365,7 @@ export default {
         console.log(error);
       }
     },
+    
     async getKategoriRapot() {
       const idKelas = sessionStorage.getItem("idClass");
       const token = sessionStorage.getItem("token");

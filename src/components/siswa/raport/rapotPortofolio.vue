@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       pdfUrl: ref(),
-      tersedia: false,
+      tersedia: true,
     };
   },
 
@@ -48,13 +48,17 @@ export default {
           if (path) {
           this.tersedia = true;
           this.downloadTask(path);
-        }
+          } else {
+            this.tersedia = false;
+          }
+
         }
 
       } catch (error) {
         console.log(error);
       }
     },
+
     async downloadTask(path) {
       try {
         const token = sessionStorage.getItem("token");
@@ -71,8 +75,8 @@ export default {
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrl = blobUrl;
       } catch (error) {
-        const status = error.response?.status
-        if (status == 403 || status == 404) this.tersedia = false 
+        this.tersedia = false;
+        console.error("Error downloading file:", error);
       }
     },
   },
