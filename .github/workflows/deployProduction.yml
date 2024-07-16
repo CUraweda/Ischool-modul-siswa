@@ -1,4 +1,4 @@
-name: Deploy Modul Timbangan App to cPanel
+name: Deploy Modul Siswa App to cPanel
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
     - name: Upload to cPanel
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_HOSTNAME }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./dist/spa/
-        server-dir: / # Ganti dengan path direktori di cPanel Anda
+        server: ${{ secrets.FTP_HOSTNAME_SADE }}
+        username: ${{ secrets.FTP_USERNAME_SADE }}
+        password: ${{ secrets.FTP_PASSWORD_SADE }}
+        local-dir: ./dist/
+        server-dir: / 
