@@ -20,5 +20,5 @@ jobs:
         server: ${{ secrets.FTP_HOSTNAME_SADE }}
         username: ${{ secrets.FTP_USERNAME_SADE }}
         password: ${{ secrets.FTP_PASSWORD_SADE }}
-        local-dir: ./dist/
+        local-dir: ./dist/spa/
         server-dir: / 
