@@ -304,10 +304,43 @@ export default {
     },
 
     async downloadSertifikat(path) {
-      console.log(path);
-      Swal.fire({
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await this.$api.get(
+          `/for-country-detail/download?filepath=${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop();
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName);
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(blobUrl);
+        Swal.fire({
+        title: "Sertifikat Berhasil Diunduh!",
+        icon: "success",
+        showCancelButton: false,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Close",
+        })
+        this.getDataCountryUser();
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        Swal.fire({
         title: "Sertifikat Belum Tersedia !",
-        // text: "Refresh halaman atau hubungi admin",
+        text: "Refresh halaman atau hubungi admin",
         icon: "warning",
         showCancelButton: false,
         confirmButtonColor: "#3085d6",
@@ -318,7 +351,25 @@ export default {
           // window.location.reload();
         }
       });
+      }
     },
+
+    // async downloadSertifikat(path) {
+    //   console.log(path);
+    //   Swal.fire({
+    //     title: "Sertifikat Belum Tersedia !",
+    //     // text: "Refresh halaman atau hubungi admin",
+    //     icon: "warning",
+    //     showCancelButton: false,
+    //     confirmButtonColor: "#3085d6",
+    //     cancelButtonColor: "#d33",
+    //     confirmButtonText: "Close",
+    //   }).then((result) => {
+    //     if (result.isConfirmed) {
+    //       // window.location.reload();
+    //     }
+    //   });
+    // },
   },
   mounted() {
     // this.getDataCountry();
