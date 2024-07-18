@@ -1,9 +1,11 @@
+
 name: Deploy Modul Siswa App to cPanel
 
 on:
   push:
     branches:
-      - main 
+      - main # Atau branch yang Anda gunakan
+
 
 jobs:
   build-and-deploy:

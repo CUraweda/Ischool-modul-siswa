@@ -365,7 +365,7 @@ export default {
         console.log(error);
       }
     },
-    
+
     async getKategoriRapot() {
       const idKelas = sessionStorage.getItem("idClass");
       const token = sessionStorage.getItem("token");
@@ -462,6 +462,7 @@ export default {
         );
 
         this.getCommnentParent();
+        this.medium = false;
         Swal.fire({
           title: "Portofolio berhasil di upload !",
           icon: "success",
@@ -469,7 +470,7 @@ export default {
           confirmButtonText: "Oke",
         });
       } catch (error) {
-        this.small = false;
+        this.medium = false;
         console.error("Error uploading files:", error); // Handle error if necessary
         Swal.fire({
           title: "Gagal mengupload portofolio!",
