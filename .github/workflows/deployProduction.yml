@@ -1,9 +1,11 @@
-name: Deploy Modul Timbangan App to cPanel
+
+name: Deploy Modul Siswa App to cPanel
 
 on:
   push:
     branches:
       - main # Atau branch yang Anda gunakan
+
 
 jobs:
   build-and-deploy:
@@ -20,5 +22,5 @@ jobs:
         server: ${{ secrets.FTP_HOSTNAME_SADE }}
         username: ${{ secrets.FTP_USERNAME_SADE }}
         password: ${{ secrets.FTP_PASSWORD_SADE }}
-        local-dir: ./dist/
+        local-dir: ./dist/spa/
         server-dir: / 
