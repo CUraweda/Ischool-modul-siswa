@@ -45,7 +45,7 @@ export default {
         if (Array.isArray(data)) {
           console.log(this.sub)
           filteredData = data.filter((item) => item.type === this.sub);
-          const path = filteredData[0].file_path;
+          const path = filteredData[0]?.file_path ?? null;
           if (path) {
           this.tersedia = true;
           this.downloadTask(path);
@@ -63,8 +63,9 @@ export default {
     async downloadTask(path) {
       try {
         const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
         const response = await this.$api.get(
-          `student-task/download?filepath=${path}`,
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
