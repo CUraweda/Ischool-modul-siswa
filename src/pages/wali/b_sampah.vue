@@ -106,7 +106,7 @@
                             class="text-blue-4 text-bold"
                             style="font-size: larger"
                           >
-                            Target {{ this.formatWeight(target) }} gram
+                            Target {{ target }} Kg
                           </p>
 
                           <p class="tw-mt-5 tw-text-xl tw-font-bold">Capaian</p>
@@ -346,6 +346,9 @@ export default {
         },
         dataLabels: {
           enabled: true,
+          formatter: function (val) {
+            return val.toLocaleString("id-ID") + " g"; // Menampilkan label dengan format titik
+          },
         },
         stroke: {
           show: true,
@@ -365,8 +368,8 @@ export default {
         },
         tooltip: {
           y: {
-            formatter: function (val) {
-              return val + " Gram";
+            formatter: (val) => {
+              return val.toLocaleString("id-ID") + " Gram";
             },
           },
         },
@@ -467,11 +470,11 @@ export default {
         this.chartOptions.xaxis.categories = categories;
 
         data.forEach((item) => {
-          this.series[0].data.push(item.weekday.senin);
-          this.series[1].data.push(item.weekday.selasa);
-          this.series[2].data.push(item.weekday.rabu);
-          this.series[3].data.push(item.weekday.kamis);
-          this.series[4].data.push(item.weekday.jumat);
+          this.series[0].data.push(item.weekday.senin * 1000); // Konversi ke gram
+          this.series[1].data.push(item.weekday.selasa * 1000); // Konversi ke gram
+          this.series[2].data.push(item.weekday.rabu * 1000); // Konversi ke gram
+          this.series[3].data.push(item.weekday.kamis * 1000); // Konversi ke gram
+          this.series[4].data.push(item.weekday.jumat * 1000); // Konversi ke gram
         });
 
         this.chartCollection = true;
@@ -515,7 +518,8 @@ export default {
       } catch (error) {}
     },
     formatWeight(weightInKg) {
-      return `${(weightInKg * 1000).toFixed(2)}`;
+      const weightInGrams = weightInKg * 1000;
+      return weightInGrams.toLocaleString("id-ID");
     },
   },
   mounted() {
@@ -523,7 +527,6 @@ export default {
     this.getRekapSampahbulan();
     this.getRekapSampah();
     this.getCollectionSampahMingguan();
-    console.log(this.formatWeight(10));
   },
 };
 </script>
