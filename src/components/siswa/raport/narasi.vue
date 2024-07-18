@@ -13,13 +13,14 @@
   </div>
 </template>
 
+
 <script>
 import { ref } from "vue";
 
 export default {
   name: "NumberRapot",
   props: {
-    sub: String, // Assuming 'sub' is a prop with type String
+    sub: String,
     TabPilihan: {
       type: String,
       required: true,

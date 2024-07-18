@@ -1,4 +1,5 @@
-name: Deploy Modul Timbangan App to cPanel
+
+name: Deploy Modul Siswa App to cPanel
 
 on:
   push:
