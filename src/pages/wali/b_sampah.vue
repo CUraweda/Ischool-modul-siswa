@@ -7,7 +7,11 @@
           <q-card-section>
             <div class="text-center">
               <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large">BANK SAMPAH</span>
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: x-large"
+                  >BANK SAMPAH</span
+                >
               </p>
             </div>
           </q-card-section>
@@ -23,31 +27,63 @@
                         </p>
                         <div class="row flex justify-center items-center">
                           <div class="col-md-4">
-                            <q-img src="../../assets/garbage.png" style="width: 70%" />
+                            <q-img
+                              src="../../assets/garbage.png"
+                              style="width: 70%"
+                            />
                           </div>
                           <div class="col-md-8 text-left tw-w-full">
-                            <q-markup-table class="bg-light-green-1 tw-w-full" flat>
+                            <q-markup-table
+                              class="bg-light-green-1 tw-w-full"
+                              flat
+                            >
                               <tbody class="text-bold text-blue tw-w-full">
                                 <tr>
-                                  <td class="text-left" style="font-size: larger">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: larger"
+                                  >
                                     Hari ini
                                   </td>
-                                  <td class="text-right" style="font-size: larger">
-                                    {{ Math.round(rekapSampah[0]?.today) }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: larger"
+                                  >
+                                    {{
+                                      this.formatWeight(
+                                        Math.round(rekapSampah[0]?.today)
+                                      )
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: small">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: small"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td class="text-left" style="font-size: larger">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: larger"
+                                  >
                                     Bulan ini
                                   </td>
-                                  <td class="text-right" style="font-size: larger">
-                                    {{ Math.round(rekapSampah[0]?.this_month) }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: larger"
+                                  >
+                                    {{
+                                      this.formatWeight(
+                                        Math.round(rekapSampah[0]?.this_month)
+                                      )
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: small">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: small"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                               </tbody>
@@ -58,19 +94,28 @@
                     </q-card>
                   </div>
                   <div class="col-md col-12 text center">
-                    <q-card class=" tw-h-80">
+                    <q-card class="tw-h-80">
                       <q-card-section>
-                        <div class="text-center flex tw-flex-col tw-justify-center items-center">
+                        <div
+                          class="text-center flex tw-flex-col tw-justify-center items-center"
+                        >
                           <p class="text-bold" style="font-size: x-large">
                             Target dan Capaian
                           </p>
-                          <p class="text-blue-4 text-bold" style="font-size: larger">
-                            Target {{ target }} Kg
+                          <p
+                            class="text-blue-4 text-bold"
+                            style="font-size: larger"
+                          >
+                            Target {{ this.formatWeight(target) }} gram
                           </p>
 
                           <p class="tw-mt-5 tw-text-xl tw-font-bold">Capaian</p>
                           <div id="chart" class="tw-w-full">
-                            <apexchart type="radialBar" :options="chartOptions1" :series="series1"></apexchart>
+                            <apexchart
+                              type="radialBar"
+                              :options="chartOptions1"
+                              :series="series1"
+                            ></apexchart>
                           </div>
                         </div>
                       </q-card-section>
@@ -82,64 +127,143 @@
                         <div class="row">
                           <div class="col-md-12 text-left flex justify-center">
                             <p class="text-center">
-                              <span class="text-bold" style="font-size: larger">Rekap Periode:
+                              <span class="text-bold" style="font-size: larger"
+                                >Rekap Periode:
                               </span>
                             </p>
-                            <q-markup-table class="bg-light-green-1 tw-w-full" flat>
+                            <q-markup-table
+                              class="bg-light-green-1 tw-w-full"
+                              flat
+                            >
                               <tbody class="text-bold text-blue">
                                 <tr>
-                                  <td class="text-left" style="font-size: small">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: small"
+                                  >
                                     Senin
                                   </td>
-                                  <td class="text-right" style="font-size: small">
-                                    {{ rekapMinggu[0]?.weight ? rekapMinggu[0]?.weight : 0 }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: small"
+                                  >
+                                    {{
+                                      rekapMinggu[0]?.weight
+                                        ? this.formatWeight(
+                                            rekapMinggu[0]?.weight
+                                          )
+                                        : 0
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: smaller">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: smaller"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td class="text-left" style="font-size: small">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: small"
+                                  >
                                     Selasa
                                   </td>
-                                  <td class="text-right" style="font-size: small">
-                                    {{ rekapMinggu[1]?.weight ? rekapMinggu[1]?.weight : 0 }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: small"
+                                  >
+                                    {{
+                                      rekapMinggu[1]?.weight
+                                        ? this.formatWeight(
+                                            rekapMinggu[1]?.weight
+                                          )
+                                        : 0
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: smaller">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: smaller"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td class="text-left" style="font-size: small">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: small"
+                                  >
                                     Rabu
                                   </td>
-                                  <td class="text-right" style="font-size: small">
-                                    {{ rekapMinggu[2]?.weight ? rekapMinggu[2]?.weight : 0 }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: small"
+                                  >
+                                    {{
+                                      rekapMinggu[2]?.weight
+                                        ? this.formatWeight(
+                                            rekapMinggu[2]?.weight
+                                          )
+                                        : 0
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: smaller">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: smaller"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td class="text-left" style="font-size: small">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: small"
+                                  >
                                     Kamis
                                   </td>
-                                  <td class="text-right" style="font-size: small">
-                                    {{ rekapMinggu[3]?.weight ? rekapMinggu[3]?.weight : 0 }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: small"
+                                  >
+                                    {{
+                                      rekapMinggu[3]?.weight
+                                        ? this.formatWeight(
+                                            rekapMinggu[3]?.weight
+                                          )
+                                        : 0
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: smaller">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: smaller"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td class="text-left" style="font-size: small">
+                                  <td
+                                    class="text-left"
+                                    style="font-size: small"
+                                  >
                                     Jumat
                                   </td>
-                                  <td class="text-right" style="font-size: small">
-                                    {{ rekapMinggu[4]?.weight ? rekapMinggu[4]?.weight : 0 }}
+                                  <td
+                                    class="text-right"
+                                    style="font-size: small"
+                                  >
+                                    {{
+                                      rekapMinggu[4]?.weight
+                                        ? this.formatWeight(
+                                            rekapMinggu[4]?.weight
+                                          )
+                                        : 0
+                                    }}
                                   </td>
-                                  <td class="text-left text-red" style="font-size: smaller">
-                                    Kg
+                                  <td
+                                    class="text-left text-red"
+                                    style="font-size: smaller"
+                                  >
+                                    gram
                                   </td>
                                 </tr>
                               </tbody>
@@ -159,11 +283,14 @@
 
               <div>
                 <div v-if="chartCollection" id="chart">
-                  <apexchart type="bar" height="350" :options="chartOptions" :series="series"></apexchart>
+                  <apexchart
+                    type="bar"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  ></apexchart>
                 </div>
-
               </div>
-            
             </q-card>
           </q-card-section>
         </div>
@@ -175,84 +302,84 @@
 <script>
 import { ref } from "vue";
 
-let dataSampah = ref([])
+let dataSampah = ref([]);
 
 export default {
-  name: 'chartBar',
+  name: "chartBar",
 
   data() {
     return {
       series: [
         {
-          name: 'senin',
-          data: []
+          name: "senin",
+          data: [],
         },
         {
-          name: 'selasa',
-          data: []
+          name: "selasa",
+          data: [],
         },
         {
-          name: 'rabu',
-          data: []
+          name: "rabu",
+          data: [],
         },
         {
-          name: 'kamis',
-          data: []
+          name: "kamis",
+          data: [],
         },
         {
-          name: 'Jumat',
-          data: []
-        }
+          name: "Jumat",
+          data: [],
+        },
       ],
 
       chartOptions: {
         chart: {
-          type: 'bar',
-          height: 350
+          type: "bar",
+          height: 350,
         },
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '55%',
-            endingShape: 'rounded'
+            columnWidth: "55%",
+            endingShape: "rounded",
           },
         },
         dataLabels: {
-          enabled: true
+          enabled: true,
         },
         stroke: {
           show: true,
           width: 1,
-          colors: ['transparent']
+          colors: ["transparent"],
         },
         xaxis: {
           categories: dataSampah,
         },
         yaxis: {
           title: {
-            text: 'g (gram)'
-          }
+            text: "g (gram)",
+          },
         },
         fill: {
-          opacity: 1
+          opacity: 1,
         },
         tooltip: {
           y: {
             formatter: function (val) {
-              return val + " Gram"
-            }
-          }
-        }
+              return val + " Gram";
+            },
+          },
+        },
       },
 
       series1: ref([0]),
       chartOptions1: {
         chart: {
-          type: 'radialBar',
+          type: "radialBar",
           offsetY: -20,
           sparkline: {
-            enabled: true
-          }
+            enabled: true,
+          },
         },
         plotOptions: {
           radialBar: {
@@ -260,45 +387,45 @@ export default {
             endAngle: 90,
             track: {
               background: "#e7e7e7",
-              strokeWidth: '97%',
+              strokeWidth: "97%",
               margin: 5, // margin is in pixels
               dropShadow: {
                 enabled: true,
                 top: 2,
                 left: 0,
-                color: '#999',
+                color: "#999",
                 opacity: 1,
-                blur: 2
-              }
+                blur: 2,
+              },
             },
             dataLabels: {
               name: {
-                show: false
+                show: false,
               },
               value: {
                 offsetY: -3,
-                fontSize: '22px'
-              }
-            }
-          }
+                fontSize: "22px",
+              },
+            },
+          },
         },
         grid: {
           padding: {
-            top: -10
-          }
+            top: -10,
+          },
         },
         fill: {
-          type: 'gradient',
+          type: "gradient",
           gradient: {
-            shade: 'light',
+            shade: "light",
             shadeIntensity: 0.4,
             inverseColors: false,
             opacityFrom: 1,
             opacityTo: 1,
-            stops: [0, 50, 53, 91]
+            stops: [0, 50, 53, 91],
           },
         },
-        labels: ['Average Results'],
+        labels: ["Average Results"],
       },
 
       token: ref(sessionStorage.getItem("token")),
@@ -307,37 +434,39 @@ export default {
       rekapSampah: ref([]),
       total: ref(0),
       target: ref(0),
-      chartCollection: ref(false)
-
-    }
-
+      chartCollection: ref(false),
+    };
   },
   methods: {
     async getRekapSampahMingguan() {
       try {
-        const response = await this.$api.get(`waste-collection/recap-week-by-student/${this.idSiswa}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `waste-collection/recap-week-by-student/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        });
+        );
 
-        this.rekapMinggu = response.data.data
-      } catch (error) {
-
-      }
+        this.rekapMinggu = response.data.data;
+      } catch (error) {}
     },
     async getCollectionSampahMingguan() {
       try {
-        const response = await this.$api.get(`waste-collection/collection-week-by-student/${this.idSiswa}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `waste-collection/collection-week-by-student/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        });
-        const data = response.data.data
-        const categories = data.map(item => item.waste_type);
-        this.chartOptions.xaxis.categories = categories
+        );
+        const data = response.data.data;
+        const categories = data.map((item) => item.waste_type);
+        this.chartOptions.xaxis.categories = categories;
 
-        data.forEach(item => {
+        data.forEach((item) => {
           this.series[0].data.push(item.weekday.senin);
           this.series[1].data.push(item.weekday.selasa);
           this.series[2].data.push(item.weekday.rabu);
@@ -345,52 +474,56 @@ export default {
           this.series[4].data.push(item.weekday.jumat);
         });
 
-        this.chartCollection = true
-
-      } catch (error) {
-
-      }
+        this.chartCollection = true;
+      } catch (error) {}
     },
 
     async getRekapSampahbulan() {
       try {
-        const response = await this.$api.get(`waste-collection/show-recap-history/${this.idSiswa}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `waste-collection/show-recap-history/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        });
+        );
 
-        this.rekapSampah = response.data.data
-      } catch (error) {
-
-      }
+        this.rekapSampah = response.data.data;
+      } catch (error) {}
     },
     async getRekapSampah() {
       try {
-        const response = await this.$api.get(`waste-collection/target-achievement-by-student/${this.idSiswa}?is_current=1`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `waste-collection/target-achievement-by-student/${this.idSiswa}?is_current=1`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        });
+        );
 
-        const total = [response.data.data[0].weight]
-        const target = Math.round(response.data.data[0].studentclass.class.waste_target)
+        const total = [response.data.data[0].weight];
+        const target = Math.round(
+          response.data.data[0].studentclass.class.waste_target
+        );
 
-        const hasilTarget = (total / target) * 100
+        const hasilTarget = (total / target) * 100;
 
-        this.series1 = [Math.round(hasilTarget)]
-        this.target = target
-      } catch (error) {
-
-      }
+        this.series1 = [Math.round(hasilTarget)];
+        this.target = target;
+      } catch (error) {}
+    },
+    formatWeight(weightInKg) {
+      return `${(weightInKg * 1000).toFixed(2)}`;
     },
   },
   mounted() {
-    this.getRekapSampahMingguan()
-    this.getRekapSampahbulan()
-    this.getRekapSampah()
-    this.getCollectionSampahMingguan()
+    this.getRekapSampahMingguan();
+    this.getRekapSampahbulan();
+    this.getRekapSampah();
+    this.getCollectionSampahMingguan();
+    console.log(this.formatWeight(10));
   },
-
-}
+};
 </script>
