@@ -49,11 +49,7 @@
                                     class="text-right"
                                     style="font-size: larger"
                                   >
-                                    {{
-                                      this.formatWeight(
-                                        Math.round(rekapSampah[0]?.today)
-                                      )
-                                    }}
+                                    {{ rekapSampah[0]?.today }}
                                   </td>
                                   <td
                                     class="text-left text-red"
@@ -73,11 +69,7 @@
                                     class="text-right"
                                     style="font-size: larger"
                                   >
-                                    {{
-                                      this.formatWeight(
-                                        Math.round(rekapSampah[0]?.this_month)
-                                      )
-                                    }}
+                                    {{ rekapSampah[0]?.this_month }}
                                   </td>
                                   <td
                                     class="text-left text-red"
@@ -149,9 +141,7 @@
                                   >
                                     {{
                                       rekapMinggu[0]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[0]?.weight
-                                          )
+                                        ? rekapMinggu[0]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -175,9 +165,7 @@
                                   >
                                     {{
                                       rekapMinggu[1]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[1]?.weight
-                                          )
+                                        ? rekapMinggu[1]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -201,9 +189,7 @@
                                   >
                                     {{
                                       rekapMinggu[2]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[2]?.weight
-                                          )
+                                        ? rekapMinggu[2]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -227,9 +213,7 @@
                                   >
                                     {{
                                       rekapMinggu[3]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[3]?.weight
-                                          )
+                                        ? rekapMinggu[3]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -253,9 +237,7 @@
                                   >
                                     {{
                                       rekapMinggu[4]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[4]?.weight
-                                          )
+                                        ? rekapMinggu[4]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -345,13 +327,10 @@ export default {
           },
         },
         dataLabels: {
-          enabled: true,
-          formatter: function (val) {
-            return val.toLocaleString("id-ID") + " g"; // Menampilkan label dengan format titik
-          },
+          enabled: false,
         },
         stroke: {
-          show: true,
+          show: false,
           width: 1,
           colors: ["transparent"],
         },
@@ -368,8 +347,8 @@ export default {
         },
         tooltip: {
           y: {
-            formatter: (val) => {
-              return val.toLocaleString("id-ID") + " Gram";
+            formatter: function (val) {
+              return val + " Gram";
             },
           },
         },
@@ -470,11 +449,11 @@ export default {
         this.chartOptions.xaxis.categories = categories;
 
         data.forEach((item) => {
-          this.series[0].data.push(item.weekday.senin * 1000); // Konversi ke gram
-          this.series[1].data.push(item.weekday.selasa * 1000); // Konversi ke gram
-          this.series[2].data.push(item.weekday.rabu * 1000); // Konversi ke gram
-          this.series[3].data.push(item.weekday.kamis * 1000); // Konversi ke gram
-          this.series[4].data.push(item.weekday.jumat * 1000); // Konversi ke gram
+          this.series[0].data.push(item.weekday.senin);
+          this.series[1].data.push(item.weekday.selasa);
+          this.series[2].data.push(item.weekday.rabu);
+          this.series[3].data.push(item.weekday.kamis);
+          this.series[4].data.push(item.weekday.jumat);
         });
 
         this.chartCollection = true;
@@ -516,10 +495,6 @@ export default {
         this.series1 = [Math.round(hasilTarget)];
         this.target = target;
       } catch (error) {}
-    },
-    formatWeight(weightInKg) {
-      const weightInGrams = weightInKg * 1000;
-      return weightInGrams.toLocaleString("id-ID");
     },
   },
   mounted() {
