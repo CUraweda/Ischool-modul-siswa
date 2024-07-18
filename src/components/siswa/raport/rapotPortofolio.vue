@@ -43,7 +43,7 @@ export default {
         const data = response.data.data;
         let filteredData;
         if (Array.isArray(data)) {
-          filteredData = data.filter((item) => item.type === this.sub);
+          filteredData = data.filter((item) => item.type?.toLowerCase() === "merged");
           const path = filteredData[0].file_path;
           if (path) {
           this.tersedia = true;
