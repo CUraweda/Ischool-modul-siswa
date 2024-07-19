@@ -49,11 +49,7 @@
                                     class="text-right"
                                     style="font-size: larger"
                                   >
-                                    {{
-                                      this.formatWeight(
-                                        Math.round(rekapSampah[0]?.today)
-                                      )
-                                    }}
+                                    {{ rekapSampah[0]?.today }}
                                   </td>
                                   <td
                                     class="text-left text-red"
@@ -73,11 +69,7 @@
                                     class="text-right"
                                     style="font-size: larger"
                                   >
-                                    {{
-                                      this.formatWeight(
-                                        Math.round(rekapSampah[0]?.this_month)
-                                      )
-                                    }}
+                                    {{ rekapSampah[0]?.this_month }}
                                   </td>
                                   <td
                                     class="text-left text-red"
@@ -106,7 +98,7 @@
                             class="text-blue-4 text-bold"
                             style="font-size: larger"
                           >
-                            Target {{ this.formatWeight(target) }} gram
+                            Target {{ target }} Kg
                           </p>
 
                           <p class="tw-mt-5 tw-text-xl tw-font-bold">Capaian</p>
@@ -149,9 +141,7 @@
                                   >
                                     {{
                                       rekapMinggu[0]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[0]?.weight
-                                          )
+                                        ? rekapMinggu[0]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -175,9 +165,7 @@
                                   >
                                     {{
                                       rekapMinggu[1]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[1]?.weight
-                                          )
+                                        ? rekapMinggu[1]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -201,9 +189,7 @@
                                   >
                                     {{
                                       rekapMinggu[2]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[2]?.weight
-                                          )
+                                        ? rekapMinggu[2]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -227,9 +213,7 @@
                                   >
                                     {{
                                       rekapMinggu[3]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[3]?.weight
-                                          )
+                                        ? rekapMinggu[3]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -253,9 +237,7 @@
                                   >
                                     {{
                                       rekapMinggu[4]?.weight
-                                        ? this.formatWeight(
-                                            rekapMinggu[4]?.weight
-                                          )
+                                        ? rekapMinggu[4]?.weight
                                         : 0
                                     }}
                                   </td>
@@ -345,10 +327,10 @@ export default {
           },
         },
         dataLabels: {
-          enabled: true,
+          enabled: false,
         },
         stroke: {
-          show: true,
+          show: false,
           width: 1,
           colors: ["transparent"],
         },
@@ -514,16 +496,12 @@ export default {
         this.target = target;
       } catch (error) {}
     },
-    formatWeight(weightInKg) {
-      return `${(weightInKg * 1000).toFixed(2)}`;
-    },
   },
   mounted() {
     this.getRekapSampahMingguan();
     this.getRekapSampahbulan();
     this.getRekapSampah();
     this.getCollectionSampahMingguan();
-    console.log(this.formatWeight(10));
   },
 };
 </script>
