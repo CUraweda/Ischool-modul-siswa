@@ -485,11 +485,10 @@ export default {
           }
         );
 
-        const total = [response.data.data[0].weight];
+        const total = [response.data.data[0].weight / 1000];
         const target = Math.round(
           response.data.data[0].studentclass.class.waste_target
         );
-
         const hasilTarget = (total / target) * 100;
 
         this.series1 = [Math.round(hasilTarget)];
