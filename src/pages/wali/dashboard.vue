@@ -129,6 +129,7 @@
                     <p>Tema : {{ overview?.topic }}</p>
                     <p>Pemahaman : {{ overview?.meaningful_understanding }}</p>
                     <p>Periode : {{ overview?.period }}</p>
+                    <p v-if="overview?.class">Kelas : {{ overview.class.class_name ?? "-" }}</p>
                     <p>TUP:</p>
                   </div>
 
@@ -405,8 +406,10 @@ export default {
       }
     },
     async getOverview() {
+      const idClass = sessionStorage.getItem("idClass");
+
       try {
-        const response = await this.$api.get(`/overview/show-active`, {
+        const response = await this.$api.get(`/overview/show-active?class_id=${idClass || ""}`, {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
