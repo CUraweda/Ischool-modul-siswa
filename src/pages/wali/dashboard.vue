@@ -108,6 +108,7 @@
                     <p>Tema : {{ overview?.topic }}</p>
                     <p>Pemahaman : {{ overview?.meaningful_understanding }}</p>
                     <p>Periode : {{ overview?.period }}</p>
+                    <p v-if="overview?.class">Kelas : {{ overview.class.class_name ?? "-" }}</p>
                     <p>TUP:</p>
                   </div>
 
