@@ -375,9 +375,10 @@ export default {
       }
     },
     async getOverview() {
+      const idClass = sessionStorage.getItem("idClass");
 
       try {
-        const response = await this.$api.get(`/overview/show-active`, {
+        const response = await this.$api.get(`/overview/show-active?class_id=${idClass || ""}`, {
           headers: {
             'Authorization': `Bearer ${this.token}`
           }
