@@ -50,7 +50,7 @@
                   >
                     <div class="tw-text-xl">Rekap</div>
                     <div>
-                      <q-btn
+                      <q-btn v-if="!activity"
                         color="blue"
                         label="Tambah"
                         @click="countryDialog = true"
@@ -311,6 +311,7 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+        this.countryDialog = false
       } catch (error) {
         console.error(error);
       }
@@ -400,8 +401,9 @@ export default {
             },
           }
         );
-        this.activity = response.data?.data[0];
-        this.countryActivity = response.data?.data[0]?.forcountrydetails;
+        if(response.data.data.length < 1) return
+        this.activity = response.data.data[0].id;
+        this.countryActivity = response.data?.data[0].forcountrydetails;
       } catch (err) {
         console.log(err);
       }
