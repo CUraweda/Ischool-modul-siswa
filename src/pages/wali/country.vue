@@ -6,7 +6,9 @@
           <q-card-section>
             <div class="text-center">
               <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large"
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: x-large"
                   >ONE DAY FOR YOUR COUNTRY</span
                 >
                 <br />
@@ -48,17 +50,32 @@
                   >
                     <div class="tw-text-xl">Rekap</div>
                     <div>
-                      <q-btn color="blue" label="Tambah" @click="alert = true" />
+                      <q-btn
+                        color="blue"
+                        label="Tambah"
+                        @click="countryDialog = true"
+                      />
+                      <q-btn
+                        color="blue"
+                        label="Tambah"
+                        @click="alert = true"
+                      />
                     </div>
                   </div>
                   <q-scroll-area
-                    style="height: 400px; border: 10pxl; outline: #e0e0e0 solid 2px"
+                    style="
+                      height: 400px;
+                      border: 10pxl;
+                      outline: #e0e0e0 solid 2px;
+                    "
                   >
                     <q-markup-table separator="cell" class="no-shadow">
                       <thead>
                         <tr>
                           <th class="text-center" style="width: 10px">No</th>
-                          <th class="text-center" style="width: 500px">Aktivitas</th>
+                          <th class="text-center" style="width: 500px">
+                            Aktivitas
+                          </th>
                           <th class="text-center">Keterangan</th>
                           <th class="text-center">Status</th>
                           <th class="text-center">Durasi</th>
@@ -69,22 +86,31 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(activity, index) in countryActivity" :key="index">
+                        <tr
+                          v-for="(activity, index) in countryActivity"
+                          :key="index"
+                        >
                           <td class="text-center">{{ index + 1 }}</td>
                           <td class="text-left">{{ activity?.activity }}</td>
                           <td class="text-right">{{ activity?.remark }}</td>
                           <td class="text-right">{{ activity?.status }}</td>
                           <td class="text-right">{{ activity?.duration }}</td>
                           <td class="text-right">{{ activity?.duration }}</td>
-                          <td class="text-right">{{ getDateFromPlanDate(activity) }}</td>
+                          <td class="text-right">
+                            {{ getDateFromPlanDate(activity) }}
+                          </td>
                           <td class="text-center">
                             <!-- :disable="activity?.status !== 'pelaksanaan'" -->
                             <q-btn
-                              :disable="(!activity.plan_date || activity.is_date_approved)"
+                              :disable="
+                                !activity.plan_date || activity.is_date_approved
+                              "
                               style="bg-green"
                               color="green"
                               label="Pilih Tanggal"
-                              @click="pickDate(activity?.plan_date, activity?.id)"
+                              @click="
+                                pickDate(activity?.plan_date, activity?.id)
+                              "
                             />
                           </td>
                           <td class="text-right">
@@ -92,7 +118,9 @@
                               :disable="!activity?.certificate_path"
                               color="secondary"
                               label="Download Sertifikat"
-                              @click="downloadSertifikat(activity?.certificate_path)"
+                              @click="
+                                downloadSertifikat(activity?.certificate_path)
+                              "
                             />
                           </td>
                         </tr>
@@ -117,10 +145,20 @@
       <q-card-section class="q-pt-none">
         <div>
           <label for="">Aktivitas</label>
-          <q-select filled v-model="model" :options="activityOptions" label="Aktivitas" />
+          <q-select
+            filled
+            v-model="model"
+            :options="activityOptions"
+            label="Aktivitas"
+          />
         </div>
         <div v-if="model === 'Lainnya'">
-          <q-input class="q-mt-md" filled label="Lainnya" v-model="inputActivity" />
+          <q-input
+            class="q-mt-md"
+            filled
+            label="Lainnya"
+            v-model="inputActivity"
+          />
         </div>
       </q-card-section>
 
@@ -140,7 +178,11 @@
       <q-card-section class="q-pt-none">
         <!-- <p>{{ dateOptions }}</p> -->
         <div class="q-pa-md">
-          <q-option-group :options="dateOptions" type="radio" v-model="selectedDate" />
+          <q-option-group
+            :options="dateOptions"
+            type="radio"
+            v-model="selectedDate"
+          />
         </div>
         <!-- {{ selectedDate }}
         {{ activity?.id }}
@@ -149,6 +191,35 @@
 
       <q-card-actions align="right">
         <q-btn label="Pilih" color="primary" @click="confirmPickDate()" />
+        <q-btn label="Kembali" color="grey" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="countryDialog">
+    <q-card style="width: 700px; max-width: 80vw">
+      <q-card-section>
+        <div class="text-h6">Tambah country</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-select
+          filled
+          v-model="academic_year"
+          :options="['2023/2024', '2024/2025']"
+          label="Tahun Ajaran"
+        />
+
+        <q-input
+          filled
+          v-model="target"
+          label="Target Pertahun"
+          class="q-mt-md"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn label="Simpan" color="primary" @click="createNegara" />
         <q-btn label="Kembali" color="grey" v-close-popup />
       </q-card-actions>
     </q-card>
@@ -163,6 +234,9 @@ import { ref } from "vue";
 export default {
   data() {
     return {
+      academic_year: ref(""),
+      target: ref(),
+      countryDialog: ref(false),
       activity: ref(),
       countryActivity: ref([]),
       alert: ref(false),
@@ -173,8 +247,8 @@ export default {
       durasi: ref(),
       durasi: ref(),
       keterangan: ref(),
-      dateOptions:[],
-      selectedDate:ref(null),
+      dateOptions: [],
+      selectedDate: ref(null),
       activityOptions: [
         "Library",
         "Green House",
@@ -195,28 +269,51 @@ export default {
   },
   methods: {
     getDateFromPlanDate(activity) {
-    if (activity.is_date_approved) {
-      try {
-        const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
-        console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate)
-        return planDate[0].Date; // Mengambil tanggal dari array pertama plan_date
-      } catch (error) {
-        console.error('Error parsing plan_date:', error);
+      if (activity.is_date_approved) {
+        try {
+          const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
+          console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate);
+          return planDate[0].Date; // Mengambil tanggal dari array pertama plan_date
+        } catch (error) {
+          console.error("Error parsing plan_date:", error);
+        }
       }
-    }
-    return null;
-  },
+      return null;
+    },
 
     async pickDate(plan_date, countryId) {
-      this.countryId = countryId
+      this.countryId = countryId;
       const parsedPlanDate = JSON.parse(plan_date);
-      this.dateOptions = parsedPlanDate.map(item => {
-    return {
-      label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
-      value: JSON.stringify([{ Date: item.date, Start: item.start, End: item.end }])
-      };
-    });
+      this.dateOptions = parsedPlanDate.map((item) => {
+        return {
+          label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
+          value: JSON.stringify([
+            { Date: item.date, Start: item.start, End: item.end },
+          ]),
+        };
+      });
       this.pickDateDialog = true;
+    },
+
+    async createNegara() {
+      try {
+        const id = sessionStorage.getItem("idUser");
+        const token = sessionStorage.getItem("token");
+
+        const data = {
+          user_id: parseInt(id),
+          academic_year: this.academic_year,
+          target: parseInt(this.target),
+        };
+
+        await this.$api.post(`for-country/create`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
     },
 
     async createDataCountry() {
@@ -233,12 +330,16 @@ export default {
         // formData.append("duration", this.durasi);
         // formData.append("remark", this.keterangan);
 
-        const response = await this.$api.post(`for-country-detail/create`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await this.$api.post(
+          `for-country-detail/create`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         this.alert = false;
         this.getDataCountryUser();
       } catch (err) {
@@ -253,35 +354,38 @@ export default {
         const formData = new FormData();
         formData.append("plan_date", this.selectedDate);
         formData.append("is_date_approved", true);
-        const response = await this.$api.put(`for-country-detail/update/${id}`,
-        formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await this.$api.put(
+          `for-country-detail/update/${id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         this.pickDateDialog = false;
         Swal.fire({
-        title: "Tanggal Terpilih!",
-        icon: "success",
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Close",
-        })
+          title: "Tanggal Terpilih!",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Close",
+        });
         this.getDataCountryUser();
       } catch (err) {
         console.log(err);
         this.pickDateDialog = false;
         Swal.fire({
-        title: "Tanggal Gagal Dipilih!",
-        text: "Refresh halaman atau hubungi admin",
-        icon: "warning",
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Close",
-        })
+          title: "Tanggal Gagal Dipilih!",
+          text: "Refresh halaman atau hubungi admin",
+          icon: "warning",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Close",
+        });
       }
     },
     async getDataCountryUser() {
@@ -328,29 +432,29 @@ export default {
         link.remove();
         window.URL.revokeObjectURL(blobUrl);
         Swal.fire({
-        title: "Sertifikat Berhasil Diunduh!",
-        icon: "success",
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Close",
-        })
+          title: "Sertifikat Berhasil Diunduh!",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Close",
+        });
         this.getDataCountryUser();
       } catch (error) {
         console.error("Error downloading file:", error);
         Swal.fire({
-        title: "Sertifikat Belum Tersedia !",
-        text: "Refresh halaman atau hubungi admin",
-        icon: "warning",
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Close",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // window.location.reload();
-        }
-      });
+          title: "Sertifikat Belum Tersedia !",
+          text: "Refresh halaman atau hubungi admin",
+          icon: "warning",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Close",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // window.location.reload();
+          }
+        });
       }
     },
 
