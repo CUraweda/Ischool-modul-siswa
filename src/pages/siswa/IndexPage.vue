@@ -1,269 +1,277 @@
 <template>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="text-center bg-blue-2 tw-min-h-screen">
-        <q-card-section>
-          <div class="text-center">
-            <p>
-              <span
-                class="text-center text-black text-bold"
-                style="font-size: x-large"
-                >DASHBOARD SISWA</span
-              >
-            </p>
-          </div>
+  <div class="bg-blue-2 q-pa-md tw-min-h-screen">
+    <div class="text-center">
+      <p>
+        <span
+          class="text-center text-black text-bold"
+          style="font-size: x-large"
+          >DASHBOARD SISWA</span
+        >
+      </p>
+    </div>
 
-          <div class="tw-mt-3 tw-flex tw-flex-wrap row">
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-green-1 tw-w-full tw-h-80">
-                <q-card-section>
-                  <div class="row flex tw-flex-col justify-center items-center">
-                    <p>
-                      <span style="font-size: 200%" class="text-bold"
-                        >Presensi</span
-                      >
-                    </p>
-                    <div class="row flex justify-center items-center tw-w-full">
-                      <div class="img">
-                        <q-img src="../../assets/sadeicon.png" />
-                      </div>
-                      <div class="col-md col-12 text-left">
-                        <q-markup-table class="bg-green-1" flat>
-                          <tbody>
-                            <tr>
-                              <td class="text-left">Hadir</td>
-                              <td class="text-right">{{ hadir }}</td>
-                            </tr>
+    <div class="q-mt-md tw-grid tw-grid-cols-1 md:tw-grid-cols-3">
+      <div>
+        <!-- presensi  -->
+        <div class="q-pa-sm">
+          <q-card flat bordered class="bg-green-1">
+            <q-card-section class="q-pb-none">
+              <div class="row items-center no-wrap">
+                <div class="tw-w-1/3">
+                  <q-img src="../../assets/sadeicon.png" />
+                </div>
+                <div class="text-h5 q-ml-sm text-bold">Presensi</div>
+              </div>
+            </q-card-section>
 
-                            <tr>
-                              <td class="text-left">Sakit</td>
-                              <td class="text-right">{{ sakit }}</td>
-                            </tr>
-                            <tr>
-                              <td class="text-left">Izin</td>
-                              <td class="text-right">{{ izin }}</td>
-                            </tr>
-                            <tr>
-                              <td class="text-left">Alfa</td>
-                              <td class="text-right">{{ alfa }}</td>
-                            </tr>
-                          </tbody>
-                        </q-markup-table>
-                      </div>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-pink-1 tw-w-full tw-h-80">
-                <q-card-section>
-                  <div class="row flex tw-flex-col justify-center items-center">
-                    <p>
-                      <span style="font-size: 200%" class="text-bold"
-                        >Raport Digital</span
-                      >
-                    </p>
-                    <div class="row flex justify-center items-center tw-w-full">
-                      <div class="img">
-                        <q-img
-                          src="../../assets/Asesmen.png"
-                          style="width: 70%"
+            <q-card-section>
+              <q-markup-table class="bg-green-1" flat>
+                <tbody>
+                  <tr>
+                    <td class="text-left">Hadir</td>
+                    <td class="text-right">{{ hadir }}</td>
+                  </tr>
+
+                  <tr>
+                    <td class="text-left">Sakit</td>
+                    <td class="text-right">{{ sakit }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Izin</td>
+                    <td class="text-right">{{ izin }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Alfa</td>
+                    <td class="text-right">{{ alfa }}</td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-card-section>
+          </q-card>
+        </div>
+        <!-- agenda  -->
+        <div class="q-pa-sm">
+          <q-card flat bordered class="bg-yellow-1">
+            <q-card-section class="q-pb-none">
+              <div class="row items-center no-wrap">
+                <div class="tw-w-1/4">
+                  <q-img src="../../assets/camper.png" />
+                </div>
+                <div class="text-h5 q-ml-md text-bold">Agenda kegiatan</div>
+              </div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-markup-table class="bg-yellow-1" flat>
+                <tbody>
+                  <tr v-for="item in agenda" :key="item.id">
+                    <td class="text-bold">
+                      {{ getDateTime(item?.start_date) }} -
+                      {{ getDateTime(item?.end_date) }}
+                    </td>
+                    <td>: {{ item.agenda }}</td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
+
+      <div>
+        <!-- raport digital  -->
+        <div class="q-pa-sm">
+          <q-card flat bordered class="bg-pink-1">
+            <q-card-section class="q-pb-none">
+              <div class="row items-center no-wrap">
+                <div class="tw-w-1/5">
+                  <q-img src="../../assets/Asesmen.png" />
+                </div>
+                <div class="text-h5 q-ml-sm text-bold">Rapot Digital</div>
+              </div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-markup-table class="bg-pink-1" flat>
+                <tbody>
+                  <tr>
+                    <td class="text-left">Narasi</td>
+                    <td>
+                      <div class="row justify-end">
+                        <q-btn
+                          round
+                          color="green"
+                          icon="file_download"
+                          @click="downloadTask(raport?.narrative_path)"
+                          :disable="!raport?.narrative_path"
                         />
                       </div>
-                      <div class="col-md-8 text-left">
-                        <q-markup-table class="bg-pink-1" flat>
-                          <tbody>
-                            <tr>
-                              <td class="text-left">Narasi</td>
-
-                              <td>
-                                <q-btn
-                                  round
-                                  color="green"
-                                  icon="file_download"
-                                  @click="downloadTask(raport?.narrative_path)"
-                                  :disable="!raport?.narrative_path"
-                                />
-                              </td>
-                            </tr>
-                            <tr>
-                              <td class="text-left">Portofolio</td>
-
-                              <td>
-                                <q-btn
-                                  round
-                                  color="green"
-                                  icon="file_download"
-                                  @click="downloadTask(raport?.portofolio_path)"
-                                  :disable="!raport?.portofolio_path"
-                                />
-                              </td>
-                            </tr>
-                            <tr>
-                              <td class="text-left">Raport Angka</td>
-
-                              <td>
-                                <q-btn
-                                  round
-                                  color="green"
-                                  icon="file_download"
-                                  @click="downloadTask(raport?.number_path)"
-                                  :disable="!raport?.number_path"
-                                />
-                              </td>
-                            </tr>
-                          </tbody>
-                        </q-markup-table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Portofolio</td>
+                    <td>
+                      <div class="row justify-end">
+                        <q-btn
+                          round
+                          color="green"
+                          icon="file_download"
+                          @click="downloadTask(raport?.portofolio_path)"
+                          :disable="!raport?.portofolio_path"
+                        />
                       </div>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-light-green-1 tw-w-full tw-h-80">
-                <q-card-section>
-                  <p style="font-size: 200%" class="text-bold">Overview</p>
-                  <div class="text-left">
-                    <p>Tema : {{ overview?.topic }}</p>
-                    <p>Pemahaman : {{ overview?.meaningful_understanding }}</p>
-                    <p>Periode : {{ overview?.period }}</p>
-                    <p v-if="overview?.class">
-                      Kelas : {{ overview.class.class_name ?? "-" }}
-                    </p>
-                    <p>TUP:</p>
-                  </div>
-
-                  <div class="text-justify" style="width: 95%">
-                    <q-scroll-area style="height: 19vh" class="q-pa-sm">
-                      <p>
-                        {{ overview?.tup }}
-                      </p>
-                    </q-scroll-area>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </div>
-          <div class="flex tw-flex-wrap tw-mt-2 row">
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-yellow-1 tw-h-52">
-                <q-card-section>
-                  <div class="row flex justify-center items-center">
-                    <div class="col-md-4">
-                      <q-img src="../../assets/camper.png" style="width: 60%" />
-                    </div>
-                    <div class="col-md-8 text-left">
-                      <p style="font-size: 200%" class="text-bold">
-                        Agenda Kegiatan
-                      </p>
-                      <div
-                        v-for="item in agenda"
-                        :key="item.id"
-                        class="tw-ml-3"
-                      >
-                        <li>
-                          {{ getDateTime(item?.start_date) }} -
-                          {{ getDateTime(item?.end_date) }} : {{ item?.agenda }}
-                        </li>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Raport Angka</td>
+                    <td>
+                      <div class="row justify-end">
+                        <q-btn
+                          round
+                          color="green"
+                          icon="file_download"
+                          @click="downloadTask(raport?.number_path)"
+                          :disable="!raport?.number_path"
+                        />
                       </div>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-light-blue-1 tw-h-52">
-                <q-card-section>
-                  <div class="row flex justify-center items-center">
-                    <div class="col-md-4">
-                      <q-img
-                        src="../../assets/book/total.png"
-                        style="width: 60%"
-                      />
-                    </div>
-                    <div class="col-md-8 text-left">
-                      <p style="font-size: 200%" class="text-bold">
-                        Bank Sampah
-                      </p>
-                      <q-markup-table class="bg-light-blue-1" flat>
-                        <tbody>
-                          <tr>
-                            <td class="text-left">Terkumpul</td>
-                            <td class="text-right">
-                              {{ rekapSampah[0]?.this_month / 1000 }}
-                            </td>
-                            <td class="text-left">Kg</td>
-                          </tr>
-                          <tr>
-                            <td class="text-left">Target</td>
-                            <td class="text-right">{{ target }}</td>
-                            <td class="text-left">Kg</td>
-                          </tr>
-                        </tbody>
-                      </q-markup-table>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-              <q-card class="bg-light-blue-1 tw-h-52">
-                <q-card-section>
-                  <div class="row flex justify-center items-center">
-                    <div class="col-md-4">
-                      <q-img
-                        src="../../assets/Achievement.png"
-                        style="width: 60%"
-                      />
-                    </div>
-                    <div class="col-md-8 text-left">
-                      <p style="font-size: 200%" class="text-bold">
-                        Achievement
-                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-card-section>
+          </q-card>
+        </div>
 
-                      <q-markup-table class="bg-light-blue-1" flat>
-                        <tbody>
-                          <tr>
-                            <td class="text-left" style="font-size: medium">
-                              {{ achevment?.achievement_desc }}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="text-left" style="font-size: medium">
-                              {{ getDateTime(achevment?.issued_at) }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </q-markup-table>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </div>
-
-          <div class="tw-w-full tw-p-3">
-            <q-card class="">
-              <q-card-section class="text-left">
-                <p class="text-left">
-                  <br />
-                  <span class="text-bold">Pengumuman</span>
-                </p>
-
-                <div v-for="item in pengumuman" :key="item.id" class="tw-ml-3">
-                  <li>
-                    {{ getDateTime(item?.date_start) }} -
-                    {{ getDateTime(item?.date_end) }} :
-                    {{ item?.announcement_desc }}
-                  </li>
+        <!-- bank sampah  -->
+        <div class="q-pa-sm">
+          <q-card flat bordered class="bg-light-blue-1">
+            <q-card-section class="q-pb-none">
+              <div class="row items-center no-wrap">
+                <div class="tw-w-1/5">
+                  <q-img src="../../assets/book/total.png" />
                 </div>
-              </q-card-section>
-            </q-card>
+                <div class="text-h5 q-ml-md text-bold">Bank Sampah</div>
+              </div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-markup-table class="bg-light-blue-1" flat>
+                <tbody>
+                  <tr>
+                    <td class="text-left">Terkumpul</td>
+                    <td class="text-right">
+                      {{ (rekapSampah[0]?.this_month ?? 0) / 1000 }}
+                    </td>
+                    <td class="text-left">Kg</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Target</td>
+                    <td class="text-right">{{ target }}</td>
+                    <td class="text-left">Kg</td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
+
+      <div>
+        <!-- overview  -->
+        <div class="q-pa-sm">
+          <q-card flat bordered class="bg-light-green-1">
+            <q-card-section class="q-pb-none">
+              <div class="row items-center no-wrap">
+                <div class="text-h5 q-ml-sm text-bold">Overview</div>
+              </div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-markup-table class="bg-light-green-1" flat>
+                <tbody>
+                  <tr>
+                    <td>Tema</td>
+                    <td>: {{ overview?.topic }}</td>
+                  </tr>
+                  <tr>
+                    <td>Pemahaman</td>
+                    <td>: {{ overview?.meaningful_understanding }}</td>
+                  </tr>
+                  <tr>
+                    <td>Periode</td>
+                    <td>: {{ overview?.period }}</td>
+                  </tr>
+                  <tr v-if="overview?.class">
+                    <td>Kelas</td>
+                    <td>: {{ overview.class.class_name ?? "-" }}</td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+
+              <q-card flat bordered class="q-mt-sm">
+                <q-card-section>
+                  <q-scroll-area style="height: 19vh">
+                    <b>TUP</b> <br />
+                    {{ overview?.tup }}
+                  </q-scroll-area>
+                </q-card-section>
+              </q-card>
+            </q-card-section>
+          </q-card>
+        </div>
+
+        <!-- achievement  -->
+        <div class="q-pa-sm">
+          <q-card flat bordered class="bg-light-blue-1">
+            <q-card-section class="q-pb-none">
+              <div class="row items-center no-wrap">
+                <div class="tw-w-1/5">
+                  <q-img src="../../assets/Achievement.png" />
+                </div>
+                <div class="text-h5 q-ml-md text-bold">Achievement</div>
+              </div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-markup-table class="bg-light-blue-1" flat>
+                <tbody>
+                  <tr>
+                    <td class="text-bold">
+                      {{ getDateTime(achevment?.issued_at) }}
+                    </td>
+                    <td>
+                      {{ achevment?.achievement_desc ?? "-" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-pa-sm">
+      <q-card flat bordered class="">
+        <q-card-section class="q-pb-none">
+          <div class="row items-center no-wrap">
+            <div class="text-h5 q-ml-md text-bold">Pengumuman</div>
           </div>
         </q-card-section>
-      </div>
+
+        <q-card-section>
+          <ul class="tw-list-disc q-pl-xl">
+            <li v-for="item in pengumuman" :key="item.id">
+              <span class="text-bold">
+                {{ getDateTime(item?.date_start) }} -
+                {{ getDateTime(item?.date_end) }}
+              </span>
+              <span>: {{ item?.announcement_desc ?? "-" }}</span>
+              <q-separator class="q-my-sm" />
+            </li>
+          </ul>
+        </q-card-section>
+      </q-card>
     </div>
   </div>
 </template>
@@ -542,7 +550,6 @@ export default {
 @media only screen and (min-width: 600px) {
   .img {
     display: flex;
-    width: 30%;
   }
 }
 </style>
