@@ -135,7 +135,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :sub="'Guru'" />
+                  <RapotPortofolio :sub="'Merged'" />
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">

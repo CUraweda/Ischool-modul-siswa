@@ -1,27 +1,33 @@
 <template>
   <div class="row">
-    <div class="col-md-12 ">
+    <div class="col-md-12">
       <div class="text-center bg-blue-2 tw-min-h-screen">
         <q-card-section>
           <div class="text-center">
             <p>
-              <span class="text-center text-black text-bold" style="font-size: x-large">DASHBOARD ORANG TUA</span>
+              <span
+                class="text-center text-black text-bold"
+                style="font-size: x-large"
+                >DASHBOARD ORANG TUA</span
+              >
             </p>
           </div>
 
           <div class="tw-mt-3 tw-flex tw-flex-wrap row">
-            <div class="tw-w-1/3 tw-p-3 col-12 col-md ">
+            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
               <q-card class="bg-green-1 tw-w-full tw-h-80">
                 <q-card-section>
                   <div class="row flex tw-flex-col justify-center items-center">
-                    <p><span style="font-size: 200%" class="text-bold">Presensi</span></p>
+                    <p>
+                      <span style="font-size: 200%" class="text-bold"
+                        >Presensi</span
+                      >
+                    </p>
                     <div class="row flex justify-center items-center tw-w-full">
-
                       <div class="img">
                         <q-img src="../../assets/sadeicon.png" />
                       </div>
                       <div class="col-md col-12 text-left">
-
                         <q-markup-table class="bg-green-1" flat>
                           <tbody>
                             <tr>
@@ -50,45 +56,61 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-
               <q-card class="bg-pink-1 tw-w-full tw-h-80">
                 <q-card-section>
                   <div class="row flex tw-flex-col justify-center items-center">
                     <p>
-                    <p><span style="font-size: 200%" class="text-bold">Raport Digital</span></p>
-
+                      <span style="font-size: 200%" class="text-bold"
+                        >Raport Digital</span
+                      >
                     </p>
                     <div class="row flex justify-center items-center tw-w-full">
-
                       <div class="img">
-                        <q-img src="../../assets/Asesmen.png" style="width: 70%" />
+                        <q-img
+                          src="../../assets/Asesmen.png"
+                          style="width: 70%"
+                        />
                       </div>
                       <div class="col-md-8 text-left">
-
                         <q-markup-table class="bg-pink-1" flat>
                           <tbody>
                             <tr>
                               <td class="text-left">Narasi</td>
 
                               <td>
-                                <q-btn round color="green" icon="file_download"
-                                  @click="downloadTask(raport?.narrative_path)" :disable="!raport?.narrative_path" />
+                                <q-btn
+                                  round
+                                  color="green"
+                                  icon="file_download"
+                                  @click="downloadTask(raport?.narrative_path)"
+                                  :disable="!raport?.narrative_path"
+                                />
                               </td>
                             </tr>
                             <tr>
                               <td class="text-left">Portofolio</td>
 
                               <td>
-                                <q-btn round color="green" icon="file_download"
-                                  @click="downloadTask(raport?.portofolio_path)" :disable="!raport?.portofolio_path" />
+                                <q-btn
+                                  round
+                                  color="green"
+                                  icon="file_download"
+                                  @click="downloadTask(raport?.portofolio_path)"
+                                  :disable="!raport?.portofolio_path"
+                                />
                               </td>
                             </tr>
                             <tr>
                               <td class="text-left">Raport Angka</td>
 
                               <td>
-                                <q-btn round color="green" icon="file_download"
-                                  @click="downloadTask(raport?.number_path)" :disable="!raport?.number_path" />
+                                <q-btn
+                                  round
+                                  color="green"
+                                  icon="file_download"
+                                  @click="downloadTask(raport?.number_path)"
+                                  :disable="!raport?.number_path"
+                                />
                               </td>
                             </tr>
                           </tbody>
@@ -100,7 +122,6 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-
               <q-card class="bg-light-green-1 tw-w-full tw-h-80">
                 <q-card-section>
                   <p style="font-size: 200%" class="text-bold">Overview</p>
@@ -108,6 +129,7 @@
                     <p>Tema : {{ overview?.topic }}</p>
                     <p>Pemahaman : {{ overview?.meaningful_understanding }}</p>
                     <p>Periode : {{ overview?.period }}</p>
+                    <p v-if="overview?.class">Kelas : {{ overview.class.class_name ?? "-" }}</p>
                     <p>TUP:</p>
                   </div>
 
@@ -122,25 +144,27 @@
               </q-card>
             </div>
           </div>
-          <div class=" flex tw-flex-wrap tw-mt-2 row ">
-            <div class="tw-w-1/3 tw-p-3  col-12 col-md">
-
+          <div class="flex tw-flex-wrap tw-mt-2 row">
+            <div class="tw-w-1/3 tw-p-3 col-12 col-md">
               <q-card class="bg-yellow-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
-
                       <q-img src="../../assets/camper.png" style="width: 60%" />
                     </div>
-                    <div class="col-md-8 text-left ">
-                      <p style="font-size: 200%" class="text-bold">Agenda Kegiatan</p>
-                      <div v-for="(item, index) in agenda" :key="item.id" class="tw-ml-3">
+                    <div class="col-md-8 text-left">
+                      <p style="font-size: 200%" class="text-bold">
+                        Agenda Kegiatan
+                      </p>
+                      <div
+                        v-for="item in agenda"
+                        :key="item.id"
+                        class="tw-ml-3"
+                      >
                         <li>
-                          {{ getDateTime(item?.start_date) }} - {{ getDateTime(item?.end_date) }} : {{
-                                item?.agenda
-                              }}
+                          {{ getDateTime(item?.start_date) }} -
+                          {{ getDateTime(item?.end_date) }} : {{ item?.agenda }}
                         </li>
-
                       </div>
                     </div>
                   </div>
@@ -148,27 +172,32 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-
               <q-card class="bg-light-blue-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
-
-                      <q-img src="../../assets/book/total.png" style="width: 60%" />
+                      <q-img
+                        src="../../assets/book/total.png"
+                        style="width: 60%"
+                      />
                     </div>
                     <div class="col-md-8 text-left">
-                      <p style="font-size: 200%" class="text-bold">Bank Sampah</p>
+                      <p style="font-size: 200%" class="text-bold">
+                        Bank Sampah
+                      </p>
                       <q-markup-table class="bg-light-blue-1" flat>
                         <tbody>
                           <tr>
                             <td class="text-left">Terkumpul</td>
-                            <td class="text-right">0</td>
-                            <td class="text-left">kg</td>
+                            <td class="text-right">
+                              {{ rekapSampah[0]?.this_month / 1000 }}
+                            </td>
+                            <td class="text-left">Kg</td>
                           </tr>
                           <tr>
                             <td class="text-left">Target</td>
-                            <td class="text-right">0</td>
-                            <td class="text-left">Hari</td>
+                            <td class="text-right">{{ target }}</td>
+                            <td class="text-left">Kg</td>
                           </tr>
                         </tbody>
                       </q-markup-table>
@@ -178,16 +207,19 @@
               </q-card>
             </div>
             <div class="tw-w-1/3 tw-p-3 col-12 col-md">
-
               <q-card class="bg-light-blue-1 tw-h-52">
                 <q-card-section>
                   <div class="row flex justify-center items-center">
                     <div class="col-md-4">
-
-                      <q-img src="../../assets/Achievement.png" style="width: 60%" />
+                      <q-img
+                        src="../../assets/Achievement.png"
+                        style="width: 60%"
+                      />
                     </div>
                     <div class="col-md-8 text-left">
-                      <p style="font-size: 200%" class="text-bold">Achievement</p>
+                      <p style="font-size: 200%" class="text-bold">
+                        Achievement
+                      </p>
 
                       <q-markup-table class="bg-light-blue-1" flat>
                         <tbody>
@@ -199,10 +231,8 @@
                           <tr>
                             <td class="text-left" style="font-size: medium">
                               {{ getDateTime(achevment?.issued_at) }}
-
                             </td>
                           </tr>
-
                         </tbody>
                       </q-markup-table>
                     </div>
@@ -213,7 +243,6 @@
           </div>
 
           <div class="tw-w-full tw-p-3">
-
             <q-card class="">
               <q-card-section class="text-left">
                 <p class="text-left">
@@ -221,14 +250,13 @@
                   <span class="text-bold">Pengumuman</span>
                 </p>
 
-                <div v-for="(item, index) in pengumuman" :key="item.id" class="tw-ml-3">
+                <div v-for="item in pengumuman" :key="item.id" class="tw-ml-3">
                   <li>
-                    {{ getDateTime(item?.date_start) }} - {{ getDateTime(item?.date_end) }} : {{ item?.announcement_desc
-                    }}
+                    {{ getDateTime(item?.date_start) }} -
+                    {{ getDateTime(item?.date_end) }} :
+                    {{ item?.announcement_desc }}
                   </li>
-
                 </div>
-
               </q-card-section>
             </q-card>
           </div>
@@ -239,13 +267,12 @@
 </template>
 
 <script>
-
-import NavbarSiswa from "../../components/siswa/HederSiswa.vue"
-import { ref } from 'vue'
+import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
+import { ref } from "vue";
 
 export default {
   components: {
-    NavbarSiswa
+    NavbarSiswa,
   },
   setup() {
     return {
@@ -260,12 +287,14 @@ export default {
       sakit: ref(0),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
       token: ref(sessionStorage.getItem("token")),
-      pengumuman: ref([])
-    }
+      pengumuman: ref([]),
+      rekapSampah: ref([]),
+      hasiltarget: ref(),
+      target: ref(),
+    };
   },
 
   methods: {
-
     getDateTime(date) {
       const now = new Date(date);
       const formattedDate = now.toLocaleDateString("id-ID", {
@@ -277,11 +306,14 @@ export default {
     },
     async getPresensi() {
       try {
-        const response = await this.$api.get(`student-attendance/show-by-student/${this.idSiswa}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `student-attendance/show-by-student/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        })
+        );
         const filterHadir = response.data.data.filter(
           (a) => a.status === "Hadir"
         );
@@ -294,11 +326,10 @@ export default {
         const filterAlfa = response.data.data.filter(
           (a) => a.status === "Alfa"
         );
-        this.hadir = filterHadir.length
-        this.izin = filterIzin.length
-        this.sakit = filterSakit.length
-        this.alfa = filterAlfa.length
-
+        this.hadir = filterHadir.length;
+        this.izin = filterIzin.length;
+        this.sakit = filterSakit.length;
+        this.alfa = filterAlfa.length;
       } catch (err) {
         console.log(err);
       }
@@ -314,7 +345,6 @@ export default {
           }
         );
 
-
         const data = response.data.data.result;
         let currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
@@ -323,99 +353,98 @@ export default {
         futureDate.setDate(currentDate.getDate() + 5);
         futureDate.setHours(23, 59, 59, 999);
 
-        const filterData = data?.filter(item => {
-          let itemDate = new Date(item?.start_date)
-          return itemDate >= currentDate && itemDate <= futureDate
-        })
+        const filterData = data?.filter((item) => {
+          let itemDate = new Date(item?.start_date);
+          return itemDate >= currentDate && itemDate <= futureDate;
+        });
 
-        if(filterData?.length > 5){
+        if (filterData?.length > 5) {
           filterData = filterData.slice(0, 5);
         }
 
-        
-        this.agenda = filterData
+        this.agenda = filterData;
         console.log(filterData);
-
-      } catch (error) { }
+      } catch (error) {}
     },
     async getPengumuman() {
-
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
-      const endDate = new Date(today.getTime() + (14 * 24 * 60 * 60 * 1000));
+      const endDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
       const formattedStartDate = startDate.toISOString().slice(0, 10);
       const formattedEndDate = endDate.toISOString().slice(0, 10);
 
       try {
-        const response = await this.$api.get(`/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        })
+        );
 
-        this.pengumuman = response.data.data
+        this.pengumuman = response.data.data;
       } catch (err) {
         console.log(err);
       }
     },
     async getAchevment() {
-
       try {
-        const response = await this.$api.get(`/achievement/show-by-student/${this.idSiswa}`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `/achievement/show-by-student/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        })
+        );
 
-        this.achevment = response.data.data
-
+        this.achevment = response.data.data;
       } catch (err) {
         console.log(err);
       }
     },
     async getOverview() {
+      const idClass = sessionStorage.getItem("idClass");
 
       try {
-        const response = await this.$api.get(`/overview/show-active`, {
+        const response = await this.$api.get(`/overview/show-active?class_id=${idClass || ""}`, {
           headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
-        })
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
-        this.overview = response.data.data
-
-
+        this.overview = response.data.data;
       } catch (err) {
         console.log(err);
       }
     },
     async getSiswaById() {
-
       try {
         const response = await this.$api.get(`/student/show/${this.idSiswa}`, {
           headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
-        })
-        const id = response.data.data[0].studentclasses[0].class_id
-        sessionStorage.setItem('idClass', id)
-
-
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        const id = response.data.data[0].studentclasses[0].class_id;
+        sessionStorage.setItem("idClass", id);
       } catch (err) {
         console.log(err);
       }
     },
     async getRaport() {
       try {
-        const response = await this.$api.get(`/student-report/show-by-student?id=${this.idSiswa}&semester=1`, {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
+        const response = await this.$api.get(
+          `/student-report/show-by-student?id=${this.idSiswa}&semester=1`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
           }
-        })
+        );
         console.log(response.data.data[0]);
-        this.raport = response.data.data[0]
-
+        this.raport = response.data.data[0];
       } catch (err) {
         console.log(err);
       }
@@ -447,21 +476,54 @@ export default {
         console.error("Error downloading file:", error);
       }
     },
+    async getRekapSampah() {
+      try {
+        const response = await this.$api.get(
+          `waste-collection/target-achievement-by-student/${this.idSiswa}?is_current=1`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
 
+        const total = [response.data.data[0].weight / 1000];
+        const target = Math.round(
+          response.data.data[0].studentclass.class.waste_target
+        );
+        const hasilTarget = (total / target) * 100;
+        console.log(hasilTarget);
+        this.hasiltarget = [Math.round(hasilTarget)];
+        this.target = target;
+      } catch (error) {}
+    },
+    async getRekapSampahbulan() {
+      try {
+        const response = await this.$api.get(
+          `waste-collection/show-recap-history/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+        this.rekapSampah = response.data.data;
+      } catch (error) {}
+    },
   },
   mounted() {
-    this.getRaport()
-    this.getSiswaById()
-    this.getPresensi()
-    this.getAgenda()
-    this.getPengumuman()
-    this.getAchevment()
-    this.getOverview()
+    this.getRekapSampah();
+    this.getRekapSampahbulan();
+    this.getRaport();
+    this.getSiswaById();
+    this.getPresensi();
+    this.getAgenda();
+    this.getPengumuman();
+    this.getAchevment();
+    this.getOverview();
   },
-
 };
 </script>
-
 
 <style>
 /* Extra small devices (phones, 600px and down) */
