@@ -377,6 +377,8 @@ export default {
       } catch (error) {}
     },
     async getPengumuman() {
+      const idClass = sessionStorage.getItem("idClass");
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
@@ -386,7 +388,7 @@ export default {
 
       try {
         const response = await this.$api.get(
-          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}`,
+          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}&class_id=${idClass}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
