@@ -73,7 +73,7 @@
             v-if="!dataParent"
             color="secondary"
             label="Tautkan"
-            @click="$router.push('/search-ortu')"
+            @click="$router.push('/search-parent')"
           />
         </div>
 
@@ -100,12 +100,12 @@
               <th class="text-left">{{ dataParent?.address ?? "-" }}</th>
             </tr>
             <tr>
-              <th class="text-left">Lokasi</th>
+              <th class="text-left">Lokasi koordinat</th>
               <th class="text-left">
                 {{
-                  (dataParent?.latitude ?? "-") +
-                  " - " +
-                  (dataParent?.longitude ?? "-")
+                  `${dataParent?.latitude ?? "-"},${
+                    dataParent?.longitude ?? "-"
+                  }`
                 }}
               </th>
             </tr>
@@ -207,15 +207,17 @@ export default {
         this.dataParent = null;
 
         const res = await this.$api.get(
-          `/parents/show-by-userid/${this.idUser}`,
+          `/parent/show-by-userid/${this.idUser}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
           }
         );
-        console.log(res);
-      } catch (error) {}
+        this.dataParent = res.data?.data ?? null;
+      } catch (error) {
+        console.log(error);
+      }
     },
     getDateTime(date) {
       const now = new Date(date);

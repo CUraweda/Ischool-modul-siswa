@@ -20,6 +20,10 @@ const routes = [
         component: () => import("pages/SearchSiswa.vue"),
       },
       {
+        path: "/search-parent",
+        component: () => import("pages/SearchOrtu.vue"),
+      },
+      {
         path: "/verifikasi",
         component: () => import("pages/verifEmail.vue"),
       },
