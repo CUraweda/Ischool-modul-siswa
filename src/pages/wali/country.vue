@@ -199,7 +199,7 @@ export default {
       try {
         const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
         console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate)
-        return planDate[0].Date; // Mengambil tanggal dari array pertama plan_date
+        return planDate[0].Date || planDate[0].date; // Mengambil tanggal dari array pertama plan_date
       } catch (error) {
         console.error('Error parsing plan_date:', error);
       }
@@ -213,7 +213,7 @@ export default {
       this.dateOptions = parsedPlanDate.map(item => {
     return {
       label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
-      value: JSON.stringify([{ Date: item.date, Start: item.start, End: item.end }])
+      value: JSON.stringify([{ date: item.date, start: item.start, end: item.end }])
       };
     });
       this.pickDateDialog = true;
