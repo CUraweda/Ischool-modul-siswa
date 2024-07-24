@@ -209,7 +209,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(item) in task3" :key="item.id">
+                      <tr v-for="item in task3" :key="item.id">
                         <td class="text-center">
                           {{ getDateTime(item?.createdAt) }}
                         </td>
@@ -320,6 +320,7 @@
           style="width: 100%"
           label="Custom header"
           accept=".pdf, .docx, .word,"
+          multiple
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -431,7 +432,8 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word,"
+          accept=".pdf, .docx, .word"
+          multiple
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -484,7 +486,6 @@
               >
                 <q-tooltip>Upload Files</q-tooltip>
               </q-btn>
-
               <q-btn
                 v-if="scope.isUploading"
                 icon="clear"
@@ -716,7 +717,6 @@ export default {
             },
           }
         );
-
         this.taskClass1 = taskWWP.data.data.filter(
           (task) => task.status === "Open"
         );
@@ -726,6 +726,7 @@ export default {
         this.taskClass3 = taskPribadi.data.data.filter(
           (task) => task.status === "Open"
         );
+        console.log(taskPribadi.data.data);
       } catch (error) {
         console.log(error);
       }
