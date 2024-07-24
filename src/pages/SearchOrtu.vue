@@ -72,18 +72,10 @@
                 <th class="text-left">{{ dataParent?.email ?? "-" }}</th>
               </tr>
               <tr>
-                <th class="text-left">Prioritas komunikasi</th>
-                <th class="text-left">{{ dataParent?.com_priority ?? "-" }}</th>
-              </tr>
-              <tr>
                 <th class="text-left">Pekerjaan</th>
                 <th class="text-left">
                   {{ dataParent?.field_of_work ?? "-" }}
                 </th>
-              </tr>
-              <tr>
-                <th class="text-left">Gaji</th>
-                <th class="text-left">{{ dataParent?.salary ?? "-" }}</th>
               </tr>
               <tr>
                 <th class="text-left">Pendidikan terakhir</th>

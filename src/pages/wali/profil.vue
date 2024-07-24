@@ -70,6 +70,12 @@
         <div class="flex justify-between q-mb-md">
           <p class="text-bold text-h5">Data Orang Tua</p>
           <q-btn
+            v-if="dataParent != null"
+            color="secondary"
+            label="Edit"
+            @click="modalEditParent = true"
+          />
+          <q-btn
             v-if="!dataParent"
             color="secondary"
             label="Tautkan"
@@ -118,16 +124,8 @@
               <th class="text-left">{{ dataParent?.email ?? "-" }}</th>
             </tr>
             <tr>
-              <th class="text-left">Prioritas komunikasi</th>
-              <th class="text-left">{{ dataParent?.com_priority ?? "-" }}</th>
-            </tr>
-            <tr>
               <th class="text-left">Pekerjaan</th>
               <th class="text-left">{{ dataParent?.field_of_work ?? "-" }}</th>
-            </tr>
-            <tr>
-              <th class="text-left">Gaji</th>
-              <th class="text-left">{{ dataParent?.salary ?? "-" }}</th>
             </tr>
             <tr>
               <th class="text-left">Pendidikan terakhir</th>
@@ -175,6 +173,105 @@
         </q-markup-table>
       </div>
     </q-card>
+    <q-dialog
+      v-model="modalEditParent"
+      @hide="getDataParent"
+      persistent
+      backdrop-filter="blur(4px)"
+    >
+      <q-card style="width: 540px; max-width: 80vw">
+        <q-card-section>
+          <div class="text-h6">Edit Profil</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            v-model="dataParent.name"
+            outlined
+            label="Nama lengkap"
+            class="q-mb-md"
+          />
+          <q-select
+            v-model="dataParent.status"
+            :options="optStatus"
+            outlined
+            label="Status"
+            class="q-mb-md"
+          />
+          <q-select
+            v-model="dataParent.nationality"
+            :options="optNationality"
+            outlined
+            label="Kewarganegaraan"
+            class="q-mb-md"
+          />
+          <q-select
+            v-model="dataParent.religion"
+            :options="optReligion"
+            outlined
+            label="Agama"
+            class="q-mb-md"
+          />
+          <q-input
+            v-model="dataParent.address"
+            outlined
+            type="textarea"
+            label="Alamat"
+            class="q-mb-md"
+          />
+          <div class="row q-mb-md q-gutter-md">
+            <q-input
+              v-model="dataParent.latitude"
+              outlined
+              label="Latitude"
+              class="q-mb-md"
+            />
+            <q-input
+              v-model="dataParent.longitude"
+              outlined
+              label="Longitude"
+              class="q-mb-md"
+            />
+          </div>
+          <q-input
+            v-model="dataParent.phone"
+            outlined
+            label="Telepon"
+            class="q-mb-md"
+          />
+          <q-input
+            outlined
+            v-model="dataParent.email"
+            type="email"
+            label="Email"
+            class="q-mb-md"
+          />
+          <q-input
+            v-model="dataParent.field_of_work"
+            outlined
+            label="Pekerjaan"
+            class="q-mb-md"
+          />
+          <q-select
+            v-model="dataParent.last_education"
+            :options="optEducation"
+            outlined
+            label="Pendidikan terakhir"
+            class="q-mb-md"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn outline label="Batal" v-close-popup />
+          <q-btn
+            @click="editDataParent"
+            unelevated
+            color="primary"
+            label="Simpan"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -182,6 +279,7 @@
 import { ref } from "vue";
 import Swal from "sweetalert2";
 import { data } from "autoprefixer";
+import { Notify } from "quasar";
 
 export default {
   data() {
@@ -189,10 +287,22 @@ export default {
       dataUser: ref(),
       dataSiswa: ref([]),
       dataParent: ref(null),
+      optStatus: ["Ayah", "Ibu"],
+      optNationality: ["WNI", "WNA"],
+      optReligion: [
+        "Islam",
+        "Kristen",
+        "Protestan",
+        "Hindu",
+        "Buddha",
+        "Kong Hu Cu",
+      ],
+      optEducation: ["TK", "SD", "SMP", "SMA", "SMK", "MA", "S1", "S2", "S3"],
     };
   },
   setup() {
     return {
+      modalEditParent: ref(false),
       token: ref(sessionStorage.getItem("token")),
       idUser: ref(sessionStorage.getItem("idUser")),
     };
@@ -217,6 +327,62 @@ export default {
         this.dataParent = res.data?.data ?? null;
       } catch (error) {
         console.log(error);
+      }
+    },
+    async editDataParent() {
+      try {
+        const {
+          name,
+          status,
+          nationality,
+          religion,
+          address,
+          phone,
+          email,
+          field_of_work,
+          last_education,
+          latitude,
+          longitude,
+        } = this.dataParent;
+        const payload = {
+          name,
+          status,
+          nationality,
+          religion,
+          address,
+          phone,
+          email,
+          field_of_work,
+          last_education,
+          latitude,
+          longitude,
+        };
+        const res = await this.$api.put(`/parent/update/me`, payload, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        this.modalEditParent = false;
+        Swal.fire({
+          icon: "success",
+          title: "Aksi Berhasil",
+          text: "Berhasil memperbarui data",
+        });
+      } catch (error) {
+        console.log(error);
+        if (error.response?.status == 400)
+          Notify.create({
+            position: "top",
+            color: "negative",
+            message: "Periksa kembali input Anda",
+          });
+        else
+          Notify.create({
+            position: "top",
+            color: "negative",
+            message: "Gagal untuk memperbarui data",
+          });
       }
     },
     getDateTime(date) {
