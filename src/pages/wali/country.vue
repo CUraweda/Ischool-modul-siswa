@@ -161,6 +161,11 @@ import Swal from "sweetalert2";
 import { ref } from "vue";
 
 export default {
+  setup() {
+    return {
+      idSiswa: ref(sessionStorage.getItem("idSiswa")),
+    }
+  },
   data() {
     return {
       activity: ref(),
@@ -230,6 +235,7 @@ export default {
           "activity",
           this.model === "Lainnya" ? this.inputActivity : this.model
         );
+        formData.append("student_id", this.idSiswa)
         // formData.append("duration", this.durasi);
         // formData.append("remark", this.keterangan);
 
