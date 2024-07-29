@@ -54,12 +54,7 @@
             <tr>
               <th class="text-left">Status</th>
               <th class="text-left">
-                <q-chip
-                  outline
-                  color="teal"
-                  text-color="white"
-                  icon="verified_user"
-                >
+                <q-chip outline color="teal" text-color="white" icon="verified_user">
                   {{ dataUser?.status === 1 ? "Verified" : "Not Verified" }}
                 </q-chip>
               </th>
@@ -108,11 +103,7 @@
             <tr>
               <th class="text-left">Lokasi koordinat</th>
               <th class="text-left">
-                {{
-                  `${dataParent?.latitude ?? "-"},${
-                    dataParent?.longitude ?? "-"
-                  }`
-                }}
+                {{ `${dataParent?.latitude ?? "-"},${dataParent?.longitude ?? "-"}` }}
               </th>
             </tr>
             <tr>
@@ -232,13 +223,18 @@
               label="Longitude"
               class="q-mb-md"
             />
+            <q-btn padding="sm lg" class="q-mb-md" color="secondary" icon="my_location" @click="getLocation()" />
           </div>
-          <q-input
-            v-model="dataParent.phone"
-            outlined
-            label="Telepon"
-            class="q-mb-md"
-          />
+          <div class="tw-bg-gray-200 q-mb-md" border="sm">
+            <LoadingSpiner v-if="loading" />
+            <LocationMap
+              v-if="!loading && dataParent.latitude && dataParent.longitude"
+              :latitude="dataParent.latitude"
+              :longitude="dataParent.longitude"
+              :loading="loading"
+            />
+          </div>
+          <q-input v-model="dataParent.phone" outlined label="Telepon" class="q-mb-md" />
           <q-input
             outlined
             v-model="dataParent.email"
@@ -263,12 +259,7 @@
 
         <q-card-actions align="right" class="text-primary">
           <q-btn outline label="Batal" v-close-popup />
-          <q-btn
-            @click="editDataParent"
-            unelevated
-            color="primary"
-            label="Simpan"
-          />
+          <q-btn @click="editDataParent" unelevated color="primary" label="Simpan" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -280,8 +271,16 @@ import { ref } from "vue";
 import Swal from "sweetalert2";
 import { data } from "autoprefixer";
 import { Notify } from "quasar";
+import { defineComponent } from 'vue';
+import LocationMap from '../../components/LocationMap.vue';
+import LoadingSpiner from '../../components/LoadingSpiner.vue';
 
 export default {
+  components: {
+    LocationMap,
+    LoadingSpiner,
+  },
+
   data() {
     return {
       dataUser: ref(),
@@ -289,15 +288,9 @@ export default {
       dataParent: ref(null),
       optStatus: ["Ayah", "Ibu"],
       optNationality: ["WNI", "WNA"],
-      optReligion: [
-        "Islam",
-        "Kristen",
-        "Protestan",
-        "Hindu",
-        "Buddha",
-        "Kong Hu Cu",
-      ],
+      optReligion: ["Islam", "Kristen", "Protestan", "Hindu", "Buddha", "Kong Hu Cu"],
       optEducation: ["TK", "SD", "SMP", "SMA", "SMK", "MA", "S1", "S2", "S3"],
+      loading: ref(false)
     };
   },
   setup() {
@@ -312,79 +305,128 @@ export default {
     this.getDataParent();
   },
   methods: {
+    async getLocation() {
+      try {
+        this.loading = true;
+        const position = await new Promise((resolve, reject) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          } else {
+            reject(new Error("Geolocation is not supported by this browser."));
+          }
+        });
+
+        this.dataParent.latitude = position.coords.latitude;
+        this.dataParent.longitude = position.coords.longitude;
+        this.loading = false;
+
+        Notify.create({
+          type: 'positive',
+          message: 'Location data has been filled!',
+        });
+      } catch (error) {
+        this.loading = false;
+        Notify.create({
+          type: 'negative',
+          message: 'Failed to get location!',
+        });
+      }
+    },
+
     async getDataParent() {
       try {
         this.dataParent = null;
 
-        const res = await this.$api.get(
-          `/parent/show-by-userid/${this.idUser}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
-        this.dataParent = res.data?.data ?? null;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async editDataParent() {
-      try {
-        const {
-          name,
-          status,
-          nationality,
-          religion,
-          address,
-          phone,
-          email,
-          field_of_work,
-          last_education,
-          latitude,
-          longitude,
-        } = this.dataParent;
-        const payload = {
-          name,
-          status,
-          nationality,
-          religion,
-          address,
-          phone,
-          email,
-          field_of_work,
-          last_education,
-          latitude,
-          longitude,
-        };
-        const res = await this.$api.put(`/parent/update/me`, payload, {
+        const res = await this.$api.get(`/parent/show-by-userid/${this.idUser}`, {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
         });
-
-        this.modalEditParent = false;
-        Swal.fire({
-          icon: "success",
-          title: "Aksi Berhasil",
-          text: "Berhasil memperbarui data",
-        });
+        this.dataParent = res.data?.data ?? null;
+        this.dataParent.status = res.data?.data.parent_type ?? null
       } catch (error) {
         console.log(error);
-        if (error.response?.status == 400)
-          Notify.create({
-            position: "top",
-            color: "negative",
-            message: "Periksa kembali input Anda",
-          });
-        else
-          Notify.create({
-            position: "top",
-            color: "negative",
-            message: "Gagal untuk memperbarui data",
-          });
       }
     },
+
+    async editDataParent() {
+      const {
+        name,
+        status,
+        nationality,
+        religion,
+        address,
+        phone,
+        email,
+        field_of_work,
+        last_education,
+        latitude,
+        longitude,
+      } = this.dataParent;
+        console.log("🚀 ~ editDataParent ~ status:", status)
+
+
+      const payload = {
+        name,
+        status,
+        nationality,
+        religion,
+        address,
+        phone,
+        email,
+        field_of_work,
+        last_education,
+        latitude,
+        longitude,
+      };
+
+      // Check for missing data
+      const missingData = [];
+      for (const key in payload) {
+        if (!payload[key]) {
+          missingData.push(key);
+        }
+      }
+
+      if (missingData.length > 0) {
+        // Show popup with missing data
+        Notify.create({
+          position: "top",
+          color: "negative",
+          message: `Tolong isi data ${missingData.join(", ")}`,
+        });
+      } else {
+        try {
+          const res = await this.$api.put(`/parent/update/me`, payload, {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          });
+
+          this.modalEditParent = false;
+          Swal.fire({
+            icon: "success",
+            title: "Aksi Berhasil",
+            text: "Berhasil memperbarui data",
+          });
+        } catch (error) {
+          console.log(error);
+          if (error.response?.status == 400)
+            Notify.create({
+              position: "top",
+              color: "negative",
+              message: "Periksa kembali input Anda",
+            });
+          else
+            Notify.create({
+              position: "top",
+              color: "negative",
+              message: "Gagal untuk memperbarui data",
+            });
+        }
+      }
+    },
+
     getDateTime(date) {
       const now = new Date(date);
       const formattedDate = now.toLocaleDateString("id-ID", {
@@ -398,14 +440,11 @@ export default {
       const idUser = sessionStorage.getItem("idUser");
       const token = sessionStorage.getItem("token");
       try {
-        const response = await this.$api.get(
-          `/user-access/show-by-user/${idUser}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await this.$api.get(`/user-access/show-by-user/${idUser}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         console.log(response.data.data);
 
         this.dataSiswa = response.data.data;
