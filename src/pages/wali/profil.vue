@@ -363,12 +363,10 @@ export default {
         latitude,
         longitude,
       } = this.dataParent;
-        console.log("🚀 ~ editDataParent ~ status:", status)
 
 
-      const payload = {
+      let payload = {
         name,
-        status,
         nationality,
         religion,
         address,
@@ -379,6 +377,9 @@ export default {
         latitude,
         longitude,
       };
+
+      payload.parent_type = status;
+      console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type)
 
       // Check for missing data
       const missingData = [];
