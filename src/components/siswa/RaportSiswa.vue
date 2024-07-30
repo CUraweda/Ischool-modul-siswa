@@ -5,6 +5,7 @@
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
         <q-tab name="innerAlarms" icon="history_edu" label="Narasi" />
         <q-tab name="innerMovies" icon="text_snippet" label="Portofolio" />
+        <q-tab name="raport-merge" icon="file_download" label="Raport Gabungan" />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
       </q-tabs>
     </template>
@@ -198,12 +199,13 @@
             </q-tab-panels>
           </q-card>
         </q-tab-panel>
+
         <q-tab-panel name="raport-merge">
           <q-card>
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio />
+                  <MergedRapotPortofolio />
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -317,6 +319,7 @@ import Berfikir from "./raport/narasiBerfikir.vue";
 import NumberRaport from "./raport/numberRaport.vue";
 import Narasi from "./raport/narasi.vue";
 import RapotPortofolio from "./raport/rapotPortofolio.vue";
+import MergedRapotPortofolio from "./raport/mergedRapotPortofolio.vue";
 import Swal from "sweetalert2";
 
 export default {
@@ -502,6 +505,7 @@ export default {
     Narasi,
     NumberRaport,
     RapotPortofolio,
+    MergedRapotPortofolio,
   },
 
   setup(props) {
