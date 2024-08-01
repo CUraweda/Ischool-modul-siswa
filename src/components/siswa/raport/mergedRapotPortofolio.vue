@@ -44,9 +44,8 @@ export default {
         console.log("🚀 ~ getPortofolioRapot ~ data:", data)
         let filteredData;
         if (Array.isArray(data)) {
-          console.log(this.sub)
-          filteredData = data.filter((item) => item.type === "Orang Tua");
-          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData)
+          // console.log(this.sub)
+          filteredData = data.filter((item) => item.type === "Merged");
           const path = filteredData[0]?.file_path ?? null;
           console.log("🚀 ~ getPortofolioRapot ~ path:", path)
           if (path) {
@@ -67,6 +66,7 @@ export default {
       try {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
+        console.log("🚀 ~ downloadTask ~ path:", path)
         const response = await this.$api.get(
           `student-task/download?filepath=${path}&student_id=${idUser}`,
           {
