@@ -245,7 +245,7 @@ export default {
         confirmButtonText: "Yes, logout",
       }).then((result) => {
         if (result.isConfirmed) {
-          sessionStorage.removeItem("token");
+          sessionStorage.clear();
           this.$router.push("/");
         }
       });

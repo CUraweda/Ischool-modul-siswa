@@ -296,6 +296,7 @@ export default {
       alfa: ref(0),
       sakit: ref(0),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
+      idClass: ref(sessionStorage.getItem("idClass")),
       token: ref(sessionStorage.getItem("token")),
       pengumuman: ref([]),
       rekapSampah: ref([]),
@@ -373,7 +374,6 @@ export default {
         }
 
         this.agenda = filterData;
-        console.log(filterData);
       } catch (error) {}
     },
     async getPengumuman() {
@@ -416,11 +416,9 @@ export default {
       }
     },
     async getOverview() {
-      const idClass = sessionStorage.getItem("idClass");
-
       try {
         const response = await this.$api.get(
-          `/overview/show-active?class_id=${idClass || ""}`,
+          `/overview/show-active?class_id=${this.idClass || ""}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
