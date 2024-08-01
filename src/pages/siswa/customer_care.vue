@@ -111,6 +111,7 @@
 import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
 import { ref } from "vue";
 import Swal from "sweetalert2";
+import socket from "../../socket"
 
 export default {
   components: {
@@ -136,6 +137,12 @@ export default {
   },
   mounted() {
     this.getUserChats();
+    socket.connect()
+    socket.on('cc_refresh', () => {
+      console.log('kjldaaskl')
+      this.getUserChats()
+      this.getMessages()
+    })
   },
   watch: {
     currentMessageId: {
@@ -253,6 +260,7 @@ export default {
           });
         }
         this.getMessages();
+        socket.emit('cc', {})
         this.inputMessage = "";
       } catch (err) {
         console.log(err);

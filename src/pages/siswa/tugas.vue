@@ -7,7 +7,11 @@
           <q-card-section>
             <div class="text-center">
               <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large">TUGAS SISWA</span>
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: x-large"
+                  >TUGAS SISWA</span
+                >
               </p>
             </div>
           </q-card-section>
@@ -24,6 +28,7 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
+                        <th class="text-center">Deskripsi</th>
 
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
@@ -39,6 +44,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
+                        <td class="text-center">{{ item?.description }}</td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -50,8 +56,19 @@
                         <td class="text-center">{{ item?.feed_fwd }}</td>
                         <td class="text-center">
                           <div>
-                            <q-btn class="q-mx-sm" icon="download" :disable="!item.up_file" color="green" @click="downloadTask(item.up_file)" />
-                            <q-btn class="q-mx-sm" icon="upload" color="blue" @click="getTaskId(item.id)" />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              :disable="!item.up_file"
+                              color="green"
+                              @click="downloadTask(item.up_file)"
+                            />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="upload"
+                              color="blue"
+                              @click="getTaskId(item.id)"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -59,14 +76,26 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
+                        <td>{{ item?.description }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
                         <td>-</td>
                         <td>
                           <div>
-                            <q-btn class="q-mx-sm" icon="download" color="green" @click="downloadTask(item.task_file)" :disable="!item.task_file" />
-                            <q-btn class="q-mx-sm" icon="upload" color="blue" @click="uploadTugas(item.id)" />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="green"
+                              @click="downloadTask(item.task_file)"
+                              :disable="!item.task_file"
+                            />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="upload"
+                              color="blue"
+                              @click="uploadTugas(item.id)"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -86,6 +115,7 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
+                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
@@ -94,12 +124,13 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(item, index) in task2" :key="item.id">
+                      <tr v-for="item in task2" :key="item.id">
                         <td class="text-center">
                           {{ getDateTime(item?.createdAt) }}
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
+                        <td class="text-center">{{ item?.description }}</td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -111,8 +142,19 @@
                         <td class="text-center">{{ item?.feed_fwd }}</td>
                         <td class="text-center">
                           <div>
-                            <q-btn class="q-mx-sm" icon="download" color="green" @click="downloadTask(item.up_file)" :disable="!item.up_file" />
-                            <q-btn class="q-mx-sm" icon="upload" color="blue" @click="getTaskId(item.id)" />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="green"
+                              @click="downloadTask(item.up_file)"
+                              :disable="!item.up_file"
+                            />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="upload"
+                              color="blue"
+                              @click="getTaskId(item.id)"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -121,14 +163,26 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
+                        <td>{{ item?.description }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
                         <td>-</td>
                         <td>
                           <div>
-                            <q-btn class="q-mx-sm" icon="download" color="green" @click="downloadTask(item.task_file)" :disable="!item.task_file" />
-                            <q-btn class="q-mx-sm" icon="upload" color="blue" @click="uploadTugas(item.id)" />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="green"
+                              @click="downloadTask(item.task_file)"
+                              :disable="!item.task_file"
+                            />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="upload"
+                              color="blue"
+                              @click="uploadTugas(item.id)"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -146,6 +200,7 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
+                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
@@ -154,12 +209,13 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(item, index) in task3" :key="item.id">
+                      <tr v-for="item in task3" :key="item.id">
                         <td class="text-center">
                           {{ getDateTime(item?.createdAt) }}
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
+                        <td class="text-center">{{ item?.description }}</td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -171,8 +227,19 @@
                         <td class="text-center">{{ item?.feed_fwd }}</td>
                         <td class="text-center">
                           <div>
-                            <q-btn class="q-mx-sm" icon="download" color="green" @click="downloadTask(item.up_file)" :disable="!item.up_file"/>
-                            <q-btn class="q-mx-sm" icon="upload" color="blue" @click="getTaskId(item.id)" />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="green"
+                              @click="downloadTask(item.up_file)"
+                              :disable="!item.up_file"
+                            />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="upload"
+                              color="blue"
+                              @click="getTaskId(item.id)"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -181,14 +248,26 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
+                        <td>{{ item?.description }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
                         <td>-</td>
                         <td>
                           <div>
-                            <q-btn class="q-mx-sm" icon="download" color="green" @click="downloadTask(item.task_file)" :disable="!item.task_file" />
-                            <q-btn class="q-mx-sm" icon="upload" color="blue" @click="uploadTugas(item.id)" />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="green"
+                              @click="downloadTask(item.task_file)"
+                              :disable="!item.task_file"
+                            />
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="upload"
+                              color="blue"
+                              @click="uploadTugas(item.id)"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -237,15 +316,32 @@
         </q-markup-table>
 
         <br />
-        <q-uploader style="width: 100%" label="Custom header" accept=".pdf, .docx, .word,">
+        <q-uploader
+          style="width: 100%"
+          label="Custom header"
+          accept=".pdf, .docx, .word,"
+          multiple
+        >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
-              <q-btn v-if="scope.queuedFiles.length > 0" icon="clear_all" @click="scope.removeQueuedFiles" round dense
-                flat>
+              <q-btn
+                v-if="scope.queuedFiles.length > 0"
+                icon="clear_all"
+                @click="scope.removeQueuedFiles"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Clear All</q-tooltip>
               </q-btn>
-              <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round
-                dense flat>
+              <q-btn
+                v-if="scope.uploadedFiles.length > 0"
+                icon="done_all"
+                @click="scope.removeUploadedFiles"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Remove Uploaded Files</q-tooltip>
               </q-btn>
               <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
@@ -255,21 +351,42 @@
                   {{ scope.uploadSizeLabel }}
                 </div>
               </div>
-              <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+              <q-btn
+                v-if="scope.canAddFiles"
+                type="a"
+                icon="add_box"
+                @click="scope.pickFiles"
+                round
+                dense
+                flat
+              >
                 <q-uploader-add-trigger />
                 <q-tooltip>Pick Files</q-tooltip>
               </q-btn>
-              <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="uploadFiles(scope)" round dense flat>
+              <q-btn
+                v-if="scope.canUpload"
+                icon="cloud_upload"
+                @click="uploadFiles(scope)"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Upload Files</q-tooltip>
               </q-btn>
 
-              <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat>
+              <q-btn
+                v-if="scope.isUploading"
+                icon="clear"
+                @click="scope.abort"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Abort Upload</q-tooltip>
               </q-btn>
             </div>
           </template>
         </q-uploader>
-        
       </q-card-section>
 
       <q-card-actions align="right" class="bg-white text-teal">
@@ -312,15 +429,32 @@
         </q-markup-table>
 
         <br />
-        <q-uploader style="width: 100%" label="Custom header" accept=".pdf, .docx, .word,">
+        <q-uploader
+          style="width: 100%"
+          label="Custom header"
+          accept=".pdf, .docx, .word"
+          multiple
+        >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
-              <q-btn v-if="scope.queuedFiles.length > 0" icon="clear_all" @click="scope.removeQueuedFiles" round dense
-                flat>
+              <q-btn
+                v-if="scope.queuedFiles.length > 0"
+                icon="clear_all"
+                @click="scope.removeQueuedFiles"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Clear All</q-tooltip>
               </q-btn>
-              <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round
-                dense flat>
+              <q-btn
+                v-if="scope.uploadedFiles.length > 0"
+                icon="done_all"
+                @click="scope.removeUploadedFiles"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Remove Uploaded Files</q-tooltip>
               </q-btn>
               <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
@@ -330,15 +464,36 @@
                   {{ scope.uploadSizeLabel }}
                 </div>
               </div>
-              <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+              <q-btn
+                v-if="scope.canAddFiles"
+                type="a"
+                icon="add_box"
+                @click="scope.pickFiles"
+                round
+                dense
+                flat
+              >
                 <q-uploader-add-trigger />
                 <q-tooltip>Pick Files</q-tooltip>
               </q-btn>
-              <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="uploadFilesTugasDetail(scope)" round dense flat>
+              <q-btn
+                v-if="scope.canUpload"
+                icon="cloud_upload"
+                @click="uploadFilesTugasDetail(scope)"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Upload Files</q-tooltip>
               </q-btn>
-
-              <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat>
+              <q-btn
+                v-if="scope.isUploading"
+                icon="clear"
+                @click="scope.abort"
+                round
+                dense
+                flat
+              >
                 <q-tooltip>Abort Upload</q-tooltip>
               </q-btn>
             </div>
@@ -383,7 +538,7 @@ export default {
       taskClass1: ref(),
       taskClass2: ref(),
       taskClass3: ref(),
-      dataTaskClass: ref()
+      dataTaskClass: ref(),
     };
   },
   methods: {
@@ -430,34 +585,30 @@ export default {
     async uploadFilesTugasDetail(scope) {
       try {
         const filesToUpload = scope.queuedFiles;
-        const date = new Date()
+        const date = new Date();
 
         const formData = new FormData();
-        formData.append('task_id',this.idTask )
-        formData.append('student_id',this.idSiswa)
-        formData.append('work_date', date)
+        formData.append("task_id", this.idTask);
+        formData.append("student_id", this.idSiswa);
+        formData.append("work_date", date);
 
         filesToUpload.forEach((file) => {
           formData.append("up_file", file);
         });
 
-        const response = await this.$api.post(
-          `task-detail/create`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
+        const response = await this.$api.post(`task-detail/create`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.medium = false;
-          Swal.fire({
-            title: "Tugas berhasil di upload !",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "Oke",
-          });
+        Swal.fire({
+          title: "Tugas berhasil di upload !",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "Oke",
+        });
       } catch (error) {
         this.medium = false;
         console.error("Error uploading files:", error); // Handle error if necessary
@@ -549,7 +700,7 @@ export default {
             },
           }
         );
-       
+
         const taskProject = await this.$api.get(
           `task/show-by-class/${idKelas}?cat=2`,
           {
@@ -566,10 +717,16 @@ export default {
             },
           }
         );
-      
-        this.taskClass1 = taskWWP.data.data.filter(task => task.status === 'Open');
-        this.taskClass2 = taskProject.data.data.filter(task => task.status === 'Open');
-        this.taskClass3 = taskPribadi.data.data.filter(task => task.status === 'Open');
+        this.taskClass1 = taskWWP.data.data.filter(
+          (task) => task.status === "Open"
+        );
+        this.taskClass2 = taskProject.data.data.filter(
+          (task) => task.status === "Open"
+        );
+        this.taskClass3 = taskPribadi.data.data.filter(
+          (task) => task.status === "Open"
+        );
+        console.log(taskPribadi.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -594,8 +751,8 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        this.dataTaskClass = response.data.data
-       console.log(response.data.data);
+        this.dataTaskClass = response.data.data;
+        console.log(response.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -629,10 +786,10 @@ export default {
       }
     },
 
-    uploadTugas(id){
+    uploadTugas(id) {
       this.idTask = id;
-      this.getTaskClassById(id)
-      this.medium = true
+      this.getTaskClassById(id);
+      this.medium = true;
     },
 
     getTaskId(id) {
