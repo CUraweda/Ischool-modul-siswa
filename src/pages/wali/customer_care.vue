@@ -260,7 +260,7 @@ export default {
     },
     async getDataGuru() {
       try {
-        const response = await this.$api.get("user/show-by-roles?ids=6", {
+        const response = await this.$api.get("user/show-by-roles?ids=6,2", {
           headers: {
             Authorization: `Bearer ${this.token}`,
             "Content-Type": "Application/json",
