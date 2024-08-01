@@ -138,8 +138,9 @@ export default {
   mounted() {
     this.getUserChats();
     socket.connect()
-    socket.on('cc-refresh', () => {
+    socket.on('cc_refresh', () => {
       this.getUserChats()
+      this.getMessages()
     })
   },
   watch: {
@@ -258,7 +259,7 @@ export default {
           });
         }
         this.getMessages();
-        socket.emit('cc-update', {})
+        socket.emit('cc', {})
         this.inputMessage = "";
       } catch (err) {
         console.log(err);

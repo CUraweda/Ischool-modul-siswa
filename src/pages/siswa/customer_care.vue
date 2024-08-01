@@ -139,7 +139,6 @@ export default {
     this.getUserChats();
     socket.connect()
     socket.on('cc_refresh', () => {
-      console.log('kjldaaskl')
       this.getUserChats()
       this.getMessages()
     })
