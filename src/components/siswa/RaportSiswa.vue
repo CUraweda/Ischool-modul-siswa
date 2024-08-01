@@ -1,5 +1,5 @@
 <template>
-  <q-splitter v-if="trigerRapot" v-model="splitterModel" style="height: 75vh">
+  <q-splitter v-if="trigerRapot && avabile" v-model="splitterModel" style="height: 75vh">
     <template v-slot:before>
       <q-tabs v-model="innerTab" vertical class="text-teal">
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
@@ -216,7 +216,7 @@
   </q-splitter>
 
   <div
-    v-if="!trigerRapot"
+    v-if="!trigerRapot || !avabile"
     class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
   >
     <span class="tw-text-xl">Raport Belum Tersedia</span>
@@ -485,18 +485,31 @@ export default {
     },
   },
   mounted() {
+    console.log("gedagedi", this.avabile)
     this.getCommnentParent();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
   },
+
+  watch: {
+    avabile(newVal) {
+      console.log("OHIO:", newVal);
+    }
+  },
+
   name: "Rapot",
   props: {
     TabPilihan: {
       type: String,
       required: true,
     },
+    avabile: {
+      type: Boolean,
+      required: true,
+    },
   },
+
   components: {
     Tahsin,
     Akhlak,
@@ -518,6 +531,7 @@ export default {
       splitterModel: ref(20),
       editor: ref("Sangat Baik !"),
       TabPilihan: props.TabPilihan,
+      // avabile: props.avabile,
       editedComment: ref(""),
       submittedComment: ref(""),
       kategori: ref(),
