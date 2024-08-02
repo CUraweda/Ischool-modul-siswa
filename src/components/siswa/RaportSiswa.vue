@@ -344,6 +344,7 @@ export default {
       editedCommentPorto: "",
       submittedCommentPorto: "",
       role: ref(sessionStorage.getItem("role")),
+      studentClassId: ref(sessionStorage.getItem("studentClassId")),
       dataRapot: ref([]),
       trigerRapot: ref(true),
       reportId: ref(),
@@ -391,8 +392,8 @@ export default {
           this.submittedComment = dataState?.nar_parent_comments;
           this.submittedCommentPorto = dataState?.por_parent_comments;
 
-          sessionStorage.setItem("raportId", response.data.data.id);
-          this.reportId = response.data.data.id;
+          sessionStorage.setItem("raportId", dataState.id);
+          this.reportId = dataState.id;
         } else {
           this.trigerRapot = false;
           // console.log("kosong");
@@ -432,7 +433,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: idSiswa,
+            student_class_id: this.studentClassId,
             semester: this.TabPilihan,
             nar_parent_comments: this.editedComment,
           },
@@ -450,7 +451,6 @@ export default {
       }
     },
     async submitCommentPorto() {
-      const student_class_id = sessionStorage.getItem("idSiswa");
       const RaportId = sessionStorage.getItem("raportId");
 
       const token = sessionStorage.getItem("token");
@@ -458,7 +458,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: student_class_id,
+            student_class_id: this.studentClassId,
             semester: this.TabPilihan,
             por_parent_comments: this.editedCommentPorto,
           },
