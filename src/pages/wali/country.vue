@@ -44,6 +44,10 @@
                 <div class="">
                   <div class="text-left text-bold flex tw-justify-between tw-px-5 tw-my-5">
                     <div class="tw-text-xl">Rekap</div>
+                    <div>
+                      <!-- <q-btn color="blue" label="Tambah" @click="countryDialog = true" /> -->
+                      <q-btn color="blue" label="Tambah" @click="alert = true" />
+                    </div>
                   </div>
                   <q-scroll-area style="
                       height: 400px;
@@ -346,7 +350,7 @@ export default {
         const id = sessionStorage.getItem("idUser");
         const token = sessionStorage.getItem("token");
         const response = await this.$api.get(
-          `for-country/show-by-user/${id}?academic=2023/2024`,
+          `for-country/show-by-user/${id}?academic=2024/2025`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
