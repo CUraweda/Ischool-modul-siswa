@@ -1,9 +1,5 @@
 <template>
-  <q-splitter
-    v-if="trigerRapot && avabile"
-    v-model="splitterModel"
-    style="height: 75vh"
-  >
+  <q-splitter v-if="trigerRapot" v-model="splitterModel" style="height: 75vh">
     <template v-slot:before>
       <q-tabs v-model="innerTab" vertical class="text-teal">
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
@@ -234,7 +230,7 @@
   </q-splitter>
 
   <div
-    v-if="!trigerRapot || !avabile"
+    v-if="!trigerRapot"
     class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
   >
     <span class="tw-text-xl">Raport Belum Tersedia</span>
@@ -368,8 +364,8 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
-        this.idSiswa = response.data.data[0].studentclasses[0].id;
-        this.submitComment();
+        this.idSiswa = response.data.data[0].id;
+        // this.submitComment();
         this.getCommnentParent();
         console.log(this.idSiswa);
       } catch (error) {
@@ -378,33 +374,31 @@ export default {
     },
     async getCommnentParent() {
       const token = sessionStorage.getItem("token");
-      const idSiswa = this.idSiswa;
-      console.log(idSiswa);
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${idSiswa}&semester=${this.TabPilihan}`,
+          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        const dataState = response.data.data;
-        // console.log(dataState);
-
-        if (dataState && dataState.length > 0) {
+        const dataState = response.data.data[0];
+        console.log(dataState);
+        if (dataState) {
           this.trigerRapot = true;
-          this.dataRapot = response?.data?.data[0];
-          this.submittedComment = response?.data?.data[0]?.nar_parent_comments;
-          this.submittedCommentPorto =
-            response?.data?.data[0]?.por_parent_comments;
+          this.dataRapot = dataState;
+          this.submittedComment = dataState?.nar_parent_comments;
+          this.submittedCommentPorto = dataState?.por_parent_comments;
 
-          sessionStorage.setItem("raportId", response.data.data[0].id);
-          this.reportId = response.data.data[0].id;
+          sessionStorage.setItem("raportId", response.data.data.id);
+          this.reportId = response.data.data.id;
         } else {
           this.trigerRapot = false;
           // console.log("kosong");
         }
+
+        console.log("HDUASGVDJBASJDBJKA", this.trigerRapot);
       } catch (error) {
         console.log(error);
       }
@@ -546,10 +540,10 @@ export default {
       type: String,
       required: true,
     },
-    avabile: {
-      type: Boolean,
-      required: true,
-    },
+    // avabile: {
+    //   type: Boolean,
+    //   required: true,
+    // },
   },
 
   components: {
