@@ -436,7 +436,7 @@
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
-              <tr class="text-left">{{ dataDetailTask?.feedback }}</tr>td>
+              <td class="text-left">{{ dataDetailTask?.feedback }}</td>
               <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
                 <td class="text-left">
                   : {{ item .feedback}}
@@ -448,7 +448,7 @@
 
         <br />
         <q-uploader
-        v-if="!dataTaskClass?.task_file"
+        v-if="!dataDetailTask"
           style="width: 100%"
           label="Custom header"
           accept=".pdf, .docx, .word"
