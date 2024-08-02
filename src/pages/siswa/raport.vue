@@ -23,11 +23,9 @@
                 <q-tab-panels v-model="tab" animated>
                   <q-tab-panel name="1" class="q-pa-none">
                     <RapotSiswa :TabPilihan="'1'" :avabile="isAvabile"/>
-                    <RapotSiswa :TabPilihan="'1'" :avabile="isAvabile"/>
                   </q-tab-panel>
 
                   <q-tab-panel name="2">
-                    <RapotSiswa :TabPilihan="'2'" :avabile="isAvabile"/>
                     <RapotSiswa :TabPilihan="'2'" :avabile="isAvabile"/>
                   </q-tab-panel>
                 </q-tab-panels>
