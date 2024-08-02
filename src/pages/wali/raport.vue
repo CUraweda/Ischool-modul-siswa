@@ -73,6 +73,13 @@ export default {
     };
   },
 
+  watch: {
+   tab(newVal) {
+   
+      sessionStorage.setItem('smt', newVal);
+    }
+  },
+
   mounted() {
     this.getDataUnpaidBiling()
   },
