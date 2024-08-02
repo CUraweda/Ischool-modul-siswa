@@ -23,9 +23,11 @@
                 <q-tab-panels v-model="tab" animated>
                   <q-tab-panel name="1" class="q-pa-none">
                     <RapotSiswa :TabPilihan="'1'" :avabile="isAvabile"/>
+                    <RapotSiswa :TabPilihan="'1'" :avabile="isAvabile"/>
                   </q-tab-panel>
 
                   <q-tab-panel name="2">
+                    <RapotSiswa :TabPilihan="'2'" :avabile="isAvabile"/>
                     <RapotSiswa :TabPilihan="'2'" :avabile="isAvabile"/>
                   </q-tab-panel>
                 </q-tab-panels>
@@ -72,6 +74,44 @@ export default {
     }
   },
 
+  mounted() {
+    this.getDataUnpaidBiling()
+  },
+
+  methods: {
+    async getDataUnpaidBiling() {
+      const idSiswa = sessionStorage.getItem("idSiswa");
+      console.log("🚀 ~ getDataUnpaidBiling ~ idSiswa:", idSiswa)
+      const token = sessionStorage.getItem("token");
+
+      try {
+        const response = await this.$api.get(
+          `/student-bills/get-by-student-id/${idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              status: "belum lunas",
+            },
+          }
+        );
+        console.log("🚀 ~ getDataUnpaidBiling ~ response:", response)
+
+        // const filterDataBilling = response.data.data.filter((a) => a.paidoff_at === null);
+        // console.log("🚀 ~ getDataUnpaidBiling ~ filterDataBilling:", filterDataBilling)
+
+        const dataBilling = response.data.data.length;
+        this.isAvabile = dataBilling <= 0;
+
+        // console.log("🚀 ~ getDataUnpaidBiling ~ this.isAvabile:", this.isAvabile)
+        // console.log("🚀 ~ getDataUnpaidBiling ~ this.dataBilling:", dataBilling)
+        // console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
 
   mounted() {
     this.getDataUnpaidBiling()
