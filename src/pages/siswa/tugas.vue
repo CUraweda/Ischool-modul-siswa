@@ -33,6 +33,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -118,6 +119,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -202,6 +204,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
