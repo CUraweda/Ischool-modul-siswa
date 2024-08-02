@@ -271,7 +271,7 @@ export default {
         const level = response.data.data[0].student.level;
         sessionStorage.setItem("idSiswa", id);
         sessionStorage.setItem("level", level);
-        this.getSiswaById(id)
+        this.getSiswaById(id);
       } catch (error) {
         console.log(error);
       }
@@ -280,6 +280,8 @@ export default {
     async getSiswaById(idSiswa) {
       try {
         const token = sessionStorage.getItem("token");
+        const idSiswa = sessionStorage.getItem("idSiswa");
+
         const response = await this.$api.get(`/student/show/${idSiswa}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -287,7 +289,6 @@ export default {
         });
         const id = response.data.data[0].studentclasses[0].class_id;
         sessionStorage.setItem("idClass", id);
-        
       } catch (err) {
         console.log(err);
       }

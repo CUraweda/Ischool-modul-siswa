@@ -244,7 +244,7 @@ export default {
     setInterval(() => {
       this.getCurrentDateTime();
     }, 60000);
-    this. getSiswaById()
+    this.getSiswaById();
   },
 
   methods: {
@@ -316,7 +316,7 @@ export default {
           sessionStorage.setItem("idSiswa", dataSelect.value);
           this.selectedStudent = dataSelect;
         }
-        this.getSiswaById(idSiswa)
+        this.getSiswaById(idSiswa);
       } catch (error) {
         console.log(error);
       }
@@ -324,6 +324,7 @@ export default {
     async getSiswaById(idSiswa) {
       try {
         const token = sessionStorage.getItem("token");
+        const idSiswa = sessionStorage.getItem("idSiswa");
         const response = await this.$api.get(`/student/show/${idSiswa}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -332,7 +333,6 @@ export default {
         console.log(response.data.data[0].studentclasses[0].class_id);
         const id = response.data?.data[0]?.studentclasses[0]?.class_id;
         sessionStorage.setItem("idClass", id);
-
       } catch (err) {
         console.log(err);
       }
