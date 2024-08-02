@@ -608,6 +608,7 @@ export default {
 
     async getDataTugas() {
       try {
+        console.log("🚀 ~ getDataTugas ~ this.idSiswa:", this.idSiswa)
         const taskParent = await this.$api.get(
           `student-task/show-by-student/${this.idSiswa}?cat=Work With Parents`,
           {
