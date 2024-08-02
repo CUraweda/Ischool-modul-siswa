@@ -386,7 +386,7 @@ export default {
 
       try {
         const response = await this.$api.get(
-          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}`,
+          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}&class_id=${this.idClass}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
