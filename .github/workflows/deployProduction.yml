@@ -1,11 +1,9 @@
-
 name: Deploy Modul Siswa App to cPanel
 
 on:
   push:
     branches:
       - main # Atau branch yang Anda gunakan
-
 
 jobs:
   build-and-deploy:
@@ -16,11 +14,14 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
-    - name: Upload to cPanel
+    - name: Upload to cPanel via SFTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_HOSTNAME_SADE }}
-        username: ${{ secrets.FTP_USERNAME_SADE }}
-        password: ${{ secrets.FTP_PASSWORD_SADE }}
+        server: ${{ secrets.SFTP_HOSTNAME_SADE }}
+        username: ${{ secrets.SFTP_USERNAME_SADE }}
+        password: ${{ secrets.SFTP_PASSWORD_SADE }}
         local-dir: ./dist/spa/
-        server-dir: / 
+        server-dir: /
+        protocol: sftp
+        passive: true
+        timeout: 60000 # Timeout in milliseconds
