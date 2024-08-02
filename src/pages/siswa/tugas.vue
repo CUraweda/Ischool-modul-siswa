@@ -311,7 +311,7 @@
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
-              <td class="text-left"><td>{{dataDetailTask}}</td>
+              <td class="text-left">{{ dataDetailTask}} </td>
               <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
                 <td class="text-left">
                   : {{ item.feedback }}
