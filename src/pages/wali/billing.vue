@@ -77,7 +77,7 @@
                             <th class="text-center">Tipe Pembayaran</th>
                             <th class="text-center">Total</th>
                             <th class="text-center">Status</th>
-                            <th v-if="bill != 'unpaid'" class="text-center">Kuitansi</th>
+                            <!-- <th v-if="bill != 'unpaid'" class="text-center">Kuitansi</th> -->
                           </tr>
                         </thead>
                         <tbody>
@@ -106,14 +106,14 @@
                             <td class="text-center">
                               {{ item?.status }}
                             </td>
-                            <td v-if="bill != 'unpaid'" class="text-center">
+                            <!-- <td v-if="bill != 'unpaid'" class="text-center">
                               <q-btn
                                 outline
                                 style="color: grey"
                                 label="Download"
                                 :disable="!item?.evidence_path"
                               />
-                            </td>
+                            </td> -->
                           </tr>
                         </tbody>
                       </q-markup-table>

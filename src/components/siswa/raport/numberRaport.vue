@@ -129,7 +129,7 @@ export default {
       const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}`,
+          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}&`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
