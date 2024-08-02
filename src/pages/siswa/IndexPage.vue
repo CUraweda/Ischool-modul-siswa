@@ -296,6 +296,7 @@ export default {
       alfa: ref(0),
       sakit: ref(0),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
+      idClass: ref(sessionStorage.getItem("idClass")),
       token: ref(sessionStorage.getItem("token")),
       pengumuman: ref([]),
       rekapSampah: ref([]),
@@ -373,10 +374,11 @@ export default {
         }
 
         this.agenda = filterData;
-        console.log(filterData);
       } catch (error) {}
     },
     async getPengumuman() {
+      const idClass = sessionStorage.getItem("idClass");
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
@@ -386,7 +388,7 @@ export default {
 
       try {
         const response = await this.$api.get(
-          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}`,
+          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}&class_id=${idClass}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -416,11 +418,9 @@ export default {
       }
     },
     async getOverview() {
-      const idClass = sessionStorage.getItem("idClass");
-
       try {
         const response = await this.$api.get(
-          `/overview/show-active?class_id=${idClass || ""}`,
+          `/overview/show-active?class_id=${this.idClass || ""}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,

@@ -44,10 +44,6 @@
                 <div class="">
                   <div class="text-left text-bold flex tw-justify-between tw-px-5 tw-my-5">
                     <div class="tw-text-xl">Rekap</div>
-                    <div>
-                      <q-btn color="blue" label="Tambah" @click="countryDialog = true" />
-                      <q-btn color="blue" label="Tambah" @click="alert = true" />
-                    </div>
                   </div>
                   <q-scroll-area style="
                       height: 400px;
@@ -182,6 +178,11 @@ import Swal from "sweetalert2";
 import { ref } from "vue";
 
 export default {
+  setup() {
+    return {
+      idSiswa: ref(sessionStorage.getItem("idSiswa")),
+    }
+  },
   data() {
     return {
       academic_year: ref(""),
@@ -221,29 +222,27 @@ export default {
   },
   methods: {
     getDateFromPlanDate(activity) {
-      if (activity.is_date_approved) {
-        try {
-          const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
-          console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate);
-          return planDate[0].Date; // Mengambil tanggal dari array pertama plan_date
-        } catch (error) {
-          console.error("Error parsing plan_date:", error);
-        }
+    if (activity.is_date_approved) {
+      try {
+        const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
+        console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate)
+        return planDate[0].Date || planDate[0].date; // Mengambil tanggal dari array pertama plan_date
+      } catch (error) {
+        console.error('Error parsing plan_date:', error);
       }
-      return null;
-    },
+    }
+    return null;
+  },
 
     async pickDate(plan_date, countryId) {
       this.countryId = countryId;
       const parsedPlanDate = JSON.parse(plan_date);
-      this.dateOptions = parsedPlanDate.map((item) => {
-        return {
-          label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
-          value: JSON.stringify([
-            { Date: item.date, Start: item.start, End: item.end },
-          ]),
-        };
-      });
+      this.dateOptions = parsedPlanDate.map(item => {
+    return {
+      label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
+      value: JSON.stringify([{ date: item.date, start: item.start, end: item.end }])
+      };
+    });
       this.pickDateDialog = true;
     },
 
@@ -280,6 +279,7 @@ export default {
           "activity",
           this.model === "Lainnya" ? this.inputActivity : this.model
         );
+        formData.append("student_id", this.idSiswa)
         // formData.append("duration", this.durasi);
         // formData.append("remark", this.keterangan);
 

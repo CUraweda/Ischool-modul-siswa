@@ -102,7 +102,7 @@
                           </p>
 
                           <p class="tw-mt-5 tw-text-xl tw-font-bold">Capaian</p>
-                          <div id="chart" class="tw-w-full">
+                          <div id="chart" class=" chart-container">
                             <apexchart
                               type="radialBar"
                               :options="chartOptions1"
@@ -358,6 +358,7 @@ export default {
       chartOptions1: {
         chart: {
           type: "radialBar",
+          height: '100%',
           offsetY: -20,
           sparkline: {
             enabled: true,
@@ -504,3 +505,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.chart-container {
+  max-height: 180px;
+  overflow: hidden;
+}
+</style>
