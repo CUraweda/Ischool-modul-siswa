@@ -332,6 +332,8 @@ export default {
         });
         console.log(response.data.data[0].studentclasses[0].class_id);
         const id = response.data?.data[0]?.studentclasses[0]?.class_id;
+        const idStudent = response.data.data[0].studentclasses[0].id;
+        sessionStorage.setItem("studentClassId", idStudent);
         sessionStorage.setItem("idClass", id);
       } catch (err) {
         console.log(err);

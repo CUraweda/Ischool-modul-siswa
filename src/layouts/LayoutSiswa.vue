@@ -269,6 +269,7 @@ export default {
         this.kelas = response.data.data[0].student.class;
         const id = response.data.data[0].student.id;
         const level = response.data.data[0].student.level;
+
         sessionStorage.setItem("idSiswa", id);
         sessionStorage.setItem("level", level);
         this.getSiswaById(id);
@@ -288,6 +289,8 @@ export default {
           },
         });
         const id = response.data.data[0].studentclasses[0].class_id;
+        const idStudent = response.data.data[0].studentclasses[0].id;
+        sessionStorage.setItem("studentClassId", idStudent);
         sessionStorage.setItem("idClass", id);
       } catch (err) {
         console.log(err);
