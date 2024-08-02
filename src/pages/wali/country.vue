@@ -44,10 +44,6 @@
                 <div class="">
                   <div class="text-left text-bold flex tw-justify-between tw-px-5 tw-my-5">
                     <div class="tw-text-xl">Rekap</div>
-                    <div>
-                      <q-btn color="blue" label="Tambah" @click="countryDialog = true" />
-                      <q-btn color="blue" label="Tambah" @click="alert = true" />
-                    </div>
                   </div>
                   <q-scroll-area style="
                       height: 400px;
