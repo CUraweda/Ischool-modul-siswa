@@ -34,7 +34,7 @@
                       <br /><br />
                       <span style="font-size: large">
                         Target : <br />
-                        {{ activity?.target }} Jam Pertahun
+                        {{ forCountryId?.target }} Jam Pertahun
                       </span>
                     </div>
                   </div>
@@ -122,7 +122,8 @@
           <q-input class="q-mt-md" filled label="Lainnya" v-model="inputActivity" />
         </div>
         <div>Tahun Ajaran</div>
-        <q-select filled v-model="forCountryId" :options="optionAcademic" label="Aktivitas" />
+        <q-select filled v-model="forCountryId" :options="optionAcademic" label="Tahun Ajaran" />
+        <div>Target: <b>{{ forCountryId?.target }} jam</b></div>
 
       </q-card-section>
 
@@ -358,12 +359,13 @@ export default {
           }
         );
         if (response.data.data.length < 1) return
-        this.activity = response.data.data[0].id
+        this.activity = response.data.data[0]
         this.optionAcademic = response.data.data.map((item) => {
           this.countryActivity = [this.countryActivity, ...item.forcountrydetails]
 
           return {
             label: item.academic_year,
+            target: item.target ?? 0,
             value: item.id
           }
         })
