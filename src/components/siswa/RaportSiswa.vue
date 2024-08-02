@@ -36,7 +36,7 @@
                 :name="'page' + index"
                 :label="item.category"
               /> -->
-            <q-tab name="page15" label="Narasi"/>
+              <q-tab name="page15" label="Narasi" />
               <q-tab name="page14" label="Komentar Guru" />
               <q-tab name="page13" label="Komentar Ortu" />
             </q-tabs>
@@ -330,16 +330,36 @@ export default {
       dataRapot: ref([]),
       trigerRapot: ref(true),
       reportId: ref(),
+      idSiswa: ref(),
       medium: ref(false),
     };
   },
   methods: {
-    async getCommnentParent() {
-      const idUser = sessionStorage.getItem("idSiswa");
+    async getIdSiswa() {
+      const idSiswa = sessionStorage.getItem("idSiswa");
       const token = sessionStorage.getItem("token");
+
+      try {
+        const response = await this.$api.get(`/student/show/${idSiswa}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.idSiswa = response.data.data[0].studentclasses[0].id;
+        this.submitComment();
+        this.getCommnentParent();
+        console.log(this.idSiswa);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getCommnentParent() {
+      const token = sessionStorage.getItem("token");
+      const idSiswa = this.idSiswa;
+      console.log(idSiswa);
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}`,
+          `/student-report/show-by-student?id=${idSiswa}&semester=${this.TabPilihan}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -353,7 +373,8 @@ export default {
           this.trigerRapot = true;
           this.dataRapot = response?.data?.data[0];
           this.submittedComment = response?.data?.data[0]?.nar_parent_comments;
-          this.submittedCommentPorto = response?.data?.data[0]?.por_parent_comments;
+          this.submittedCommentPorto =
+            response?.data?.data[0]?.por_parent_comments;
 
           sessionStorage.setItem("raportId", response.data.data[0].id);
           this.reportId = response.data.data[0].id;
@@ -386,7 +407,7 @@ export default {
     },
 
     async submitComment() {
-      const student_class_id = sessionStorage.getItem("idSiswa");
+      const idSiswa = this.idSiswa;
       const RaportId = sessionStorage.getItem("raportId");
 
       const token = sessionStorage.getItem("token");
@@ -394,7 +415,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: student_class_id,
+            student_class_id: idSiswa,
             semester: this.TabPilihan,
             nar_parent_comments: this.editedComment,
           },
@@ -432,7 +453,7 @@ export default {
         );
 
         this.getCommnentParent();
-        console.log('sukses');
+        console.log("sukses");
         this.editedCommentPorto = "";
       } catch (error) {
         console.log(error);
@@ -483,6 +504,7 @@ export default {
   },
   mounted() {
     this.getCommnentParent();
+    this.getIdSiswa();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
