@@ -7,6 +7,16 @@
         <q-tab name="innerMovies" icon="text_snippet" label="Portofolio" />
         <q-tab name="raport-merge" icon="file_download" label="Raport Gabungan" />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
+        <div class="q-mt-md flex justify-center">
+          <q-select
+            class="text-center"
+            style="width:150px"
+            filled
+            v-model="tahun"
+            :options="options"
+            label="Tahun"
+          />
+        </div>
       </q-tabs>
     </template>
 
@@ -19,7 +29,7 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" />
+          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun"/>
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -334,6 +344,8 @@ export default {
       trigerRapot: ref(true),
       reportId: ref(),
       medium: ref(false),
+      tahun: ref("2023/2024"),
+      options: ["2023/2024", "2024/2025"],
     };
   },
   methods: {
@@ -350,7 +362,7 @@ export default {
           }
         );
         const dataState = response.data.data;
-        console.log(dataState);
+        // console.log(dataState);
 
         if (dataState && dataState.length > 0) {
           this.trigerRapot = true;
@@ -362,7 +374,7 @@ export default {
           this.reportId = response.data.data[0].id;
         } else {
           this.trigerRapot = false;
-          console.log("kosong");
+          // console.log("kosong");
         }
       } catch (error) {
         console.log(error);
@@ -435,7 +447,7 @@ export default {
         );
 
         this.getCommnentParent();
-        console.log('sukses');
+        // console.log('sukses');
         this.editedCommentPorto = "";
       } catch (error) {
         console.log(error);
@@ -485,7 +497,7 @@ export default {
     },
   },
   mounted() {
-    console.log("gedagedi", this.avabile)
+    // console.log("gedagedi", this.avabile)
     this.getCommnentParent();
     if (this.trigerRapot) {
       this.getKategoriRapot();
@@ -493,9 +505,9 @@ export default {
   },
 
   watch: {
-    avabile(newVal) {
-      console.log("OHIO:", newVal);
-    }
+    // avabile(newVal) {
+      // console.log("OHIO:", newVal);
+    // }
   },
 
   name: "Rapot",
