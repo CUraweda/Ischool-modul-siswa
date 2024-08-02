@@ -1,16 +1,20 @@
 <template>
-  <q-splitter v-if="trigerRapot && avabile" v-model="splitterModel" style="height: 75vh">
+  <q-splitter v-if="trigerRapot" v-model="splitterModel" style="height: 75vh">
     <template v-slot:before>
       <q-tabs v-model="innerTab" vertical class="text-teal">
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
         <q-tab name="innerAlarms" icon="history_edu" label="Narasi" />
         <q-tab name="innerMovies" icon="text_snippet" label="Portofolio" />
-        <q-tab name="raport-merge" icon="file_download" label="Raport Gabungan" />
+        <q-tab
+          name="raport-merge"
+          icon="file_download"
+          label="Raport Gabungan"
+        />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
         <div class="q-mt-md flex justify-center">
           <q-select
             class="text-center"
-            style="width:150px"
+            style="width: 150px"
             filled
             v-model="tahun"
             :options="options"
@@ -29,7 +33,7 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun"/>
+          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -47,7 +51,7 @@
                 :name="'page' + index"
                 :label="item.category"
               /> -->
-            <q-tab name="page15" label="Narasi"/>
+              <q-tab name="page15" label="Narasi" />
               <q-tab name="page14" label="Komentar Guru" />
               <q-tab name="page13" label="Komentar Ortu" />
             </q-tabs>
@@ -226,7 +230,7 @@
   </q-splitter>
 
   <div
-    v-if="!trigerRapot || !avabile"
+    v-if="!trigerRapot"
     class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
   >
     <span class="tw-text-xl">Raport Belum Tersedia</span>
@@ -340,42 +344,62 @@ export default {
       editedCommentPorto: "",
       submittedCommentPorto: "",
       role: ref(sessionStorage.getItem("role")),
+      studentClassId: ref(sessionStorage.getItem("studentClassId")),
       dataRapot: ref([]),
       trigerRapot: ref(true),
       reportId: ref(),
+      idSiswa: ref(),
       medium: ref(false),
       tahun: ref("2023/2024"),
       options: ["2023/2024", "2024/2025"],
     };
   },
   methods: {
+    async getIdSiswa() {
+      const idSiswa = sessionStorage.getItem("idSiswa");
+      const token = sessionStorage.getItem("token");
+
+      try {
+        const response = await this.$api.get(`/student/show/${idSiswa}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.idSiswa = response.data.data[0].id;
+        // this.submitComment();
+        this.getCommnentParent();
+        console.log(this.idSiswa);
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async getCommnentParent() {
-      const idUser = sessionStorage.getItem("idSiswa");
       const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}`,
+          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        const dataState = response.data.data;
-        // console.log(dataState);
-
-        if (dataState && dataState.length > 0) {
+        const dataState = response.data.data[0];
+        console.log(dataState);
+        if (dataState) {
           this.trigerRapot = true;
-          this.dataRapot = response?.data?.data[0];
-          this.submittedComment = response?.data?.data[0]?.nar_parent_comments;
-          this.submittedCommentPorto = response?.data?.data[0]?.por_parent_comments;
+          this.dataRapot = dataState;
+          this.submittedComment = dataState?.nar_parent_comments;
+          this.submittedCommentPorto = dataState?.por_parent_comments;
 
-          sessionStorage.setItem("raportId", response.data.data[0].id);
-          this.reportId = response.data.data[0].id;
+          sessionStorage.setItem("raportId", dataState.id);
+          this.reportId = dataState.id;
         } else {
           this.trigerRapot = false;
           // console.log("kosong");
         }
+
+        console.log("HDUASGVDJBASJDBJKA", this.trigerRapot);
       } catch (error) {
         console.log(error);
       }
@@ -401,7 +425,7 @@ export default {
     },
 
     async submitComment() {
-      const student_class_id = sessionStorage.getItem("idSiswa");
+      const idSiswa = this.idSiswa;
       const RaportId = sessionStorage.getItem("raportId");
 
       const token = sessionStorage.getItem("token");
@@ -409,7 +433,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: student_class_id,
+            student_class_id: this.studentClassId,
             semester: this.TabPilihan,
             nar_parent_comments: this.editedComment,
           },
@@ -427,7 +451,6 @@ export default {
       }
     },
     async submitCommentPorto() {
-      const student_class_id = sessionStorage.getItem("idSiswa");
       const RaportId = sessionStorage.getItem("raportId");
 
       const token = sessionStorage.getItem("token");
@@ -435,7 +458,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: student_class_id,
+            student_class_id: this.studentClassId,
             semester: this.TabPilihan,
             por_parent_comments: this.editedCommentPorto,
           },
@@ -499,6 +522,7 @@ export default {
   mounted() {
     // console.log("gedagedi", this.avabile)
     this.getCommnentParent();
+    this.getIdSiswa();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
@@ -506,7 +530,7 @@ export default {
 
   watch: {
     // avabile(newVal) {
-      // console.log("OHIO:", newVal);
+    // console.log("OHIO:", newVal);
     // }
   },
 
@@ -516,10 +540,10 @@ export default {
       type: String,
       required: true,
     },
-    avabile: {
-      type: Boolean,
-      required: true,
-    },
+    // avabile: {
+    //   type: Boolean,
+    //   required: true,
+    // },
   },
 
   components: {
