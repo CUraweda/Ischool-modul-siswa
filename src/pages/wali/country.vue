@@ -6,8 +6,11 @@
           <q-card-section>
             <div class="text-center">
               <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large">ONE DAY FOR YOUR
-                  COUNTRY</span>
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: x-large"
+                  >ONE DAY FOR YOUR COUNTRY</span
+                >
                 <br />
               </p>
             </div>
@@ -42,18 +45,31 @@
               </q-card-section>
               <q-card-section>
                 <div class="">
-                  <div class="text-left text-bold flex tw-justify-between tw-px-5 tw-my-5">
+                  <div
+                    class="text-left text-bold flex tw-justify-between tw-px-5 tw-my-5"
+                  >
                     <div class="tw-text-xl">Rekap</div>
                     <div>
-                      <!-- <q-btn color="blue" label="Tambah" @click="countryDialog = true" /> -->
-                      <q-btn color="blue" label="Tambah" @click="alert = true" />
+                      <q-btn
+                        color="blue"
+                        label="Tambah"
+                        @click="alert = true"
+                        v-if="!this.countryActivity.lengt < 1"
+                      />
+                      <q-btn
+                        color="blue"
+                        label="Tambah"
+                        @click="countryDialog = true"
+                      />
                     </div>
                   </div>
-                  <q-scroll-area style="
+                  <q-scroll-area
+                    style="
                       height: 400px;
                       border: 10pxl;
                       outline: #e0e0e0 solid 2px;
-                    ">
+                    "
+                  >
                     <q-markup-table separator="cell" class="no-shadow">
                       <thead>
                         <tr>
@@ -71,7 +87,10 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(activity, index) in countryActivity" :key="index">
+                        <tr
+                          v-for="(activity, index) in countryActivity"
+                          :key="index"
+                        >
                           <td class="text-center">{{ index + 1 }}</td>
                           <td class="text-left">{{ activity?.activity }}</td>
                           <td class="text-right">{{ activity?.remark }}</td>
@@ -83,16 +102,27 @@
                           </td>
                           <td class="text-center">
                             <!-- :disable="activity?.status !== 'pelaksanaan'" -->
-                            <q-btn :disable="!activity.plan_date || activity.is_date_approved
-                          " style="bg-green" color="green" label="Pilih Tanggal" @click="
-                          pickDate(activity?.plan_date, activity?.id)
-                          " />
+                            <q-btn
+                              :disable="
+                                !activity.plan_date || activity.is_date_approved
+                              "
+                              style="bg-green"
+                              color="green"
+                              label="Pilih Tanggal"
+                              @click="
+                                pickDate(activity?.plan_date, activity?.id)
+                              "
+                            />
                           </td>
                           <td class="text-right">
-                            <q-btn :disable="!activity?.certificate_path" color="secondary" label="Download Sertifikat"
+                            <q-btn
+                              :disable="!activity?.certificate_path"
+                              color="secondary"
+                              label="Download Sertifikat"
                               @click="
-                          downloadSertifikat(activity?.certificate_path)
-                          " />
+                                downloadSertifikat(activity?.certificate_path)
+                              "
+                            />
                           </td>
                         </tr>
                       </tbody>
@@ -116,15 +146,31 @@
       <q-card-section class="q-pt-none">
         <div>
           <label for="">Aktivitas</label>
-          <q-select filled v-model="model" :options="activityOptions" label="Aktivitas" />
+          <q-select
+            filled
+            v-model="model"
+            :options="activityOptions"
+            label="Aktivitas"
+          />
         </div>
         <div v-if="model === 'Lainnya'">
-          <q-input class="q-mt-md" filled label="Lainnya" v-model="inputActivity" />
+          <q-input
+            class="q-mt-md"
+            filled
+            label="Lainnya"
+            v-model="inputActivity"
+          />
         </div>
         <div>Tahun Ajaran</div>
-        <q-select filled v-model="forCountryId" :options="optionAcademic" label="Tahun Ajaran" />
-        <div>Target: <b>{{ forCountryId?.target }} jam</b></div>
-
+        <q-select
+          filled
+          v-model="forCountryId"
+          :options="optionAcademic"
+          label="Tahun Ajaran"
+        />
+        <div>
+          Target: <b>{{ forCountryId?.target }} jam</b>
+        </div>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -143,7 +189,11 @@
       <q-card-section class="q-pt-none">
         <!-- <p>{{ dateOptions }}</p> -->
         <div class="q-pa-md">
-          <q-option-group :options="dateOptions" type="radio" v-model="selectedDate" />
+          <q-option-group
+            :options="dateOptions"
+            type="radio"
+            v-model="selectedDate"
+          />
         </div>
         <!-- {{ selectedDate }}
         {{ activity?.id }}
@@ -164,9 +214,19 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-select filled v-model="academic_year" :options="['2023/2024', '2024/2025']" label="Tahun Ajaran" />
+        <q-select
+          filled
+          v-model="academic_year"
+          :options="['2023/2024', '2024/2025']"
+          label="Tahun Ajaran"
+        />
 
-        <q-input filled v-model="target" label="Target Pertahun" class="q-mt-md" />
+        <q-input
+          filled
+          v-model="target"
+          label="Target Pertahun"
+          class="q-mt-md"
+        />
       </q-card-section>
 
       <q-card-actions align="right">
@@ -186,7 +246,7 @@ export default {
   setup() {
     return {
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
-    }
+    };
   },
   data() {
     return {
@@ -227,27 +287,29 @@ export default {
   },
   methods: {
     getDateFromPlanDate(activity) {
-    if (activity.is_date_approved) {
-      try {
-        const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
-        console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate)
-        return planDate[0].Date || planDate[0].date; // Mengambil tanggal dari array pertama plan_date
-      } catch (error) {
-        console.error('Error parsing plan_date:', error);
+      if (activity.is_date_approved) {
+        try {
+          const planDate = JSON.parse(activity.plan_date); // Mengubah string JSON menjadi objek JavaScript
+          console.log("🚀 ~ getDateFromPlanDate ~ planDate:", planDate);
+          return planDate[0].Date || planDate[0].date; // Mengambil tanggal dari array pertama plan_date
+        } catch (error) {
+          console.error("Error parsing plan_date:", error);
+        }
       }
-    }
-    return null;
-  },
+      return null;
+    },
 
     async pickDate(plan_date, countryId) {
       this.countryId = countryId;
       const parsedPlanDate = JSON.parse(plan_date);
-      this.dateOptions = parsedPlanDate.map(item => {
-    return {
-      label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
-      value: JSON.stringify([{ date: item.date, start: item.start, end: item.end }])
-      };
-    });
+      this.dateOptions = parsedPlanDate.map((item) => {
+        return {
+          label: `Date: ${item.date} Start: ${item.start} End: ${item.end}`,
+          value: JSON.stringify([
+            { date: item.date, start: item.start, end: item.end },
+          ]),
+        };
+      });
       this.pickDateDialog = true;
     },
 
@@ -267,7 +329,7 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
-        this.countryDialog = false
+        this.countryDialog = false;
       } catch (error) {
         console.error(error);
       }
@@ -279,12 +341,12 @@ export default {
         const token = sessionStorage.getItem("token");
 
         const formData = new FormData();
-        formData.append("for_country_id", this.forCountryId.value);
+        formData.append("for_country_id", id);
         formData.append(
           "activity",
           this.model === "Lainnya" ? this.inputActivity : this.model
         );
-        formData.append("student_id", this.idSiswa)
+        formData.append("student_id", this.idSiswa);
         // formData.append("duration", this.durasi);
         // formData.append("remark", this.keterangan);
 
@@ -358,19 +420,42 @@ export default {
             },
           }
         );
-        if (response.data.data.length < 1) return
-        this.activity = response.data.data[0]
+        if (response.data.data.length < 1) return;
+        this.activity = response.data.data[0];
         this.optionAcademic = response.data.data.map((item) => {
-          this.countryActivity = [this.countryActivity, ...item.forcountrydetails]
+          this.countryActivity = [
+            this.countryActivity,
+            ...item.forcountrydetails,
+          ];
 
           return {
             label: item.academic_year,
             target: item.target ?? 0,
-            value: item.id
-          }
-        })
+            value: item.id,
+          };
+        });
       } catch (err) {
         console.log(err);
+      }
+    },
+
+    async getYear() {
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await this.$api.get(`/academic-year`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        this.optionAcademic = response.data.data.result.map((item) => ({
+          label: item.name,
+          value: item.name,
+        }));
+
+        console.log(this.optionAcademic);
+      } catch {
+        console.log("error");
       }
     },
 
@@ -445,6 +530,7 @@ export default {
   mounted() {
     // this.getDataCountry();
     this.getDataCountryUser();
+    this.getYear();
   },
 };
 </script>
