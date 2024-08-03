@@ -54,9 +54,10 @@
                         color="blue"
                         label="Tambah"
                         @click="alert = true"
-                        v-if="!this.countryActivity.lengt < 1"
+                        v-if="this.countryActivity.lengt > 1"
                       />
                       <q-btn
+                        v-else
                         color="blue"
                         label="Tambah"
                         @click="countryDialog = true"
