@@ -12,14 +12,14 @@
         />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
         <div class="q-mt-md flex justify-center">
-          <q-select
+          <!-- <q-select
             class="text-center"
             style="width: 150px"
             filled
             v-model="tahun"
             :options="options"
             label="Tahun"
-          />
+          /> -->
         </div>
       </q-tabs>
     </template>

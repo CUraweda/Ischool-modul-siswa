@@ -44,7 +44,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <td class="text-center">{{ item?.description  }}</td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -264,7 +264,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="uploadTugas(item.id)"
                             />
@@ -435,8 +435,14 @@
               </td>
             </tr>
             <tr>
+              <td class="text-left text-bold">Deskripsi</td>
+              <td class="text-left">
+                : {{ dataTaskClass?.decscripton }}
+              </td>
+            </tr>
+            <tr>
               <td class="text-left text-bold">Feedback</td>
-              <td class="text-left">{{ dataDetailTask?.feedback }}</td>
+              <td class="text-left">: {{ dataDetailTask?.feedback }}</td>
               <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
                 <td class="text-left">
                   : {{ item .feedback}}

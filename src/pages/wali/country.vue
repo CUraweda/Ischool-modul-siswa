@@ -37,7 +37,7 @@
                       <br /><br />
                       <span style="font-size: large">
                         Target : <br />
-                        {{ activity?.target }} Jam Pertahun
+                        {{ forCountryId?.target }} Jam Pertahun
                       </span>
                     </div>
                   </div>
@@ -166,8 +166,11 @@
           filled
           v-model="forCountryId"
           :options="optionAcademic"
-          label="Aktivitas"
+          label="Tahun Ajaran"
         />
+        <div>
+          Target: <b>{{ forCountryId?.target }} jam</b>
+        </div>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -410,7 +413,7 @@ export default {
         const id = sessionStorage.getItem("idUser");
         const token = sessionStorage.getItem("token");
         const response = await this.$api.get(
-          `for-country/show-by-user/${id}?academic=2023/2024`,
+          `for-country/show-by-user/${id}?academic=2024/2025`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -418,7 +421,19 @@ export default {
           }
         );
         if (response.data.data.length < 1) return;
-        this.activity = response.data.data[0].id;
+        this.activity = response.data.data[0];
+        this.optionAcademic = response.data.data.map((item) => {
+          this.countryActivity = [
+            this.countryActivity,
+            ...item.forcountrydetails,
+          ];
+
+          return {
+            label: item.academic_year,
+            target: item.target ?? 0,
+            value: item.id,
+          };
+        });
       } catch (err) {
         console.log(err);
       }
