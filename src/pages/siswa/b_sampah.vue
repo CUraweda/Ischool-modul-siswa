@@ -413,6 +413,7 @@ export default {
 
       token: ref(sessionStorage.getItem("token")),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
+      idStudent: ref(sessionStorage.getItem("studentClassId")),
       rekapMinggu: ref([]),
       rekapSampah: ref([]),
       total: ref(0),
@@ -438,7 +439,7 @@ export default {
     async getCollectionSampahMingguan() {
       try {
         const response = await this.$api.get(
-          `waste-collection/collection-week-by-student/${this.idSiswa}`,
+          `waste-collection/collection-week-by-student/${this.idStudent}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -505,7 +506,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .chart-container {

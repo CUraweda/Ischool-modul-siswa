@@ -33,6 +33,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -43,7 +44,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <td class="text-center">{{ item?.description  }}</td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -118,6 +119,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -202,6 +204,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -261,7 +264,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="uploadTugas(item.id)"
                             />
@@ -432,8 +435,14 @@
               </td>
             </tr>
             <tr>
+              <td class="text-left text-bold">Deskripsi</td>
+              <td class="text-left">
+                : {{ dataTaskClass?.decscripton }}
+              </td>
+            </tr>
+            <tr>
               <td class="text-left text-bold">Feedback</td>
-              <tr class="text-left">{{ dataDetailTask?.feedback }}</tr>td>
+              <td class="text-left">: {{ dataDetailTask?.feedback }}</td>
               <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
                 <td class="text-left">
                   : {{ item .feedback}}
@@ -445,7 +454,7 @@
 
         <br />
         <q-uploader
-        v-if="!dataTaskClass?.task_file"
+        v-if="!dataDetailTask"
           style="width: 100%"
           label="Custom header"
           accept=".pdf, .docx, .word"
