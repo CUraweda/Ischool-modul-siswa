@@ -182,11 +182,19 @@ export default {
 
         this.$router.push("/wali/profil")
       } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Gagal menautkan data, silakan coba beberapa saat lagi",
-        });
+        if (error.response?.status == 400 && error.response?.data?.message?.includes("already linked")) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Profil orang tua sudah ditautkan dengan akun lain",
+            });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Gagal menautkan data, silakan coba beberapa saat lagi",
+          });
+        }
       } finally {
         this.isBtnConfirmDisable = false;
       }
