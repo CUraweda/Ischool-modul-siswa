@@ -3,11 +3,9 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import 'leaflet/dist/leaflet.css';
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'App'
-})
+  name: "App",
+});
 </script>
-

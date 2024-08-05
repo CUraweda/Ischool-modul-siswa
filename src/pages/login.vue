@@ -56,17 +56,27 @@
 
                           <q-input
                             v-model="password"
-                            class="tw-w-full"
+                            class="text-center"
                             bottom-slots
                             filled
-                            type="password"
+                            :type="showPassword ? 'text' : 'password'"
                             label="Password"
                             style="width: 70%"
                           >
                             <template v-slot:prepend>
                               <q-icon name="key" />
                             </template>
+                            <template v-slot:append>
+                              <q-icon
+                                :name="
+                                  showPassword ? 'visibility_off' : 'visibility'
+                                "
+                                class="cursor-pointer"
+                                @click="toggleShow"
+                              />
+                            </template>
                           </q-input>
+
                           <q-btn
                             type="submit"
                             color="blue-grey-6"
@@ -97,12 +107,14 @@
     </q-page>
   </div>
 </template>
-
 <script>
 import Swal from "sweetalert2";
 
 export default {
   methods: {
+    toggleShow() {
+      this.showPassword = !this.showPassword;
+    },
     async loginUser() {
       const loginData = {
         email: this.email,
@@ -179,6 +191,7 @@ export default {
     return {
       email: "",
       password: "",
+      showPassword: false,
       submit: false,
     };
   },

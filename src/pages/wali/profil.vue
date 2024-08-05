@@ -354,6 +354,7 @@ export default {
       idUser: ref(sessionStorage.getItem("idUser")),
     };
   },
+  
   mounted() {
     this.getDataSiswa();
     this.getDataParent();
