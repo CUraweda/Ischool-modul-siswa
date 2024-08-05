@@ -8,8 +8,9 @@
                 </div>
                 <q-form @submit.prevent="searchSiswa" class="tw-w-full flex justify-center tw-items-center q-pa-md tw-flex-col">
                     <q-input outlined bottom-slots v-model="nis" label="NIS"  class="input" />
-                    <q-btn type="submit" color="blue-grey-6" glossy label="Cari Siswa" />
-
+                    <q-input outlined v-model="dob" type="date" label="Tanggal lahir" class="input" />
+                    
+                    <q-btn type="submit" color="blue-grey-6" glossy label="Cari Siswa" class="q-mt-md" />
                 </q-form>
                 <div v-if="siswa" class="tw-flex tw-w-full tw-mt-5 justify-center tw-items-center tw-flex-col tw-gap-5">
                     <q-markup-table class="tw-w-5/6">
@@ -64,10 +65,13 @@ export default {
     methods: {
         async searchSiswa() {
             const nisSiswa = this.nis;
+            const dob = this.dob
             const token = sessionStorage.getItem("token");
 
+            if (!nisSiswa || !dob) return
+
             try {
-                const response = await this.$api.get(`/student/show-nis/${nisSiswa}`, {
+                const response = await this.$api.get(`/student/show-nis/${nisSiswa}?dob=${dob}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -162,6 +166,7 @@ export default {
 
     data() {
         return {
+            dob: ref(null),
             nis: ref(null),
             siswa: ref(null),
             date: ref(null),
