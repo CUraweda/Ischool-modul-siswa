@@ -20,6 +20,7 @@
         <div class="flex justify-between q-mb-md">
           <p class="text-bold text-h5 tw-mb-5">Data Pengguna</p>
           <q-btn
+              style="height:35px"
               color="secondary"
               label="Edit Password"
               @click="modalEditPassword = true"

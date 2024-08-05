@@ -237,7 +237,7 @@
               @click="getLocation()"
             />
           </div>
-          <div class="tw-bg-gray-200 q-mb-md" border="sm">
+          <div height="70px" class="tw-bg-gray-200 q-mb-md" border="sm">
             <LoadingSpiner v-if="loading" />
             <LocationMap
               v-if="!loading && dataParent.latitude && dataParent.longitude"
@@ -354,7 +354,7 @@ export default {
       idUser: ref(sessionStorage.getItem("idUser")),
     };
   },
-  
+
   mounted() {
     this.getDataSiswa();
     this.getDataParent();
@@ -367,7 +367,7 @@ export default {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(resolve, reject);
           } else {
-            reject(new Error("Geolocation is not supported by this browser."));
+            reject(new Error("Geolocation Tidak Didukung Oleh Browser Ini."));
           }
         });
 
@@ -377,13 +377,13 @@ export default {
 
         Notify.create({
           type: "positive",
-          message: "Location data has been filled!",
+          message: "Data Lokasi Ditemukan!",
         });
       } catch (error) {
         this.loading = false;
         Notify.create({
           type: "negative",
-          message: "Failed to get location!",
+          message: "Gagal Mendapaktkan Data Lokasi!",
         });
       }
     },
