@@ -16,6 +16,10 @@ const routes = [
         component: () => import("pages/registrasi.vue"),
       },
       {
+        path: "/reset-password/:id",
+        component: () => import("pages/forgotPassword.vue"),
+      },
+      {
         path: "/search-siswa",
         component: () => import("pages/SearchSiswa.vue"),
       },
@@ -67,7 +71,7 @@ const routes = [
         component: () => import("pages/siswa/k_kegiatan.vue"),
         meta: { requiresAuth: true },
       },
-      
+
       {
         path: "/siswa/jkegiatan",
         component: () => import("pages/siswa/kalenderPekanan.vue"),
@@ -148,7 +152,7 @@ const routes = [
         path: "/wali/cs",
         component: () => import("pages/wali/customer_care.vue"),
       },
-      
+
     ],
   },
   {
@@ -171,7 +175,7 @@ const routes = [
         path: "/guru/presensi",
         component: () => import("pages/guru/presensi.vue"),
       },
-      
+
     ],
   },
 
