@@ -82,6 +82,10 @@ export default {
           const token = response.data.tokens.access.token
           const name = response.data.data.full_name
           const role = response.data.data.role_id
+          if(response.data.data.useraccesses.length > 0){
+            const idSiswa = response.data.data.useraccesses[0].student_id
+            sessionStorage.setItem("idSiswa", idSiswa)
+          }
           sessionStorage.setItem("token", token)
           sessionStorage.setItem("role", role)
           sessionStorage.setItem("idUser", id)
