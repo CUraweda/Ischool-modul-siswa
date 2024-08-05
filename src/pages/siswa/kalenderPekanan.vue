@@ -56,6 +56,11 @@ export default {
   components: {
     FullCalendar,
   },
+  setup() {
+    return {
+      idClass: ref(sessionStorage.getItem("idClass")),
+    };
+  },
   data() {
     return {
       dataKalender: ref([]),
@@ -81,7 +86,7 @@ export default {
           alert("Event: " + info.event.title); // Show an alert when an event is clicked
         },
       },
-      tahun: ref("2023/2024"),
+      tahun: ref("2024/2025"),
       smt: ref("1"),
       options: ["2023/2024", "2024/2025"],
       options2: ["1", "2"],
@@ -92,7 +97,7 @@ export default {
       console.log("ini jalan ya");
       try {
         const response = await this.$api.get(
-          `timetable/show-by-class/11?semester=${this.smt}&academic=${this.tahun}`,
+          `timetable/show-by-class/${this.idClass}?semester=${this.smt}&academic=${this.tahun}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,

@@ -102,7 +102,7 @@
                           </p>
 
                           <p class="tw-mt-5 tw-text-xl tw-font-bold">Capaian</p>
-                          <div id="chart" class=" chart-container">
+                          <div id="chart" class="chart-container">
                             <apexchart
                               type="radialBar"
                               :options="chartOptions1"
@@ -358,7 +358,7 @@ export default {
       chartOptions1: {
         chart: {
           type: "radialBar",
-          height: '100%',
+          height: "100%",
           offsetY: -20,
           sparkline: {
             enabled: true,
@@ -413,6 +413,7 @@ export default {
 
       token: ref(sessionStorage.getItem("token")),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
+      studentClassId: ref(sessionStorage.getItem("studentClassId")),
       rekapMinggu: ref([]),
       rekapSampah: ref([]),
       total: ref(0),
@@ -438,7 +439,7 @@ export default {
     async getCollectionSampahMingguan() {
       try {
         const response = await this.$api.get(
-          `waste-collection/collection-week-by-student/${this.idSiswa}`,
+          `waste-collection/collection-week-by-student/${this.studentClassId}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,

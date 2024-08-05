@@ -141,12 +141,19 @@ export default {
                     }
                 }
             } catch (error) {
-                console.log(error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Gagal menautkan siswa, silakan coba beberapa saat lagi",
-                });
+                if (error.response?.status == 400 && error.response?.data?.message?.includes("already linked")) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Siswa sudah ditautkan dengan akun anda",
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Gagal menautkan siswa, silakan coba beberapa saat lagi",
+                    });
+                }
             } finally {
                 this.btn = false;
             }

@@ -209,12 +209,12 @@ export default {
   },
 
   mounted() {
-    this.getDataSiswa();
     this.getCurrentDateTime();
     setInterval(() => {
       this.getCurrentDateTime();
     }, 20000);
 
+    this.getDataSiswa();
   },
 
   methods: {
@@ -245,7 +245,7 @@ export default {
         confirmButtonText: "Yes, logout",
       }).then((result) => {
         if (result.isConfirmed) {
-          sessionStorage.removeItem("token");
+          sessionStorage.clear();
           this.$router.push("/");
         }
       });
@@ -264,17 +264,15 @@ export default {
           }
         );
 
-
-
         this.nama = response.data.data[0].student.full_name;
         this.nis = response.data.data[0].student.nis;
         this.kelas = response.data.data[0].student.class;
         const id = response.data.data[0].student.id;
         const level = response.data.data[0].student.level;
-        console.log("ID SISAWSDAIDNAKNSDKN",id)
+
         sessionStorage.setItem("idSiswa", id);
         sessionStorage.setItem("level", level);
-        this.getSiswaById(id)
+        this.getSiswaById(id);
       } catch (error) {
         console.log(error);
       }
@@ -283,14 +281,17 @@ export default {
     async getSiswaById(idSiswa) {
       try {
         const token = sessionStorage.getItem("token");
+        const idSiswa = sessionStorage.getItem("idSiswa");
+
         const response = await this.$api.get(`/student/show/${idSiswa}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const id = response.data.data[0].studentclasses[0].class_id;
+        const idStudent = response.data.data[0].studentclasses[0].id;
+        sessionStorage.setItem("studentClassId", idStudent);
         sessionStorage.setItem("idClass", id);
-        
       } catch (err) {
         console.log(err);
       }

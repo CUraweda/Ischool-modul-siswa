@@ -147,6 +147,7 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
+                        <td>{{ item?.description ?? "" }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
@@ -193,7 +194,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <td class="text-center">
+                          {{ item?.description ?? "-" }}
+                        </td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -221,6 +224,7 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
+                        <td>{{ item?.description }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
@@ -608,6 +612,7 @@ export default {
 
     async getDataTugas() {
       try {
+        console.log("🚀 ~ getDataTugas ~ this.idSiswa:", this.idSiswa)
         const taskParent = await this.$api.get(
           `student-task/show-by-student/${this.idSiswa}?cat=Work With Parents`,
           {

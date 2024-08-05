@@ -35,6 +35,12 @@
       <div class="tw-mt-10">
         <div class="flex justify-between q-mb-md">
           <p class="text-bold text-h5">Data Pengguna</p>
+
+          <q-btn
+            color="secondary"
+            label="Edit Password"
+            @click="modalEditPassword = true"
+          />
         </div>
 
         <q-markup-table flat bordered class="q-mb-xl">
@@ -54,12 +60,7 @@
             <tr>
               <th class="text-left">Status</th>
               <th class="text-left">
-                <q-chip
-                  outline
-                  color="teal"
-                  text-color="white"
-                  icon="verified_user"
-                >
+                <q-chip outline color="teal" text-color="white" icon="verified_user">
                   {{ dataUser?.status === 1 ? "Verified" : "Not Verified" }}
                 </q-chip>
               </th>
@@ -228,7 +229,13 @@
               label="Longitude"
               class="q-mb-md"
             />
-            <q-btn padding="sm lg" class="q-mb-md" color="secondary" icon="my_location" @click="getLocation()" />
+            <q-btn
+              padding="sm lg"
+              class="q-mb-md"
+              color="secondary"
+              icon="my_location"
+              @click="getLocation()"
+            />
           </div>
           <div class="tw-bg-gray-200 q-mb-md" border="sm">
             <LoadingSpiner v-if="loading" />
@@ -268,6 +275,44 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog
+      v-model="modalEditPassword"
+      @hide="getDataParent"
+      persistent
+      backdrop-filter="blur(4px)"
+    >
+      <q-card style="width: 540px; max-width: 80vw">
+        <q-card-section>
+          <div class="text-h6">Edit Password</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            v-model="old_password"
+            outlined
+            label="Password Lama"
+            class="q-mb-md"
+          />
+          <q-input
+            v-model="new_password"
+            outlined
+            label="Password Baru"
+            class="q-mb-md"
+          />
+          <q-input
+            v-model="password_match"
+            outlined
+            label="Konfirmasi Password Baru"
+            class="q-mb-md"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn outline label="Batal" v-close-popup />
+          <q-btn @click="checkPasswordsMatch(new_password, password_match)" unelevated color="primary" label="Simpan" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -276,9 +321,9 @@ import { ref } from "vue";
 import Swal from "sweetalert2";
 import { data } from "autoprefixer";
 import { Notify } from "quasar";
-import { defineComponent } from 'vue';
-import LocationMap from '../../components/LocationMap.vue';
-import LoadingSpiner from '../../components/LoadingSpiner.vue';
+import { defineComponent } from "vue";
+import LocationMap from "../../components/LocationMap.vue";
+import LoadingSpiner from "../../components/LoadingSpiner.vue";
 
 export default {
   components: {
@@ -288,6 +333,9 @@ export default {
 
   data() {
     return {
+      old_password: ref(),
+      new_password: ref(),
+      password_match: ref(),
       dataUser: ref(),
       dataSiswa: ref([]),
       dataParent: ref(null),
@@ -295,16 +343,18 @@ export default {
       optNationality: ["WNI", "WNA"],
       optReligion: ["Islam", "Kristen", "Protestan", "Hindu", "Buddha", "Kong Hu Cu"],
       optEducation: ["TK", "SD", "SMP", "SMA", "SMK", "MA", "S1", "S2", "S3"],
-      loading: ref(false)
+      loading: ref(false),
     };
   },
   setup() {
     return {
       modalEditParent: ref(false),
+      modalEditPassword: ref(false),
       token: ref(sessionStorage.getItem("token")),
       idUser: ref(sessionStorage.getItem("idUser")),
     };
   },
+  
   mounted() {
     this.getDataSiswa();
     this.getDataParent();
@@ -326,14 +376,14 @@ export default {
         this.loading = false;
 
         Notify.create({
-          type: 'positive',
-          message: 'Location data has been filled!',
+          type: "positive",
+          message: "Location data has been filled!",
         });
       } catch (error) {
         this.loading = false;
         Notify.create({
-          type: 'negative',
-          message: 'Failed to get location!',
+          type: "negative",
+          message: "Failed to get location!",
         });
       }
     },
@@ -348,7 +398,7 @@ export default {
           },
         });
         this.dataParent = res.data?.data ?? null;
-        this.dataParent.status = res.data?.data.parent_type ?? null
+        this.dataParent.status = res.data?.data.parent_type ?? null;
       } catch (error) {
         console.log(error);
       }
@@ -369,7 +419,6 @@ export default {
         longitude,
       } = this.dataParent;
 
-
       let payload = {
         name,
         nationality,
@@ -384,7 +433,7 @@ export default {
       };
 
       payload.parent_type = status;
-      console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type)
+      console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type);
 
       // Check for missing data
       const missingData = [];
@@ -410,6 +459,78 @@ export default {
           });
 
           this.modalEditParent = false;
+          Swal.fire({
+            icon: "success",
+            title: "Aksi Berhasil",
+            text: "Berhasil memperbarui data",
+          });
+        } catch (error) {
+          console.log(error);
+          if (error.response?.status == 400)
+            Notify.create({
+              position: "top",
+              color: "negative",
+              message: "Periksa kembali input Anda",
+            });
+          else
+            Notify.create({
+              position: "top",
+              color: "negative",
+              message: "Gagal untuk memperbarui data",
+            });
+        }
+      }
+    },
+
+    async checkPasswordsMatch(new_password, password_match) {
+      if (new_password !== password_match) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Passwords tidak sama!",
+        });
+        this.modalEditPassword = false;
+        this.old_password = null, this.new_password = null, this.password_match = null;
+        return false;
+      }
+      this.editDataPassword();
+    },
+
+    async editDataPassword() {
+      let payload = {
+        old_password: this.old_password,
+        password: this.new_password,
+        confirm_password: this.password_match,
+      };
+
+      // payload.parent_type = status;
+      // console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type)
+
+      // Check for missing data
+      const missingData = [];
+      for (const key in payload) {
+        if (!payload[key]) {
+          missingData.push(key);
+        }
+      }
+
+      if (missingData.length > 0) {
+        // Show popup with missing data
+        Notify.create({
+          position: "top",
+          color: "negative",
+          message: `Tolong isi data ${missingData.join(", ")}`,
+        });
+      } else {
+        try {
+          const res = await this.$api.put(`/user/change-password`, payload, {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          });
+
+          this.modalEditPassword = false;
+          this.old_password = null, this.new_password = null, this.password_match = null;
           Swal.fire({
             icon: "success",
             title: "Aksi Berhasil",

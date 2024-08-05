@@ -33,7 +33,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feedforward</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -44,7 +44,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <td class="text-center">{{ item?.description  }}</td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -65,7 +65,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="getTaskId(item.id)"
                             />
@@ -92,7 +92,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="uploadTugas(item.id)"
                             />
@@ -119,7 +119,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feedforward</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -151,7 +151,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="getTaskId(item.id)"
                             />
@@ -179,7 +179,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="uploadTugas(item.id)"
                             />
@@ -204,7 +204,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feedforward</th>
+                        <th class="text-center">Nilai</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -236,7 +236,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="getTaskId(item.id)"
                             />
@@ -264,7 +264,7 @@
                             />
                             <q-btn
                               class="q-mx-sm"
-                              icon="upload"
+                              icon="text_snippet"
                               color="blue"
                               @click="uploadTugas(item.id)"
                             />
@@ -284,7 +284,7 @@
   <q-dialog v-model="small">
     <q-card style="width: 700px; max-width: 80vw">
       <q-card-section>
-        <div class="text-h6 text-center">Upload Tugas</div>
+        <div class="text-h6 text-center">Detail Tugas</div>
       </q-card-section>
 
       <br />
@@ -311,6 +311,15 @@
                 : {{ getDateTime(dataTask?.end_date) }} |
                 {{ getTimeDeadline(dataTask?.end_date) }}
               </td>
+            </tr>
+            <tr>
+              <td class="text-left text-bold">Feedback</td>
+              <td class="text-left">{{ dataDetailTask?.feedback}} </td>
+              <!-- <tr v-for="(item, index) in dataDetailTask?.feedback" :key="index">
+                <td class="text-left">
+                  : {{ item.feedback }}
+                </td>
+              </tr> -->
             </tr>
           </tbody>
         </q-markup-table>
@@ -397,7 +406,7 @@
   <q-dialog v-model="medium">
     <q-card style="width: 700px; max-width: 80vw">
       <q-card-section>
-        <div class="text-h6 text-center">Upload Tugas</div>
+        <div class="text-h6 text-center">Detail Tugas</div>
       </q-card-section>
 
       <br />
@@ -425,11 +434,27 @@
                 {{ getTimeDeadline(dataTaskClass?.end_date) }}
               </td>
             </tr>
+            <tr>
+              <td class="text-left text-bold">Deskripsi</td>
+              <td class="text-left">
+                : {{ dataTaskClass?.decscripton }}
+              </td>
+            </tr>
+            <tr>
+              <td class="text-left text-bold">Feedback</td>
+              <td class="text-left">: {{ dataDetailTask?.feedback }}</td>
+              <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
+                <td class="text-left">
+                  : {{ item .feedback}}
+                </td>
+              </tr> -->
+            </tr>
           </tbody>
         </q-markup-table>
 
         <br />
         <q-uploader
+        v-if="!dataDetailTask"
           style="width: 100%"
           label="Custom header"
           accept=".pdf, .docx, .word"
@@ -535,6 +560,7 @@ export default {
       task3: ref(),
       idTask: ref(""),
       dataTask: ref(),
+      dataDetailTask: ref(),
       taskClass1: ref(),
       taskClass2: ref(),
       taskClass3: ref(),
@@ -732,6 +758,20 @@ export default {
       }
     },
 
+    async getTaskDetailById(id) {
+      try {
+        const response = await this.$api.get(`task-detail/show-by-task/${id}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        console.log("🚀 ~ getTaskDetailById ~ response:", response.data.data)
+        this.dataDetailTask = response.data.data[0];
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async getTaskById(id) {
       try {
         const response = await this.$api.get(`student-task/show/${id}`, {
@@ -739,11 +779,14 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
+        this.getTaskDetailById(id);
+        console.log("🚀 ~ getTaskById ~ this.dataDetailTask:", this.dataDetailTask)
         this.dataTask = response.data.data[0];
       } catch (error) {
         console.log(error);
       }
     },
+
     async getTaskClassById(id) {
       try {
         const response = await this.$api.get(`task/show/${id}`, {
@@ -751,6 +794,8 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
+        this.getTaskDetailById(id);
+        console.log("🚀 ~ getTaskById ~ this.dataDetailTask:", this.dataDetailTask)
         this.dataTaskClass = response.data.data;
         console.log(response.data.data);
       } catch (error) {
