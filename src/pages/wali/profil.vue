@@ -503,6 +503,8 @@ export default {
         confirm_password: this.password_match,
       };
 
+      const token = sessionStorage.getItem("token");
+
       // payload.parent_type = status;
       // console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type)
 
@@ -525,7 +527,7 @@ export default {
         try {
           const res = await this.$api.put(`/user/change-password`, payload, {
             headers: {
-              Authorization: `Bearer ${this.token}`,
+              Authorization: `Bearer ${token}`,
             },
           });
 
