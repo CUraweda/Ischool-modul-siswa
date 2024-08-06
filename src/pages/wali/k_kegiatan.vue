@@ -146,6 +146,7 @@ export default defineComponent({
   methods: {
     onToday() {
       this.$refs.calendar.moveToToday();
+      this.getCurrentDateTime()
     },
     onPrev() {
       this.$refs.calendar.prev();
