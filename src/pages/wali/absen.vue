@@ -131,7 +131,7 @@
         </div>
       </q-card-section>
     </q-card>
-   
+
   </div>
 </template>
 
@@ -191,9 +191,10 @@ export default defineComponent({
     },
   },
   methods: {
-    
+
     onToday() {
       this.$refs.calendar.moveToToday();
+      this.getCurrentDateTime()
     },
     onPrev() {
       this.$refs.calendar.prev();
@@ -336,11 +337,11 @@ export default defineComponent({
           }
         );
         const data = response.data.data;
-       
+
 
         const dataPresensi = await Promise.all(
           data.map((Item, index) => {
-        
+
             const rest = {
                 id: index,
                 title: Item.status,
@@ -368,7 +369,7 @@ export default defineComponent({
               return rest;
           })
         );
-         
+
         this.events = dataPresensi;
         this.getTotalPresensi(dataPresensi);
       } catch (error) {
