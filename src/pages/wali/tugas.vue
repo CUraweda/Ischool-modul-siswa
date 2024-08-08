@@ -108,7 +108,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <!-- <th class="text-center">Nilai</th> -->
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -128,7 +128,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">-</td>
+                        <!-- <td class="text-center">-</td> -->
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -183,7 +183,7 @@
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <!-- <th class="text-center">Nilai</th> -->
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -205,7 +205,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">-</td>
+                        <!-- <td class="text-center">-</td> -->
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -506,6 +506,7 @@ export default {
       task3: ref(),
       idTask: ref(""),
       dataTask: ref(),
+      dataDetailTask: ref(),
       taskClass1: ref(),
       taskClass2: ref(),
       taskClass3: ref(),
@@ -567,7 +568,7 @@ export default {
           formData.append("up_file", file);
         });
 
-        const response = await this.$api.put(`task-detail/create`, formData, {
+        const response = await this.$api.post(`task-detail/create`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${this.token}`,
@@ -612,7 +613,6 @@ export default {
 
     async getDataTugas() {
       try {
-        console.log("🚀 ~ getDataTugas ~ this.idSiswa:", this.idSiswa)
         const taskParent = await this.$api.get(
           `student-task/show-by-student/${this.idSiswa}?cat=Work With Parents`,
           {
@@ -664,8 +664,9 @@ export default {
     async getDataTugasKelas() {
       try {
         const idKelas = sessionStorage.getItem("idClass");
+        const idSiswa = sessionStorage.getItem("idSiswa");
         const taskWWP = await this.$api.get(
-          `task/show-by-class/${idKelas}?cat=1`,
+          `task/show-by-class/${idKelas}?cat=1&student_id=${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -674,7 +675,7 @@ export default {
         );
 
         const taskProject = await this.$api.get(
-          `task/show-by-class/${idKelas}?cat=2`,
+          `task/show-by-class/${idKelas}?cat=2&student_id=${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -682,14 +683,13 @@ export default {
           }
         );
         const taskPribadi = await this.$api.get(
-          `task/show-by-class/${idKelas}?cat=3`,
+          `task/show-by-class/${idKelas}?cat=3&student_id=${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
           }
         );
-
         this.taskClass1 = taskWWP.data.data.filter(
           (task) => task.status === "Open"
         );
@@ -699,6 +699,21 @@ export default {
         this.taskClass3 = taskPribadi.data.data.filter(
           (task) => task.status === "Open"
         );
+        console.log(taskPribadi.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getTaskDetailById(id) {
+      try {
+        const response = await this.$api.get(`task-detail/show-by-task/${id}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        console.log("🚀 ~ getTaskDetailById ~ response:", response.data.data)
+        this.dataDetailTask = response.data.data[0];
       } catch (error) {
         console.log(error);
       }
@@ -711,11 +726,14 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
+        this.getTaskDetailById(id);
+        console.log("🚀 ~ getTaskById ~ this.dataDetailTask:", this.dataDetailTask)
         this.dataTask = response.data.data[0];
       } catch (error) {
         console.log(error);
       }
     },
+
     async getTaskClassById(id) {
       try {
         const response = await this.$api.get(`task/show/${id}`, {
@@ -723,6 +741,8 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
+        this.getTaskDetailById(id);
+        console.log("🚀 ~ getTaskById ~ this.dataDetailTask:", this.dataDetailTask)
         this.dataTaskClass = response.data.data;
         console.log(response.data.data);
       } catch (error) {
