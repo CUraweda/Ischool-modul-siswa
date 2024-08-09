@@ -752,7 +752,7 @@ export default {
           },
         });
         const detailTask = response.data.data.find(item => item.student_id === parseInt(idSiswa));
-        return detailTask;
+        return detailTask.task_file;
       } catch (error) {
         console.log(error);
       }
