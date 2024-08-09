@@ -766,8 +766,8 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        console.log("🚀 ~ getTaskDetailById ~ response:", response.data.data)
-        this.dataDetailTask = response.data.data[0];
+        const detailTask = response.data.data.find(item => item.student_id === parseInt(this.idSiswa));
+        this.dataDetailTask = detailTask;
       } catch (error) {
         console.log(error);
       }
