@@ -44,7 +44,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description  }}</td>
+                        <!-- <td class="text-center">{{ item?.description  }}</td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -53,7 +53,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">{{ item?.feed_fwd }}</td>
+                        <!-- <td class="text-center">{{ item?.feed_fwd }}</td> -->
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -215,7 +215,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <!-- <td class="text-center">{{ item?.description }}</td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -224,7 +224,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">{{ item?.feed_fwd }}</td>
+                        <!-- <td class="text-center">{{ item?.feed_fwd }}</td> -->
                         <td class="text-center">
                           <div>
                             <q-btn
