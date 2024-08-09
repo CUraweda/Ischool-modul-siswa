@@ -36,6 +36,7 @@
         <div class="flex justify-between q-mb-md">
           <p class="text-bold text-h5 tw-mb-5">Data Pengguna</p>
           <q-btn
+            style="height: 35px"
             color="secondary"
             label="Edit Password"
             @click="modalEditPassword = true"
@@ -245,6 +246,8 @@ export default {
         confirm_password: this.password_match,
       };
 
+      const token = sessionStorage.getItem("token");
+
       const missingData = [];
       for (const key in payload) {
         if (!payload[key]) {
@@ -263,7 +266,7 @@ export default {
         try {
           const res = await this.$api.put(`/user/change-password`, payload, {
             headers: {
-              Authorization: `Bearer ${this.token}`,
+              Authorization: `Bearer ${token}`,
             },
           });
 
