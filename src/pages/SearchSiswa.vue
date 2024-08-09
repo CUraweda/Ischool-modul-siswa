@@ -142,6 +142,14 @@ export default {
                 }
             } catch (error) {
                 console.log(error);
+                if (error.response?.status == 400 && error.response?.data?.message?.includes("already linked")) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Siswa sudah ditautkan dengan akun anda",
+                    });
+                }
+                
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",

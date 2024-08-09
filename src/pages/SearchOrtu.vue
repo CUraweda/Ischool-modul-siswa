@@ -135,6 +135,13 @@ export default {
             title: "Oops...",
             text: "Data Orang Tua Tidak Ditemukan",
           });
+        else if (error.response?.status == 400 && error.response?.data?.message?.includes("already linked")) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Profil orang tua sudah ditautkan dengan akun lain",
+            });
+        }
         else
           Swal.fire({
             icon: "error",
