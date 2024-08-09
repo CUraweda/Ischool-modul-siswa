@@ -33,7 +33,7 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" />
+          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" :path="number_path" />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -116,7 +116,7 @@
                     class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
                     style="height: 100%"
                   >
-                    <Narasi :TabPilihan="TabPilihan"></Narasi>
+                    <Narasi :TabPilihan="TabPilihan" :path="narrative_path" />
                   </div>
                 </div>
               </q-tab-panel>
@@ -150,7 +150,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :sub="'Merged'" />
+                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'"/>
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">
@@ -219,7 +219,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <MergedRapotPortofolio />
+                  <MergedRapotPortofolio :path="merged_path"/>
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -349,6 +349,10 @@ export default {
       trigerRapot: ref(true),
       reportId: ref(),
       idSiswa: ref(),
+      number_path: ref(),
+      narrative_path: ref(),
+      portofolio_path: ref(),
+      merged_path: ref(),
       medium: ref(false),
       tahun: ref("2023/2024"),
       options: ["2023/2024", "2024/2025"],
@@ -385,12 +389,16 @@ export default {
           }
         );
         const dataState = response.data.data[0];
-        console.log(dataState);
+        // console.log(dataState);
         if (dataState) {
           this.trigerRapot = true;
           this.dataRapot = dataState;
           this.submittedComment = dataState?.nar_parent_comments;
           this.submittedCommentPorto = dataState?.por_parent_comments;
+          this.number_path = dataState?.number_path;
+          this.narrative_path = dataState?.narrative_path;
+          this.portofolio_path = dataState?.portofolio_path;
+          this.merged_path = dataState?.merged_path;
 
           sessionStorage.setItem("raportId", dataState.id);
           this.reportId = dataState.id;
