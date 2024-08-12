@@ -11,16 +11,6 @@
           label="Raport Gabungan"
         />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
-        <div class="q-mt-md flex justify-center">
-          <!-- <q-select
-            class="text-center"
-            style="width: 150px"
-            filled
-            v-model="tahun"
-            :options="options"
-            label="Tahun"
-          /> -->
-        </div>
       </q-tabs>
     </template>
 
@@ -354,11 +344,10 @@ export default {
       portofolio_path: ref(),
       merged_path: ref(),
       medium: ref(false),
-      tahun: ref("2023/2024"),
-      options: ["2023/2024", "2024/2025"],
     };
   },
   methods: {
+
     async getIdSiswa() {
       const idSiswa = sessionStorage.getItem("idSiswa");
       const token = sessionStorage.getItem("token");
@@ -371,17 +360,18 @@ export default {
         });
         this.idSiswa = response.data.data[0].id;
         // this.submitComment();
-        this.getCommnentParent();
+        this.getCommentParent();
         console.log(this.idSiswa);
       } catch (error) {
         console.error(error);
       }
     },
-    async getCommnentParent() {
+    async getCommentParent() {
+      // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
       const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}`,
+          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -452,7 +442,7 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         this.editedComment = "";
       } catch (error) {
         console.log(error);
@@ -477,7 +467,7 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         // console.log('sukses');
         this.editedCommentPorto = "";
       } catch (error) {
@@ -507,7 +497,7 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         this.medium = false;
         Swal.fire({
           title: "Portofolio berhasil di upload !",
@@ -529,7 +519,7 @@ export default {
   },
   mounted() {
     // console.log("gedagedi", this.avabile)
-    this.getCommnentParent();
+    this.getCommentParent();
     this.getIdSiswa();
     if (this.trigerRapot) {
       this.getKategoriRapot();
@@ -537,9 +527,10 @@ export default {
   },
 
   watch: {
-    // avabile(newVal) {
-    // console.log("OHIO:", newVal);
-    // }
+    tahun(newVal) {
+      console.log("🚀 ~ tahun ~ newVal:", this.tahun)
+      this.getCommentParent()
+    }
   },
 
   name: "Rapot",
@@ -552,6 +543,10 @@ export default {
     //   type: Boolean,
     //   required: true,
     // },
+    tahun: {
+      type: String,
+      required: true,
+    },
   },
 
   components: {
@@ -576,6 +571,7 @@ export default {
       editor: ref("Sangat Baik !"),
       TabPilihan: props.TabPilihan,
       // avabile: props.avabile,
+      // tahun: props.tahun,
       editedComment: ref(""),
       submittedComment: ref(""),
       kategori: ref(),
