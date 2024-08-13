@@ -1,129 +1,128 @@
 <template>
   <div class="container">
     <div>
-      <div>
-        <q-card class="text-center bg-blue-2">
-          <q-card-section>
-            <div class="text-center">
-              <p>
-                <span
-                  class="text-center text-black text-bold"
-                  style="font-size: x-large"
-                  >BILLING</span
-                >
-              </p>
-            </div>
-            <div class="q-px-md">
-              <q-card style="height: 100%">
-                <q-card-section>
-                  <div class="row" style="height: 100%">
-                    <div class="col-md-9 col-9">
-                      <p class="text-left q-ml-md q-mt-sm text-grey">
-                        <span style="font-size: large">Billing History</span
-                        ><br />
-                        <span style="font-size: smaller">
-                          manage Billing information and view receips</span
-                        >
-                      </p>
-                      <q-markup-table flat class="q-px-lg">
-                        <thead>
-                          <tr>
-                            <th class="text-center" style="width: 10px">No</th>
-                            <th class="text-left">Date</th>
-                            <th class="text-left">Billing Type</th>
-                            <th class="text-left">Receipt</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(item, index) in " :key="item.id">
-                            <td class="text-left">{{ index + 1 }}</td>
-                            <td class="text-left">
-                              sda
-                              <!-- {{ formatDate(item?.createdAt) }} -->
-                            </td>
-                            <td class="text-left">{{ item?.month?.name }}</td>
-                            <td class="text-left">
-                              <q-btn
-                                outline
-                                style="color: grey"
-                                label="Download"
-                              />
-                            </td>
-                          </tr>
-                        </tbody>
-                      </q-markup-table>
-                      <div></div>
-                    </div>
-                    <div class="col-md-3 col-3 q-px-md" style="height: 100%">
-                      <q-card class="q-px-sm q-mt-lg text-center bg-red-5">
-                        <q-card-section>
-                          <div class="text-left">
-                            <p class="text-left text-bold q-ml-md text-white">
-                              <span style="font-size: medium"
-                                >Next Payment</span
-                              >
-                            </p>
-                          </div>
-                          <q-separator color="white" inset />
-                          <div class="q-mx-md tw-flex tw-flex-col text-left">
-                            <p class="text-bold q-mt-md text-white text-left">
-                              <span style="font-size: medium"
-                                >Payment Options</span
-                              >
-                              <template
-                                v-for="(billing, index) in nilaiBilling"
-                                :key="index"
-                              >
-                                <q-checkbox
-                                  v-model="billing.isChecked"
-                                  :label="`SPP ${
-                                    billing.month.name
-                                  } Rp. ${billing.bill_amount.toLocaleString(
-                                    'id-ID'
-                                  )}`"
-                                  style="
-                                    font-size: 8px;
-                                    margin-bottom: 3px;
-                                    margin-right: 0px;
-                                  "
-                                ></q-checkbox>
-                              </template>
-                            </p>
-                            <span style="font-size: smaller"
-                              >Payment deadline</span
-                            >
-                            <span
-                              class="text-warning"
-                              style="font-size: smaller"
-                              >10 Desember 2023</span
-                            >
-                            <p
-                              class="text-white"
-                              style="font-size: larger; margin-top: 10px"
-                            >
-                              <span style="color: black"
-                                >Total: Rp.
-                                {{ totalAmount.toLocaleString("id-ID") }}</span
-                              >
-                            </p>
+      <q-card class="text-center bg-blue-2">
+        <q-card-section>
+          <div class="text-center">
+            <p>
+              <span
+                class="text-center text-black text-bold"
+                style="font-size: x-large"
+                >BILLING</span
+              >
+            </p>
+          </div>
+          <div class="q-px-md">
+            <q-card style="height: 100%">
+              <q-card-section>
+                <div class="row" style="height: 100%">
+                  <div class="col-md-9 col-9">
+                    <p class="text-left q-ml-md q-mt-sm text-grey">
+                      <span style="font-size: large">Billing History</span
+                      ><br />
+                      <span style="font-size: smaller">
+                        manage Billing information and view receips</span
+                      >
+                    </p>
+                    <q-markup-table flat class="q-px-lg">
+                      <thead>
+                        <tr>
+                          <th class="text-center" style="width: 10px">No</th>
+                          <th class="text-left">Date</th>
+                          <th class="text-left">Billing Type</th>
+                          <th class="text-left">Receipt</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in " :key="item.id">
+                          <td class="text-left">{{ index + 1 }}</td>
+                          <td class="text-left">
+                            sda
+                            <!-- {{ formatDate(item?.createdAt) }} -->
+                          </td>
+                          <td class="text-left">{{ item?.month?.name }}</td>
+                          <td class="text-left">
                             <q-btn
-                              class="full-width q-mt-lg"
                               outline
-                              style="color: black"
-                              label="Pay Now"
-                              @click="showDialog = true"
+                              style="color: grey"
+                              label="Download"
                             />
-                          </div>
-                        </q-card-section>
-                      </q-card>
-                    </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </q-markup-table>
+                    <div></div>
                   </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
+                  <div class="col-md-3 col-3 q-px-md" style="height: 100%">
+                    <q-card class="q-px-sm q-mt-lg text-center bg-red-5">
+                      <q-card-section>
+                        <div class="text-left">
+                          <p class="text-left text-bold q-ml-md text-white">
+                            <span style="font-size: medium"
+                              >Next Payment</span
+                            >
+                          </p>
+                        </div>
+                        <q-separator color="white" inset />
+                        <div class="q-mx-md tw-flex tw-flex-col text-left">
+                          <p class="text-bold q-mt-md text-white text-left">
+                            <span style="font-size: medium"
+                              >Payment Options</span
+                            >
+                            <template
+                              v-for="(billing, index) in nilaiBilling"
+                              :key="index"
+                            >
+                              <q-checkbox
+                                v-model="billing.isChecked"
+                                :label="`SPP ${
+                                  billing.month.name
+                                } Rp. ${billing.bill_amount.toLocaleString(
+                                  'id-ID'
+                                )}`"
+                                style="
+                                  font-size: 8px;
+                                  margin-bottom: 3px;
+                                  margin-right: 0px;
+                                "
+                              ></q-checkbox>
+                            </template>
+                          </p>
+                          <span style="font-size: smaller"
+                            >Payment deadline</span
+                          >
+                          <span
+                            class="text-warning"
+                            style="font-size: smaller"
+                            >10 Desember 2023</span
+                          >
+                          <p
+                            class="text-white"
+                            style="font-size: larger; margin-top: 10px"
+                          >
+                            <span style="color: black"
+                              >Total: Rp.
+                              {{ totalAmount.toLocaleString("id-ID") }}</span
+                            >
+                          </p>
+                          <q-btn
+                            class="full-width q-mt-lg"
+                            outline
+                            style="color: black"
+                            label="Pay Now"
+                            @click="showDialog = true"
+                          />
+                        </div>
+                      </q-card-section>
+                    </q-card>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-card-section>
+      </q-card>
+     
     </div>
     <!-- Dialog -->
     <q-dialog v-model="showDialog">
