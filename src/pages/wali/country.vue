@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
-        <q-card class="text-center bg-blue-2" style="height: 87vh">
+      <div class="col">
+        <q-card class="text-center bg-blue-2  tw-min-h-screen">
           <q-card-section>
             <div class="text-center">
               <p>
@@ -139,7 +139,7 @@
   </div>
 
   <q-dialog v-model="alert">
-    <q-card style="width: 700px; max-width: 80vw">
+    <q-card>
       <q-card-section>
         <div class="text-h6">Tambah Aktivitas</div>
       </q-card-section>
@@ -182,7 +182,7 @@
   </q-dialog>
 
   <q-dialog v-model="pickDateDialog">
-    <q-card style="width: 700px; max-width: 80vw">
+    <q-card>
       <q-card-section>
         <div class="text-h6">Pilih Tanggal</div>
       </q-card-section>
@@ -209,9 +209,9 @@
   </q-dialog>
 
   <q-dialog v-model="countryDialog">
-    <q-card style="width: 700px; max-width: 80vw">
+    <q-card class="tw-w-5/6">
       <q-card-section>
-        <div class="text-h6">Tambah country</div>
+        <div class="text-h6">Tambah Aktivitas</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">

@@ -25,6 +25,10 @@ export default {
       type: String,
       required: true,
     },
+    path: {
+      type: String,
+      required: true,
+    }
   },
 
   data() {
@@ -43,6 +47,7 @@ export default {
       dataPresensi: ref(),
       dataPersonality: ref(),
       semester: ref(sessionStorage.getItem("smt")),
+      path: props.path,
     };
   },
 
@@ -78,11 +83,11 @@ export default {
       }
     },
 
-    async downloadTask(path) {
+    async downloadTask() {
       try {
         const token = sessionStorage.getItem("token");
         const response = await this.$api.get(
-          `student-task/download?filepath=${path}`,
+          `student-task/download?filepath=${this.path}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -101,7 +106,7 @@ export default {
   },
 
   mounted() {
-    this.getNumberRaport();
+    this.downloadTask();
   },
 };
 </script>

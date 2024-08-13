@@ -539,16 +539,6 @@ export default {
     this.getPengumuman();
     this.getOverview();
     this.getAchevment();
-
-    setInterval(() => {
-      this.getRekapSampah();
-      this.getRekapSampahbulan();
-      this.getRaport();
-      this.getSiswaById();
-      this.getPresensi();
-      this.getPengumuman();
-      this.getOverview();
-    }, 20000);
   },
 };
 </script>

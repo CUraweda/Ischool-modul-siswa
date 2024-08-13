@@ -744,14 +744,15 @@ export default {
     },
 
     async getTaskDetailById(id) {
+      const idSiswa = sessionStorage.getItem("idSiswa");
       try {
         const response = await this.$api.get(`task-detail/show-by-task/${id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        console.log("🚀 ~ getTaskDetailById ~ response:", response.data.data[0].task_file);
-        return response.data.data[0].task_file;
+        const detailTask = response.data.data.find(item => item.student_id === parseInt(idSiswa));
+        return detailTask.task_file;
       } catch (error) {
         console.log(error);
       }

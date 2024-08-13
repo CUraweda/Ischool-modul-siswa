@@ -7,12 +7,20 @@
           <q-card-section>
             <div class="text-center tw-mb-10">
               <p>
-                <span
-                  class="text-center text-black text-bold"
-                  style="font-size: x-large"
+                <span class="text-center text-black text-bold" style="font-size: x-large"
                   >RAPORT SISWA</span
                 >
               </p>
+            </div>
+            <div class="q-mb-md align-center justify-center">
+              <q-select
+                class="text-center"
+                style="width: 200px"
+                filled
+                v-model="tahun"
+                :options="yearOptions"
+                label="Tahun"
+              />
             </div>
             <div>
               <q-card>
@@ -32,11 +40,11 @@
 
                 <q-tab-panels v-model="tab" animated>
                   <q-tab-panel name="1" class="q-pa-none">
-                    <Rapot :TabPilihan="'1'" :avabile="isAvabile"/>
+                    <Rapot :TabPilihan="'1'" :avabile="isAvabile" :tahun="tahun" />
                   </q-tab-panel>
 
                   <q-tab-panel name="2">
-                    <Rapot :TabPilihan="'2'" :avabile="isAvabile"/>
+                    <Rapot :TabPilihan="'2'" :avabile="isAvabile" :tahun="tahun" />
                   </q-tab-panel>
                 </q-tab-panels>
               </q-card>
@@ -63,31 +71,56 @@ export default {
   data() {
     return {
       isAvabile: ref(true),
+      yearOptions: ref([]),
+      tahun: ref("2023/2024"),
     };
   },
 
-   setup() {
-
+  setup() {
     return {
       tab: ref("1"),
     };
   },
 
   watch: {
-   tab(newVal) {
-   
-      sessionStorage.setItem('smt', newVal);
-    }
+    tab(newVal) {
+      sessionStorage.setItem("smt", newVal);
+    },
+    tahun(newVal) {
+      console.log(this.tahun);
+    },
   },
 
   mounted() {
-    this.getDataUnpaidBiling()
+    this.getDataUnpaidBiling(), this.getAcademicYear();
   },
 
   methods: {
+    async getAcademicYear() {
+      const idKelas = sessionStorage.getItem("idClass");
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await this.$api.get(
+          `/academic-year?search_query=&limit=10000&page=0`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const result = response.data.data.result;
+        console.log("🚀 ~ getAcademicYear ~ respon:", response.data.data.result);
+        this.yearOptions = result.map((item) => item.name);
+        console.log("🚀 ~ getKategoriRapot ~ this.yearOptions:", this.yearOptions);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async getDataUnpaidBiling() {
       const idSiswa = sessionStorage.getItem("idSiswa");
-      console.log("🚀 ~ getDataUnpaidBiling ~ idSiswa:", idSiswa)
+      console.log("🚀 ~ getDataUnpaidBiling ~ idSiswa:", idSiswa);
       const token = sessionStorage.getItem("token");
 
       try {
@@ -102,22 +135,14 @@ export default {
             },
           }
         );
-        console.log("🚀 ~ getDataUnpaidBiling ~ response:", response)
-
-        // const filterDataBilling = response.data.data.filter((a) => a.paidoff_at === null);
-        // console.log("🚀 ~ getDataUnpaidBiling ~ filterDataBilling:", filterDataBilling)
+        console.log("🚀 ~ getDataUnpaidBiling ~ response:", response);
 
         const dataBilling = response.data.data.length;
         this.isAvabile = dataBilling <= 0;
-
-        // console.log("🚀 ~ getDataUnpaidBiling ~ this.isAvabile:", this.isAvabile)
-        // console.log("🚀 ~ getDataUnpaidBiling ~ this.dataBilling:", dataBilling)
-        // console.log(response);
       } catch (error) {
         console.log(error);
       }
     },
-  }
+  },
 };
 </script>
-

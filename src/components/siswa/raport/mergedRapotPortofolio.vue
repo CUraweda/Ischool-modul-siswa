@@ -18,7 +18,13 @@
 <script>
 import { ref } from "vue";
 export default {
-  props: ["sub"],
+  props: {
+    path: {
+      type: String,
+      required: true,
+    }
+  },
+
   data() {
     return {
       pdfUrl: ref(),
@@ -26,49 +32,21 @@ export default {
     };
   },
 
+  setup(props) {
+    return {
+      path: props.path,
+    }
+  },
+
   methods: {
-    async getPortofolioRapot() {
-      const token = sessionStorage.getItem("token");
-      const idReport = sessionStorage.getItem("raportId");
 
-      try {
-        const response = await this.$api.get(
-          `portofolio-report/show-all-by-student-report/${idReport}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = response.data.data;
-        console.log("🚀 ~ getPortofolioRapot ~ data:", data)
-        let filteredData;
-        if (Array.isArray(data)) {
-          // console.log(this.sub)
-          filteredData = data.filter((item) => item.type === "Merged");
-          const path = filteredData[0]?.file_path ?? null;
-          console.log("🚀 ~ getPortofolioRapot ~ path:", path)
-          if (path) {
-          this.tersedia = true;
-          this.downloadTask(path);
-          } else {
-            this.tersedia = false;
-          }
-
-        }
-
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async downloadTask(path) {
+    async downloadTask() {
       try {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
-        console.log("🚀 ~ downloadTask ~ path:", path)
+        console.log("🚀 ~ downloadTask ~ path:", this.path)
         const response = await this.$api.get(
-          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          `student-task/download?filepath=${this.path}&student_id=${idUser}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -86,7 +64,7 @@ export default {
     },
   },
   mounted() {
-    this.getPortofolioRapot();
+    this.downloadTask()
   },
 };
 </script>
