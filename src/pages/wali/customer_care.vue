@@ -1,144 +1,178 @@
-import { BsSend } from "react-icons/bs";
-import { CustomerCare } from "../../midleware/api";
-import { Store } from "../../store/Store";
-import { useEffect, useState } from "react";
-import Modal from "../../component/modal";
+<template>
+  <div class="container">
+    <div>
+      <div class="bg-blue-2 tw-min-h-screen">
+        <div class="q-pa-md">
+          <q-layout
+            view="lHh Lpr lff"
+            container
+            style="height: 820px"
+            class="shadow-2 rounded-borders"
+          >
+            <q-header elevated class="bg-cyan-8">
+              <q-toolbar>
+                <q-btn
+                  flat
+                  @click="drawer = !drawer"
+                  round
+                  dense
+                  icon="arrow_back"
+                />
+                <q-toolbar-title>{{ currentReceiverName }}</q-toolbar-title>
+              </q-toolbar>
+            </q-header>
 
-const PesanCs = () => {
-  const { token, id } = Store();
-  const [fetch, setFetch] = useState<any[]>([]);
-  const [message, setMessage] = useState<any[]>([]);
-  const [currentChatUser, setCurrentChatUser] = useState<string>("");
-
-  const FetchData = async () => {
-    try {
-      const response = await CustomerCare.GetAllUserChat(token, id);
-      setFetch(response.data.data);
-    } catch {
-      console.error("error");
-    }
-  };
-
-  const showModal = (props: string) => {
-    let modalElement = document.getElementById(props) as HTMLDialogElement;
-    if (modalElement) {
-      modalElement.showModal();
-    }
-  };
-
-  const closeModal = (props: string) => {
-    let modalElement = document.getElementById(props) as HTMLDialogElement;
-    if (modalElement) {
-      modalElement.close();
-    }
-  };
-
-  const GetMessage = async (withId: number, fullName: string) => {
-    try {
-      setCurrentChatUser(fullName);
-      const response = await CustomerCare.GetMessage(token, id, withId);
-      setMessage(response.data.messages);
-    } catch {
-      console.error("error");
-    }
-  };
-
-  useEffect(() => {
-    FetchData();
-  }, [id]);
-
-  return (
-    <div className="w-full flex flex-col items-center pb-10 min-h-screen relative">
-      <div className="w-full text-center my-10">
-        <span className="text-4xl font-bold">Customer Care</span>
-      </div>
-      <div className="w-5/6 shadow-lg max-h-[650px] min-h-[650px] relative">
-        <div className="flex w-full">
-          <div className="w-1/4 shadow-md min-h-[650px] z-10 glass">
-            <div className="w-full p-5 text-3xl font-bold bg-white">Chats</div>
-            {fetch.map((item, index) => (
-              <div
-                key={index}
-                className="w-full p-3 bg-blue-300 flex gap-2 cursor-pointer"
-                onClick={() => GetMessage(item.withUser.id, item.withUser.full_name)}
+            <q-drawer
+              v-model="drawer"
+              show-if-above
+              :width="300"
+              :breakpoint="400"
+            >
+              <q-scroll-area
+                style="
+                  height: calc(100% - 150px);
+                  margin-top: 80px;
+                  border-right: 1px solid #ddd;
+                "
               >
-                <div className="flex flex-col w-full">
-                  <span className="font-bold">{item.withUser.full_name}</span>
-                </div>
-              </div>
-            ))}
-            <div className="toast">
-              <div className="dropdown dropdown-top dropdown-end">
-                <label
-                  className="btn btn-primary btn-circle"
-                  onClick={() => showModal("daftar-chat")}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                <q-list padding>
+                  <q-item
+                    clickable
+                    @click="setUpMessage(userChat)"
+                    v-ripple
+                    v-for="userChat in users"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </label>
+                    <q-item-section avatar>
+                      <q-avatar>
+                        <img
+                          src="https://thinksport.com.au/wp-content/uploads/2020/01/avatar-.jpg"
+                        />
+                      </q-avatar>
+                    </q-item-section>
+
+                    <q-item-section>
+                      <p class="text-bold">{{ userChat.withUser.full_name }}</p>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-scroll-area>
+
+              <q-img
+                class="absolute-top"
+                src="https://cdn.quasar.dev/img/material.png"
+                style="height: 80px"
+              >
+                <div class="absolute-bottom bg-transparent">
+                  <div class="text-weight-bold text-h4">Chats</div>
+                </div>
+              </q-img>
+              <div
+                class="bg-red"
+                style="position: fixed; right: 80px; bottom: 80px"
+                @click="getUsers"
+              >
+                <q-btn
+                  key="btn_size_round_md"
+                  round
+                  color="primary"
+                  size="lg"
+                  icon="add"
+                  class="absolute"
+                />
               </div>
-            </div>
-          </div>
-          <div className="w-3/4 glass">
-            <div className="w-full p-5 text-3xl font-bold bg-white shadow-md">
-              {currentChatUser || "Pilih chat"}
-            </div>
-            <div className="p-3 w-full min-h-[500px] max-h-[500px] overflow-auto">
-              {message.map((item, index) => (
-                <div key={index}>
-                  <div className={item.sender_id === id ? "chat chat-end" : "chat chat-start"}>
-                    <div className={item.sender_id === id ? "chat-bubble chat-bubble-accent" : "chat-bubble chat-bubble-primary"}>
-                      {item.message}
+            </q-drawer>
+
+            <q-page-container class="bg-white">
+              <q-page
+                padding
+                class="tw-relative tw-overflow-hidden"
+                style="
+                  width: 100%;
+                  background-image: url(https://i.pinimg.com/600x315/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg);
+                "
+              >
+                <div
+                  class="flex tw-overflow-auto tw-justify-center"
+                  style="max-height: 40rem"
+                >
+                  <div class="tw-w-5/6">
+                    <div
+                      style="width: 100%"
+                      class="text-left"
+                      v-for="message in messages"
+                    >
+                      <q-chat-message
+                        :name="message.sender"
+                        :text="[message.text]"
+                        :stamp="message.stamp"
+                        :sent="message.isSender"
+                        :bg-color="message.color"
+                        :text-color="message.textColor"
+                      />
+                    </div>
+
+                    <div style="width: 100%" class="text-left" :hidden="typing">
+                      <q-chat-message bg-color="amber" sent>
+                        <q-spinner-dots size="2rem" />
+                      </q-chat-message>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <div className="w-full px-5">
-              <label className="input input-bordered flex items-center gap-2">
-                <input type="text" className="grow" placeholder="Type your message..." />
-                <span className="text-2xl cursor-pointer">
-                  <BsSend />
-                </span>
-              </label>
-            </div>
-          </div>
+                <div
+                  class="flex justify-center items-center tw-absolute tw-bottom-5 tw-w-full"
+                >
+                  <div class="tw-w-5/6 flex justify-start">
+                    <q-input
+                      rounded
+                      @keyup.enter="sendMessage"
+                      outlined
+                      v-model="inputMessage"
+                      class="input bg-white tw-w-full"
+                      placeholder="Type Here"
+                      ref="messageInput"
+                    />
+                  </div>
+                  <div class="tw-w-1/6 flex tw-pl-2">
+                    <q-btn
+                      round
+                      color="green"
+                      icon="send"
+                      @click="sendMessage"
+                    />
+                  </div>
+                </div>
+              </q-page>
+            </q-page-container>
+          </q-layout>
         </div>
       </div>
+    </div>
+  </div>
 
-      <Modal id="daftar-chat">
-        <div className="flex justify-center w-full">
-          <span className="text-xl font-bold">Daftar Chat</span>
-        </div>
-        {/* Daftar pengguna untuk memulai chat */}
-        <div className="w-full p-5">
-          {fetch.map((item, index) => (
-            <div
-              key={index}
-              className="w-full p-3 bg-blue-300 flex gap-2 cursor-pointer"
-              onClick={() => {
-                closeModal("daftar-chat");
-                GetMessage(item.withUser.id, item.withUser.full_name);
-              }}
-            >
-              <div className="flex flex-col w-full">
-                <span className="font-bold">{item.withUser.full_name}</span>
-              </div>
+  <q-dialog v-model="medium">
+    <q-card style="width: 700px; max-width: 80vw">
+      <q-card-section>
+        <div class="text-h6">Kirim Pesan</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-card class="tw-m-1 tw-cursor-pointer" v-for="user in dataUser">
+          <div
+            class="flex justify-start items-center q-pa-md"
+            clickable
+            @click="newMessage(user)"
+          >
+            <div class="tw-w-1/6">
+              <q-avatar>
+                <img
+                  src="https://thinksport.com.au/wp-content/uploads/2020/01/avatar-.jpg"
+                />
+              </q-avatar>
             </div>
-            <div class="flex tw-flex-col justify-start items-start q-pl-md tw-w-5/6">
+            <div
+              class="flex tw-flex-col justify-start items-start q-pl-md tw-w-5/6"
+            >
               <p class="text-bold text-h6">{{ user?.full_name }}</p>
             </div>
           </div>
@@ -156,7 +190,7 @@ const PesanCs = () => {
 import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
 import { ref } from "vue";
 import Swal from "sweetalert2";
-import socket from "../../socket"
+import socket from "../../socket";
 
 export default {
   components: {
@@ -182,11 +216,11 @@ export default {
   },
   mounted() {
     this.getUserChats();
-    socket.connect()
-    socket.on('cc_refresh', () => {
-      this.getUserChats()
-      this.getMessages()
-    })
+    socket.connect();
+    socket.on("cc_refresh", () => {
+      this.getUserChats();
+      this.getMessages();
+    });
   },
   watch: {
     currentMessageId: {
@@ -304,7 +338,7 @@ export default {
           });
         }
         this.getMessages();
-        socket.emit('cc', {})
+        socket.emit("cc", {});
         this.inputMessage = "";
       } catch (err) {
         console.log(err);
@@ -319,12 +353,10 @@ export default {
           },
         });
         this.dataUser = response.data.data;
-
       } catch (err) {
         console.log(err);
       }
     },
   },
 };
-
-export default PesanCs;
+</script>

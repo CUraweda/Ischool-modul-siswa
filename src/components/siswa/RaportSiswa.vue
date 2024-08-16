@@ -1,9 +1,5 @@
 <template>
-  <q-splitter
-    v-if="trigerRapot && avabile"
-    v-model="splitterModel"
-    style="height: 75vh"
-  >
+  <q-splitter v-if="trigerRapot" v-model="splitterModel" style="height: 75vh">
     <template v-slot:before>
       <q-tabs v-model="innerTab" vertical class="text-teal">
         <q-tab name="innerMails" icon="filter_9_plus" label="Angka" />
@@ -15,16 +11,6 @@
           label="Raport Gabungan"
         />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
-        <div class="q-mt-md flex justify-center">
-          <q-select
-            class="text-center"
-            style="width: 150px"
-            filled
-            v-model="tahun"
-            :options="options"
-            label="Tahun"
-          />
-        </div>
       </q-tabs>
     </template>
 
@@ -37,7 +23,11 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" />
+          <NumberRaport
+            :TabPilihan="TabPilihan"
+            :tahun="tahun"
+            :path="number_path"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -120,7 +110,7 @@
                     class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
                     style="height: 100%"
                   >
-                    <Narasi :TabPilihan="TabPilihan"></Narasi>
+                    <Narasi :TabPilihan="TabPilihan" :path="narrative_path" />
                   </div>
                 </div>
               </q-tab-panel>
@@ -154,7 +144,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :sub="'Merged'" />
+                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'" />
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">
@@ -223,7 +213,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <MergedRapotPortofolio />
+                  <MergedRapotPortofolio :path="merged_path" />
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -234,7 +224,7 @@
   </q-splitter>
 
   <div
-    v-if="!trigerRapot || !avabile"
+    v-if="!trigerRapot"
     class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
   >
     <span class="tw-text-xl">Raport Belum Tersedia</span>
@@ -348,13 +338,16 @@ export default {
       editedCommentPorto: "",
       submittedCommentPorto: "",
       role: ref(sessionStorage.getItem("role")),
+      studentClassId: ref(sessionStorage.getItem("studentClassId")),
       dataRapot: ref([]),
       trigerRapot: ref(true),
       reportId: ref(),
       idSiswa: ref(),
+      number_path: ref(),
+      narrative_path: ref(),
+      portofolio_path: ref(),
+      merged_path: ref(),
       medium: ref(false),
-      tahun: ref("2023/2024"),
-      options: ["2023/2024", "2024/2025"],
     };
   },
   methods: {
@@ -368,43 +361,48 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
-        this.idSiswa = response.data.data[0].studentclasses[0].id;
-        this.submitComment();
-        this.getCommnentParent();
+        this.idSiswa = response.data.data[0].id;
+        // this.submitComment();
+        this.getCommentParent();
         console.log(this.idSiswa);
       } catch (error) {
         console.error(error);
       }
     },
-    async getCommnentParent() {
+    async getCommentParent() {
+      // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
       const token = sessionStorage.getItem("token");
       const idSiswa = this.idSiswa;
       console.log(idSiswa);
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${idSiswa}&semester=${this.TabPilihan}`,
+          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        const dataState = response.data.data;
+        const dataState = response.data.data[0];
         // console.log(dataState);
-
-        if (dataState && dataState.length > 0) {
+        if (dataState) {
           this.trigerRapot = true;
-          this.dataRapot = response?.data?.data[0];
-          this.submittedComment = response?.data?.data[0]?.nar_parent_comments;
-          this.submittedCommentPorto =
-            response?.data?.data[0]?.por_parent_comments;
+          this.dataRapot = dataState;
+          this.submittedComment = dataState?.nar_parent_comments;
+          this.submittedCommentPorto = dataState?.por_parent_comments;
+          this.number_path = dataState?.number_path;
+          this.narrative_path = dataState?.narrative_path;
+          this.portofolio_path = dataState?.portofolio_path;
+          this.merged_path = dataState?.merged_path;
 
-          sessionStorage.setItem("raportId", response.data.data[0].id);
-          this.reportId = response.data.data[0].id;
+          sessionStorage.setItem("raportId", dataState.id);
+          this.reportId = dataState.id;
         } else {
           this.trigerRapot = false;
           // console.log("kosong");
         }
+
+        console.log("HDUASGVDJBASJDBJKA", this.trigerRapot);
       } catch (error) {
         console.log(error);
       }
@@ -438,7 +436,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: idSiswa,
+            student_class_id: this.studentClassId,
             semester: this.TabPilihan,
             nar_parent_comments: this.editedComment,
           },
@@ -449,14 +447,13 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         this.editedComment = "";
       } catch (error) {
         console.log(error);
       }
     },
     async submitCommentPorto() {
-      const student_class_id = sessionStorage.getItem("idSiswa");
       const RaportId = sessionStorage.getItem("raportId");
 
       const token = sessionStorage.getItem("token");
@@ -464,7 +461,7 @@ export default {
         const response = await this.$api.put(
           `/student-report/update/${RaportId}`,
           {
-            student_class_id: student_class_id,
+            student_class_id: this.studentClassId,
             semester: this.TabPilihan,
             por_parent_comments: this.editedCommentPorto,
           },
@@ -475,7 +472,7 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         // console.log('sukses');
         this.editedCommentPorto = "";
       } catch (error) {
@@ -505,7 +502,7 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         this.medium = false;
         Swal.fire({
           title: "Portofolio berhasil di upload !",
@@ -527,7 +524,7 @@ export default {
   },
   mounted() {
     // console.log("gedagedi", this.avabile)
-    this.getCommnentParent();
+    this.getCommentParent();
     this.getIdSiswa();
     if (this.trigerRapot) {
       this.getKategoriRapot();
@@ -535,9 +532,10 @@ export default {
   },
 
   watch: {
-    // avabile(newVal) {
-    // console.log("OHIO:", newVal);
-    // }
+    tahun(newVal) {
+      console.log("🚀 ~ tahun ~ newVal:", this.tahun);
+      this.getCommentParent();
+    },
   },
 
   name: "Rapot",
@@ -546,8 +544,12 @@ export default {
       type: String,
       required: true,
     },
-    avabile: {
-      type: Boolean,
+    // avabile: {
+    //   type: Boolean,
+    //   required: true,
+    // },
+    tahun: {
+      type: String,
       required: true,
     },
   },
@@ -574,6 +576,7 @@ export default {
       editor: ref("Sangat Baik !"),
       TabPilihan: props.TabPilihan,
       // avabile: props.avabile,
+      // tahun: props.tahun,
       editedComment: ref(""),
       submittedComment: ref(""),
       kategori: ref(),

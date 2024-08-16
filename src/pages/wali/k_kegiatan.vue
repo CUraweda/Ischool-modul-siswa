@@ -2,8 +2,8 @@
   <div class="container">
     <!-- <NavbarSiswa/> -->
     <div class="row">
-      <div class="col-md-12">
-        <div class="text-center bg-blue-2 flex tw-flex-col tw-min-h-screen">
+      <div class="col">
+        <div class="text-center bg-blue-2 tw-min-h-screen">
           <q-card-section>
             <div class="text-center">
               <p>
@@ -146,6 +146,7 @@ export default defineComponent({
   methods: {
     onToday() {
       this.$refs.calendar.moveToToday();
+      this.getCurrentDateTime()
     },
     onPrev() {
       this.$refs.calendar.prev();

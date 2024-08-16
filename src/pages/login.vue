@@ -5,12 +5,12 @@
         <div class="col-8 flex justify-center items-center">
           <q-card style="width: 100%; height: auto">
             <q-card-section class="tw-w-full">
-              <div class="row">
-                <div class="img col-md col-12 text-center bg-image2">
-                  <q-img
+              <div class="flex">
+                <div class="img col text-center bg-image2 flex justify-center">
+                  <img
                     class="q-my-lg"
                     src="../assets/sade.png"
-                    style="width: 30%"
+                    style="width: 10rem; height: 10rem"
                   />
                 </div>
                 <div
@@ -54,19 +54,42 @@
                             </template>
                           </q-input>
 
-                          <q-input
-                            v-model="password"
-                            class="tw-w-full"
-                            bottom-slots
-                            filled
-                            type="password"
-                            label="Password"
-                            style="width: 70%"
-                          >
-                            <template v-slot:prepend>
-                              <q-icon name="key" />
-                            </template>
-                          </q-input>
+                          <div class="block w-full" style="width: 70%">
+                            <q-input
+                              v-model="password"
+                              class="text-center"
+                              bottom-slots
+                              filled
+                              :type="showPassword ? 'text' : 'password'"
+                              label="Password"
+                              style="width: 100%"
+                            >
+                              <template v-slot:prepend>
+                                <q-icon name="key" />
+                              </template>
+                              <template v-slot:append>
+                                <q-icon
+                                  :name="
+                                    showPassword
+                                      ? 'visibility_off'
+                                      : 'visibility'
+                                  "
+                                  class="cursor-pointer"
+                                  @click="toggleShow"
+                                />
+                              </template>
+                            </q-input>
+                            <div class="flex items-end">
+                              <q-btn
+                                size="sm"
+                                label="Lupa Password?"
+                                style="color: #00ccff"
+                                flat
+                                @click="alert = true"
+                              />
+                            </div>
+                          </div>
+
                           <q-btn
                             type="submit"
                             color="blue-grey-6"
@@ -87,6 +110,40 @@
                         </div>
                       </div>
                     </div>
+
+                    <q-dialog v-model="alert">
+                      <q-card>
+                        <q-card-section>
+                          <div class="text-h6">Lupa Password</div>
+                        </q-card-section>
+
+                        <q-card-section class="q-pt-none">
+                          <q-input
+                            v-model="emailforgot"
+                            class="text-center"
+                            bottom-slots
+                            filled
+                            type="text"
+                            label="Masukan Email"
+                            style="width: 100%; min-width: 300px"
+                          >
+                            <template v-slot:prepend>
+                              <q-icon name="email" />
+                            </template>
+                          </q-input>
+                        </q-card-section>
+
+                        <q-card-actions align="right">
+                          <q-btn
+                            flat
+                            label="Kirim"
+                            color="primary"
+                            v-close-popup
+                            @click="forgotPassword"
+                          />
+                        </q-card-actions>
+                      </q-card>
+                    </q-dialog>
                   </div>
                 </div>
               </div>
@@ -97,12 +154,14 @@
     </q-page>
   </div>
 </template>
-
 <script>
 import Swal from "sweetalert2";
 
 export default {
   methods: {
+    toggleShow() {
+      this.showPassword = !this.showPassword;
+    },
     async loginUser() {
       const loginData = {
         email: this.email,
@@ -144,7 +203,25 @@ export default {
         this.submit = false;
       }
     },
-
+    async forgotPassword() {
+      const forgotData = {
+        email: this.emailforgot,
+      };
+      try {
+        const response = await this.$api.post(
+          "/auth/forgot-password",
+          forgotData
+        );
+        if (!response.ok) return Error("Gagal mengirimkan email");
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Konfirmasi password akan diinformasikan di email terkait",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getUserAccess(data) {
       const idCust = data.id;
       const token = data.token;
@@ -179,7 +256,10 @@ export default {
     return {
       email: "",
       password: "",
+      showPassword: false,
       submit: false,
+      alert: false,
+      emailforgot: "",
     };
   },
 };
@@ -195,7 +275,7 @@ export default {
 .bg-image2 {
   background-image: url("../assets/sesi2.png");
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover;
 }
 
 @media (max-width: 768px) {
