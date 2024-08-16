@@ -50,17 +50,16 @@
                   >
                     <div class="tw-text-xl">Rekap</div>
                     <div>
+                      <!-- <q-btn
+                        color="blue"
+                        label="Tambah"
+                        @click="alert = true"
+                        v-if="this.countryActivity.lengt > 1"
+                      /> -->
                       <q-btn
                         color="blue"
                         label="Tambah"
                         @click="alert = true"
-                        v-if="this.countryActivity.lengt < 1"
-                      />
-                      <q-btn
-                        v-else
-                        color="blue"
-                        label="Tambah"
-                        @click="countryDialog = true"
                       />
                     </div>
                   </div>
@@ -139,7 +138,7 @@
   </div>
 
   <q-dialog v-model="alert">
-    <q-card>
+    <q-card class="tw-w-5/6">
       <q-card-section>
         <div class="text-h6">Tambah Aktivitas</div>
       </q-card-section>
