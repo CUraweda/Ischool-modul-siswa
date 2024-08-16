@@ -1,17 +1,33 @@
 <template>
   <div class="flex tw-p-10 tw-h-full bg-blue-2">
-
     <q-card class="tw-w-full tw-p-10">
       <div
-        style="background: url('https://t3.ftcdn.net/jpg/02/77/30/98/360_F_277309825_h8RvZkoyBGPDocMtippdfe3497xTrOXO.jpg'); background-size: cover;">
-        <div class="flex justify-start tw-flex-col items-center tw-p-5"
-          style="background-color: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+        style="
+          background: url('https://t3.ftcdn.net/jpg/02/77/30/98/360_F_277309825_h8RvZkoyBGPDocMtippdfe3497xTrOXO.jpg');
+          background-size: cover;
+        "
+      >
+        <div
+          class="flex justify-start tw-flex-col items-center tw-p-5"
+          style="
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
           <q-avatar size="100px">
-            <img src="https://t4.ftcdn.net/jpg/01/24/65/69/360_F_124656969_x3y8YVzvrqFZyv3YLWNo6PJaC88SYxqM.jpg">
+            <img
+              src="https://t4.ftcdn.net/jpg/01/24/65/69/360_F_124656969_x3y8YVzvrqFZyv3YLWNo6PJaC88SYxqM.jpg"
+            />
           </q-avatar>
           <div class="flex tw-flex-col items-center">
-            <p class="text-h4 tw-mt-3 text-bold text-white">{{ dataUser?.full_name }}</p>
-            <div class="tw-w-full bg-blue" style="height: 5px;" />
+            <p class="text-h4 tw-mt-3 text-bold text-white">
+              {{ dataUser?.full_name }}
+            </p>
+            <div class="tw-w-full bg-blue" style="height: 5px" />
           </div>
         </div>
       </div>
@@ -20,10 +36,11 @@
         <div class="flex justify-between q-mb-md">
           <p class="text-bold text-h5 tw-mb-5">Data Pengguna</p>
           <q-btn
-              color="secondary"
-              label="Edit Password"
-              @click="modalEditPassword = true"
-            />
+            style="height: 35px"
+            color="secondary"
+            label="Edit Password"
+            @click="modalEditPassword = true"
+          />
         </div>
         <q-markup-table class="tw-w-full">
           <thead>
@@ -42,13 +59,16 @@
             <tr>
               <th class="text-left">Status</th>
               <th class="text-left">
-                <q-chip outline color="teal" text-color="white" icon="verified_user">
+                <q-chip
+                  outline
+                  color="teal"
+                  text-color="white"
+                  icon="verified_user"
+                >
                   {{ dataUser?.status === 1 ? "Verified" : "Not Verified" }}
                 </q-chip>
-
               </th>
             </tr>
-
           </thead>
         </q-markup-table>
         <q-separator />
@@ -107,43 +127,72 @@
           <q-input
             v-model="old_password"
             outlined
+            :type="showPassword ? 'password' : 'text'"
             label="Password Lama"
             class="q-mb-md"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="showPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleShow"
+              /> </template
+          ></q-input>
           <q-input
             v-model="new_password"
             outlined
+            :type="showPasswordnew ? 'password' : 'text'"
             label="Password Baru"
             class="q-mb-md"
-          />
+            ><template v-slot:append>
+              <q-icon
+                :name="showPasswordnew ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleShowNew"
+              />
+            </template>
+          </q-input>
           <q-input
             v-model="password_match"
             outlined
+            :type="showPasswordconfirm ? 'password' : 'text'"
             label="Konfirmasi Password Baru"
             class="q-mb-md"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="showPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleShowConfirm"
+              /> </template
+          ></q-input>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn outline label="Batal" v-close-popup />
-          <q-btn @click="checkPasswordsMatch(new_password, password_match)" unelevated color="primary" label="Simpan" />
+          <q-btn
+            @click="checkPasswordsMatch(new_password, password_match)"
+            unelevated
+            color="primary"
+            label="Simpan"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
-
   </div>
 </template>
 
-
 <script>
 import { ref } from "vue";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import { Notify } from "quasar";
 
 export default {
-
   data() {
     return {
+      showPassword: ref(true),
+      showPasswordnew: ref(true),
+      showPasswordconfirm: ref(true),
       dataUser: ref(),
       dataSiswa: ref(),
       old_password: ref(),
@@ -161,11 +210,19 @@ export default {
   },
 
   mounted() {
-    this.getDataSiswa()
+    this.getDataSiswa();
   },
 
   methods: {
-
+    toggleShow() {
+      this.showPassword = !this.showPassword;
+    },
+    toggleShowNew() {
+      this.showPasswordnew = !this.showPasswordnew;
+    },
+    toggleShowConfirm() {
+      this.showPasswordconfirm = !this.showPasswordconfirm;
+    },
     async checkPasswordsMatch(new_password, password_match) {
       if (new_password !== password_match) {
         Notify.create({
@@ -174,7 +231,9 @@ export default {
           text: "Passwords tidak sama!",
         });
         this.modalEditPassword = false;
-        this.old_password = null, this.new_password = null, this.password_match = null;
+        (this.old_password = null),
+          (this.new_password = null),
+          (this.password_match = null);
         return false;
       }
       this.editDataPassword();
@@ -186,6 +245,8 @@ export default {
         password: this.new_password,
         confirm_password: this.password_match,
       };
+
+      const token = sessionStorage.getItem("token");
 
       const missingData = [];
       for (const key in payload) {
@@ -205,12 +266,14 @@ export default {
         try {
           const res = await this.$api.put(`/user/change-password`, payload, {
             headers: {
-              Authorization: `Bearer ${this.token}`,
+              Authorization: `Bearer ${token}`,
             },
           });
 
           this.modalEditPassword = false;
-          this.old_password = null, this.new_password = null, this.password_match = null;
+          (this.old_password = null),
+            (this.new_password = null),
+            (this.password_match = null);
           Swal.fire({
             icon: "success",
             title: "Aksi Berhasil",
@@ -236,32 +299,34 @@ export default {
 
     getDateTime(date) {
       const now = new Date(date);
-      const formattedDate = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-      return formattedDate
+      const formattedDate = now.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      return formattedDate;
     },
 
     async getDataSiswa() {
-      const idUser = sessionStorage.getItem("idUser")
-      const token = sessionStorage.getItem("token")
+      const idUser = sessionStorage.getItem("idUser");
+      const token = sessionStorage.getItem("token");
       try {
-        const response = await this.$api.get(`/user-access/show-by-user/${idUser}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        const response = await this.$api.get(
+          `/user-access/show-by-user/${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
         console.log(response);
 
-        this.dataSiswa = response.data.data[0].student
-        this.dataUser = response.data.data[0].user
-
-
+        this.dataSiswa = response.data.data[0].student;
+        this.dataUser = response.data.data[0].user;
       } catch (error) {
         console.log(error);
       }
     },
-
   },
-
-
 };
 </script>

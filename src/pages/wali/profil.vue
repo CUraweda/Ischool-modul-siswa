@@ -60,7 +60,12 @@
             <tr>
               <th class="text-left">Status</th>
               <th class="text-left">
-                <q-chip outline color="teal" text-color="white" icon="verified_user">
+                <q-chip
+                  outline
+                  color="teal"
+                  text-color="white"
+                  icon="verified_user"
+                >
                   {{ dataUser?.status === 1 ? "Verified" : "Not Verified" }}
                 </q-chip>
               </th>
@@ -109,7 +114,11 @@
             <tr>
               <th class="text-left">Lokasi koordinat</th>
               <th class="text-left">
-                {{ `${dataParent?.latitude ?? "-"},${dataParent?.longitude ?? "-"}` }}
+                {{
+                  `${dataParent?.latitude ?? "-"},${
+                    dataParent?.longitude ?? "-"
+                  }`
+                }}
               </th>
             </tr>
             <tr>
@@ -237,7 +246,7 @@
               @click="getLocation()"
             />
           </div>
-          <div class="tw-bg-gray-200 q-mb-md" border="sm">
+          <div height="70px" class="tw-bg-gray-200 q-mb-md" border="sm">
             <LoadingSpiner v-if="loading" />
             <LocationMap
               v-if="!loading && dataParent.latitude && dataParent.longitude"
@@ -246,7 +255,12 @@
               :loading="loading"
             />
           </div>
-          <q-input v-model="dataParent.phone" outlined label="Telepon" class="q-mb-md" />
+          <q-input
+            v-model="dataParent.phone"
+            outlined
+            label="Telepon"
+            class="q-mb-md"
+          />
           <q-input
             outlined
             v-model="dataParent.email"
@@ -271,7 +285,12 @@
 
         <q-card-actions align="right" class="text-primary">
           <q-btn outline label="Batal" v-close-popup />
-          <q-btn @click="editDataParent" unelevated color="primary" label="Simpan" />
+          <q-btn
+            @click="editDataParent"
+            unelevated
+            color="primary"
+            label="Simpan"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -290,26 +309,55 @@
           <q-input
             v-model="old_password"
             outlined
+            :type="showPassword ? 'password' : 'text'"
             label="Password Lama"
             class="q-mb-md"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="showPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleShow"
+              /> </template
+          ></q-input>
           <q-input
             v-model="new_password"
             outlined
+            :type="showPasswordnew ? 'password' : 'text'"
             label="Password Baru"
             class="q-mb-md"
-          />
+            ><template v-slot:append>
+              <q-icon
+                :name="showPasswordnew ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleShowNew"
+              />
+            </template>
+          </q-input>
           <q-input
             v-model="password_match"
             outlined
+            :type="showPasswordconfirm ? 'password' : 'text'"
             label="Konfirmasi Password Baru"
             class="q-mb-md"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="showPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="toggleShowConfirm"
+              /> </template
+          ></q-input>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn outline label="Batal" v-close-popup />
-          <q-btn @click="checkPasswordsMatch(new_password, password_match)" unelevated color="primary" label="Simpan" />
+          <q-btn
+            @click="checkPasswordsMatch(new_password, password_match)"
+            unelevated
+            color="primary"
+            label="Simpan"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -333,15 +381,22 @@ export default {
 
   data() {
     return {
-      old_password: ref(),
-      new_password: ref(),
-      password_match: ref(),
+      showPassword: ref(true),
+      showPasswordnew: ref(true),
+      showPasswordconfirm: ref(true),
       dataUser: ref(),
       dataSiswa: ref([]),
       dataParent: ref(null),
       optStatus: ["Ayah", "Ibu"],
       optNationality: ["WNI", "WNA"],
-      optReligion: ["Islam", "Kristen", "Protestan", "Hindu", "Buddha", "Kong Hu Cu"],
+      optReligion: [
+        "Islam",
+        "Kristen",
+        "Protestan",
+        "Hindu",
+        "Buddha",
+        "Kong Hu Cu",
+      ],
       optEducation: ["TK", "SD", "SMP", "SMA", "SMK", "MA", "S1", "S2", "S3"],
       loading: ref(false),
     };
@@ -354,12 +409,21 @@ export default {
       idUser: ref(sessionStorage.getItem("idUser")),
     };
   },
-  
+
   mounted() {
     this.getDataSiswa();
     this.getDataParent();
   },
   methods: {
+    toggleShow() {
+      this.showPassword = !this.showPassword;
+    },
+    toggleShowNew() {
+      this.showPasswordnew = !this.showPasswordnew;
+    },
+    toggleShowConfirm() {
+      this.showPasswordconfirm = !this.showPasswordconfirm;
+    },
     async getLocation() {
       try {
         this.loading = true;
@@ -367,7 +431,7 @@ export default {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(resolve, reject);
           } else {
-            reject(new Error("Geolocation is not supported by this browser."));
+            reject(new Error("Geolocation Tidak Didukung Oleh Browser Ini."));
           }
         });
 
@@ -377,13 +441,13 @@ export default {
 
         Notify.create({
           type: "positive",
-          message: "Location data has been filled!",
+          message: "Data Lokasi Ditemukan!",
         });
       } catch (error) {
         this.loading = false;
         Notify.create({
           type: "negative",
-          message: "Failed to get location!",
+          message: "Gagal Mendapaktkan Data Lokasi!",
         });
       }
     },
@@ -392,11 +456,14 @@ export default {
       try {
         this.dataParent = null;
 
-        const res = await this.$api.get(`/parent/show-by-userid/${this.idUser}`, {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+        const res = await this.$api.get(
+          `/parent/show-by-userid/${this.idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
         this.dataParent = res.data?.data ?? null;
         this.dataParent.status = res.data?.data.parent_type ?? null;
       } catch (error) {
@@ -433,7 +500,10 @@ export default {
       };
 
       payload.parent_type = status;
-      console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type);
+      console.log(
+        "🚀 ~ editDataParent ~ payload.parent_type:",
+        payload.parent_type
+      );
 
       // Check for missing data
       const missingData = [];
@@ -490,7 +560,9 @@ export default {
           text: "Passwords tidak sama!",
         });
         this.modalEditPassword = false;
-        this.old_password = null, this.new_password = null, this.password_match = null;
+        (this.old_password = null),
+          (this.new_password = null),
+          (this.password_match = null);
         return false;
       }
       this.editDataPassword();
@@ -502,6 +574,8 @@ export default {
         password: this.new_password,
         confirm_password: this.password_match,
       };
+
+      const token = sessionStorage.getItem("token");
 
       // payload.parent_type = status;
       // console.log("🚀 ~ editDataParent ~ payload.parent_type:", payload.parent_type)
@@ -525,12 +599,14 @@ export default {
         try {
           const res = await this.$api.put(`/user/change-password`, payload, {
             headers: {
-              Authorization: `Bearer ${this.token}`,
+              Authorization: `Bearer ${token}`,
             },
           });
 
           this.modalEditPassword = false;
-          this.old_password = null, this.new_password = null, this.password_match = null;
+          (this.old_password = null),
+            (this.new_password = null),
+            (this.password_match = null);
           Swal.fire({
             icon: "success",
             title: "Aksi Berhasil",
@@ -567,11 +643,14 @@ export default {
       const idUser = sessionStorage.getItem("idUser");
       const token = sessionStorage.getItem("token");
       try {
-        const response = await this.$api.get(`/user-access/show-by-user/${idUser}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await this.$api.get(
+          `/user-access/show-by-user/${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log(response.data.data);
 
         this.dataSiswa = response.data.data;

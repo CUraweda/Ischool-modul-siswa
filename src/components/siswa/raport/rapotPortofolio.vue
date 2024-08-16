@@ -18,12 +18,24 @@
 <script>
 import { ref } from "vue";
 export default {
-  props: ["sub"],
+  props: {
+    path: {
+      type: String,
+      required: true,
+    }
+  },
+
   data() {
     return {
       pdfUrl: ref(),
       tersedia: true,
     };
+  },
+
+  setup(props) {
+    return {
+      path: props.path,
+    }
   },
 
   methods: {
@@ -68,7 +80,7 @@ export default {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
         const response = await this.$api.get(
-          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          `student-task/download?filepath=${this.path}&student_id=${idUser}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -28,12 +28,12 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
+                        <!-- <th class="text-center">Deskripsi</th> -->
 
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <!-- <th class="text-center">Nilai</th> -->
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -44,7 +44,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description  }}</td>
+                        <!-- <td class="text-center">{{ item?.description  }}</td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -53,7 +53,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">{{ item?.feed_fwd }}</td>
+                        <!-- <td class="text-center">{{ item?.feed_fwd }}</td> -->
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -76,11 +76,11 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description }}</td>
+                        <!-- <td>{{ item?.description }}</td> -->
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td>-</td>
+                        <!-- <td>-</td> -->
                         <td>
                           <div>
                             <q-btn
@@ -115,11 +115,11 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
+                        <!-- <th class="text-center">Deskripsi</th> -->
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <!-- <th class="text-center">Nilai</th> -->
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -163,11 +163,11 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description }}</td>
+                        <!-- <td>{{ item?.description }}</td> -->
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td>-</td>
+                        <!-- <td>-</td> -->
                         <td>
                           <div>
                             <q-btn
@@ -200,11 +200,11 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
+                        <!-- <th class="text-center">Deskripsi</th> -->
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <!-- <th class="text-center">Nilai</th> -->
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -215,7 +215,7 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <!-- <td class="text-center">{{ item?.description }}</td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -224,7 +224,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">{{ item?.feed_fwd }}</td>
+                        <!-- <td class="text-center">{{ item?.feed_fwd }}</td> -->
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -248,11 +248,11 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description }}</td>
+                        <!-- <td>{{ item?.description }}</td> -->
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td>-</td>
+                        <!-- <td>-</td> -->
                         <td>
                           <div>
                             <q-btn
@@ -718,6 +718,7 @@ export default {
     async getDataTugasKelas() {
       try {
         const idKelas = sessionStorage.getItem("idClass");
+        console.log("🚀 ~ getDataTugasKelas ~ idKelas:", idKelas)
         const taskWWP = await this.$api.get(
           `task/show-by-class/${idKelas}?cat=1`,
           {
@@ -765,8 +766,8 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        console.log("🚀 ~ getTaskDetailById ~ response:", response.data.data)
-        this.dataDetailTask = response.data.data[0];
+        const detailTask = response.data.data.find(item => item.student_id === parseInt(this.idSiswa));
+        this.dataDetailTask = detailTask;
       } catch (error) {
         console.log(error);
       }

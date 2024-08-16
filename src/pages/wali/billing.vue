@@ -1,172 +1,171 @@
 <template>
   <div class="container">
-    <div>
-      <div>
-        <q-card class="text-center bg-blue-2">
-          <q-card-section>
-            <div class="text-center">
-              <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large"
-                  >PEMBAYARAN</span
-                >
-              </p>
-            </div>
-            <div class="q-px-md">
-              <q-card style="height: 100%">
-                <q-card-section>
-                  <div class="" style="height: 100%">
-                    <div class="col-md-9 col-9">
-                      <div class="row justify-between">
-                        <p class="text-left q-ml-md q-mt-sm text-grey">
-                          <span style="font-size: large">Histori Pembayaran</span>
-                          <br />
-                          <span style="font-size: smaller">
-                            Kelola informasi penagihan dan lihat tanda terima</span
-                          >
-                        </p>
+    <div class="col ">
+      <q-card class="text-center bg-blue-2 tw-min-h-screen">
+        <q-card-section>
+          <div class="text-center">
+            <p>
+              <span class="text-center text-black text-bold" style="font-size: x-large"
+                >PEMBAYARAN</span
+              >
+            </p>
+          </div>
+          <div class="q-px-md">
+            <q-card style="height: 100%">
+              <q-card-section>
+                <div class="" style="height: 100%">
+                  <div class="col-md-9 col-9">
+                    <div class="row justify-between">
+                      <p class="text-left q-ml-md q-mt-sm text-grey">
+                        <span style="font-size: large">Histori Pembayaran</span>
+                        <br />
+                        <span style="font-size: smaller">
+                          Kelola informasi penagihan dan lihat tanda terima</span
+                        >
+                      </p>
 
-                        <div class="text-center text-bold q-pt-sm no-shadow">
-                          <q-btn
-                            @click="showDialog = true"
-                            class="text-bold no-shadow"
-                            :style="{
-                              background: bayarGa ? 'gray' : 'rgb(50,205,50)',
-                              color: 'white',
-                              width: '100%',
-                            }"
-                            label="Bayar"
-                            :disable="bayarGa"
-                          />
-                        </div>
+                      <div class="text-center text-bold q-pt-sm no-shadow">
+                        <q-btn
+                          @click="showDialog = true"
+                          class="text-bold no-shadow"
+                          :style="{
+                            background: bayarGa ? 'gray' : 'rgb(50,205,50)',
+                            color: 'white',
+                            width: '100%',
+                          }"
+                          label="Bayar"
+                          :disable="bayarGa"
+                        />
                       </div>
-
-                      <q-btn-toggle
-                        v-model="bill"
-                        spread
-                        no-caps
-                        :toggle-color="
-                          bill !== 'unpaid' ? 'blue-2 text-black' : 'red-5 text-black'
-                        "
-                        class="no-shadow q-mt-lg q-px-md"
-                        color="grey-3"
-                        text-color="black"
-                        :options="bill_options"
-                      />
-                      <q-markup-table flat class="q-px-lg">
-                        <template v-slot:body-cell="props">
-                          <q-td :props="props">
-                            <q-checkbox v-model="props.row.selected" />
-                          </q-td>
-                        </template>
-
-                        <thead>
-                          <tr class="q-gutter-sm">
-                            <th
-                              v-if="bill == 'unpaid'"
-                              class="text-center"
-                              style="width: 10px"
-                            >
-                              <q-checkbox
-                                v-model="allSelected"
-                                @update:model-value="toggleAll"
-                              />
-                            </th>
-                            <th class="text-center" style="width: 10px">Nomor</th>
-                            <th class="text-center">Nama</th>
-                            <th class="text-center">Jatuh Tempo</th>
-                            <th class="text-center">Tipe Pembayaran</th>
-                            <th class="text-center">Total</th>
-                            <th class="text-center">Status</th>
-                            <!-- <th v-if="bill != 'unpaid'" class="text-center">Kuitansi</th> -->
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(item, index) in dataBilling" :key="item.id">
-                            <q-td v-if="bill == 'unpaid'">
-                              <q-checkbox
-                                v-model="item.selected"
-                                @update:model-value="updateAllSelected"
-                              />
-                            </q-td>
-                            <td class="text-center">{{ index + 1 }}</td>
-                            <td class="text-center">
-                              {{ item?.studentpaymentbill.name }}
-                            </td>
-                            <td class="text-center">
-                              {{ formatDate(item?.studentpaymentbill.due_date) }}
-                            </td>
-                            <td class="text-center">
-                              {{ item?.studentpaymentbill.paymentpost.billing_cycle }}
-                            </td>
-                            <td class="text-center">
-                              Rp.{{
-                                item?.studentpaymentbill.total.toLocaleString("id-ID")
-                              }}
-                            </td>
-                            <td class="text-center">
-                              {{ item?.status }}
-                            </td>
-                            <!-- <td v-if="bill != 'unpaid'" class="text-center">
-                              <q-btn
-                                outline
-                                style="color: grey"
-                                label="Download"
-                                :disable="!item?.evidence_path"
-                              />
-                            </td> -->
-                          </tr>
-                        </tbody>
-                      </q-markup-table>
-                      <!-- <div></div> -->
                     </div>
-                    <!-- <div class="col-md-3 col-3 q-px-md" style="height: 100%">
-                      <q-card class="q-px-sm q-mt-lg text-center bg-red-5">
-                        <q-card-section>
-                          <div class="text-left">
-                            <p class="text-left text-bold q-ml-md text-white">
-                              <span style="font-size: medium"
-                                >Next Payment</span
-                              >
-                            </p>
-                          </div>
-                          <q-separator color="white" inset />
-                          <div class="q-mx-md tw-flex tw-flex-col text-left text-white">
 
-                            <div
-                              v-for="(item, index) in nilaiBilling"
-                              :key="index"
-                            >
-                              <q-checkbox
-                                :label="`${item?.paymentcategory?.billing_cycle} Rp. ${item?.bill_amount}`"
-                              />
-                            </div>
+                    <q-btn-toggle
+                      v-model="bill"
+                      spread
+                      no-caps
+                      :toggle-color="
+                        bill !== 'unpaid' ? 'blue-2 text-black' : 'red-5 text-black'
+                      "
+                      class="no-shadow q-mt-lg q-px-md"
+                      color="grey-3"
+                      text-color="black"
+                      :options="bill_options"
+                    />
+                    <q-markup-table flat class="q-px-lg">
+                      <template v-slot:body-cell="props">
+                        <q-td :props="props">
+                          <q-checkbox v-model="props.row.selected" />
+                        </q-td>
+                      </template>
 
-                            <p
-                              class="text-white"
-                              style="font-size: larger; margin-top: 10px"
-                            >
-                              <span style="color: black"
-                                >Total: Rp.
-                                {{ totalAmount.toLocaleString("id-ID") }}</span
-                              >
-                            </p>
+                      <thead>
+                        <tr class="q-gutter-sm">
+                          <th
+                            v-if="bill == 'unpaid'"
+                            class="text-center"
+                            style="width: 10px"
+                          >
+                            <q-checkbox
+                              v-model="allSelected"
+                              @update:model-value="toggleAll"
+                            />
+                          </th>
+                          <th class="text-center" style="width: 10px">Nomor</th>
+                          <th class="text-center">Nama</th>
+                          <th class="text-center">Jatuh Tempo</th>
+                          <th class="text-center">Tipe Pembayaran</th>
+                          <th class="text-center">Total</th>
+                          <th class="text-center">Status</th>
+                          <!-- <th v-if="bill != 'unpaid'" class="text-center">Kuitansi</th> -->
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in dataBilling" :key="item.id">
+                          <q-td v-if="bill == 'unpaid'">
+                            <q-checkbox
+                              v-model="item.selected"
+                              @update:model-value="updateAllSelected"
+                            />
+                          </q-td>
+                          <td class="text-center">{{ index + 1 }}</td>
+                          <td class="text-center">
+                            {{ item?.studentpaymentbill.name }}
+                          </td>
+                          <td class="text-center">
+                            {{ formatDate(item?.studentpaymentbill.due_date) }}
+                          </td>
+                          <td class="text-center">
+                            {{ item?.studentpaymentbill.paymentpost.billing_cycle }}
+                          </td>
+                          <td class="text-center">
+                            Rp.{{
+                              item?.studentpaymentbill.total.toLocaleString("id-ID")
+                            }}
+                          </td>
+                          <td class="text-center">
+                            {{ item?.status }}
+                          </td>
+                          <!-- <td v-if="bill != 'unpaid'" class="text-center">
                             <q-btn
-                              class="full-width q-mt-lg"
                               outline
-                              label="Pay Now"
-                              @click="showDialog = true"
+                              style="color: grey"
+                              label="Download"
+                              :disable="!item?.evidence_path"
+                            />
+                          </td> -->
+                        </tr>
+                      </tbody>
+                    </q-markup-table>
+                    <!-- <div></div> -->
+                  </div>
+                  <!-- <div class="col-md-3 col-3 q-px-md" style="height: 100%">
+                    <q-card class="q-px-sm q-mt-lg text-center bg-red-5">
+                      <q-card-section>
+                        <div class="text-left">
+                          <p class="text-left text-bold q-ml-md text-white">
+                            <span style="font-size: medium"
+                              >Next Payment</span
+                            >
+                          </p>
+                        </div>
+                        <q-separator color="white" inset />
+                        <div class="q-mx-md tw-flex tw-flex-col text-left text-white">
+
+                          <div
+                            v-for="(item, index) in nilaiBilling"
+                            :key="index"
+                          >
+                            <q-checkbox
+                              :label="`${item?.paymentcategory?.billing_cycle} Rp. ${item?.bill_amount}`"
                             />
                           </div>
-                        </q-card-section>
-                      </q-card>
-                    </div> -->
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
+
+                          <p
+                            class="text-white"
+                            style="font-size: larger; margin-top: 10px"
+                          >
+                            <span style="color: black"
+                              >Total: Rp.
+                              {{ totalAmount.toLocaleString("id-ID") }}</span
+                            >
+                          </p>
+                          <q-btn
+                            class="full-width q-mt-lg"
+                            outline
+                            label="Pay Now"
+                            @click="showDialog = true"
+                          />
+                        </div>
+                      </q-card-section>
+                    </q-card>
+                  </div> -->
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-card-section>
+      </q-card>
+     
     </div>
     <!-- Dialog -->
     <q-dialog v-model="showDialog">
