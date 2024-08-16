@@ -273,6 +273,7 @@ export default {
         sessionStorage.setItem("idSiswa", id);
         sessionStorage.setItem("level", level);
         this.getSiswaById(id);
+        this.getSiswaById(id);
       } catch (error) {
         console.log(error);
       }

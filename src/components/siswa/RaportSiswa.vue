@@ -23,7 +23,11 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" :path="number_path" />
+          <NumberRaport
+            :TabPilihan="TabPilihan"
+            :tahun="tahun"
+            :path="number_path"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -60,7 +64,7 @@
 
               <q-tab-panel name="page13">
                 <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
-                <div class="tw-flex tw-w-full">
+                <div class="tw-flex tw-w-full" >
                   <div
                     class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
                     style="min-height: 200px"
@@ -68,7 +72,7 @@
                     <p>
                       {{ submittedComment }}
                     </p>
-                    <div v-if="!submittedComment && parseInt(role) === 8">
+                    <div v-if="!submittedComment && parseInt(role) === 8 && avaibleraport">
                       <q-input
                         v-model="editedComment"
                         filled
@@ -140,7 +144,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'"/>
+                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'" />
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">
@@ -153,7 +157,7 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="!submittedCommentPorto && parseInt(role) === 8">
+                    <div v-if="!submittedCommentPorto && parseInt(role) === 8 && avaibleraport">
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -209,7 +213,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <MergedRapotPortofolio :path="merged_path"/>
+                  <MergedRapotPortofolio :path="merged_path" />
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -344,10 +348,10 @@ export default {
       portofolio_path: ref(),
       merged_path: ref(),
       medium: ref(false),
+      avaibleraport: false
     };
   },
   methods: {
-
     async getIdSiswa() {
       const idSiswa = sessionStorage.getItem("idSiswa");
       const token = sessionStorage.getItem("token");
@@ -369,6 +373,8 @@ export default {
     async getCommentParent() {
       // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
       const token = sessionStorage.getItem("token");
+      const idSiswa = this.idSiswa;
+      console.log(idSiswa);
       try {
         const response = await this.$api.get(
           `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
@@ -448,6 +454,36 @@ export default {
         console.log(error);
       }
     },
+    async getPortofolioRapot() {
+      const token = sessionStorage.getItem("token");
+      const idReport = sessionStorage.getItem("raportId");
+
+      try {
+        const response = await this.$api.get(
+          `portofolio-report/show-all-by-student-report/${idReport}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        let filteredData;
+        if (Array.isArray(data)) {
+          filteredData = data.filter((item) => item.type === "Orang Tua");
+          const path = filteredData[0]?.file_path ?? null;
+          console.log(path)
+          if (path) {
+          this.avaibleraport = true;
+          } else {
+            this.avaibleraport = false;
+          }
+
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitCommentPorto() {
       const RaportId = sessionStorage.getItem("raportId");
 
@@ -521,6 +557,7 @@ export default {
     // console.log("gedagedi", this.avabile)
     this.getCommentParent();
     this.getIdSiswa();
+    this.getPortofolioRapot()
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
@@ -528,9 +565,9 @@ export default {
 
   watch: {
     tahun(newVal) {
-      console.log("🚀 ~ tahun ~ newVal:", this.tahun)
-      this.getCommentParent()
-    }
+      console.log("🚀 ~ tahun ~ newVal:", this.tahun);
+      this.getCommentParent();
+    },
   },
 
   name: "Rapot",
