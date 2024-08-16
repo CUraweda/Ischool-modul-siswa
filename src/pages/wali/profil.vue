@@ -96,6 +96,10 @@
               <th class="text-left">{{ dataParent?.name ?? "-" }}</th>
             </tr>
             <tr>
+              <th class="text-left">NIK</th>
+              <th class="text-left">{{ dataParent?.nik || "" }}</th>
+            </tr>
+            <tr>
               <th class="text-left">Status</th>
               <th class="text-left">{{ dataParent?.parent_type ?? "-" }}</th>
             </tr>
@@ -197,6 +201,12 @@
             label="Nama lengkap"
             class="q-mb-md"
           />
+          <q-input
+            v-model="dataParent.nik"
+            outlined
+            label="NIK"
+            class="q-mb-md"
+          />
           <q-select
             v-model="dataParent.status"
             :options="optStatus"
@@ -218,6 +228,7 @@
             label="Agama"
             class="q-mb-md"
           />
+
           <q-input
             v-model="dataParent.address"
             outlined
@@ -465,7 +476,7 @@ export default {
           }
         );
         console.log(res);
-        
+
         this.dataParent = res.data?.data ?? null;
         this.dataParent.status = res.data?.data.parent_type ?? null;
       } catch (error) {
@@ -486,6 +497,7 @@ export default {
         last_education,
         latitude,
         longitude,
+        nik,
       } = this.dataParent;
 
       let payload = {
@@ -499,6 +511,7 @@ export default {
         last_education,
         latitude,
         longitude,
+        nik,
       };
 
       payload.parent_type = status;
