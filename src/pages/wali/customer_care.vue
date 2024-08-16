@@ -3,25 +3,50 @@
     <div>
       <div class="bg-blue-2 tw-min-h-screen">
         <div class="q-pa-md">
-          <q-layout view="lHh Lpr lff" container style="height: 820px" class="shadow-2 rounded-borders">
+          <q-layout
+            view="lHh Lpr lff"
+            container
+            style="height: 820px"
+            class="shadow-2 rounded-borders"
+          >
             <q-header elevated class="bg-cyan-8">
               <q-toolbar>
-                <q-btn flat @click="drawer = !drawer" round dense icon="arrow_back" />
+                <q-btn
+                  flat
+                  @click="drawer = !drawer"
+                  round
+                  dense
+                  icon="arrow_back"
+                />
                 <q-toolbar-title>{{ currentReceiverName }}</q-toolbar-title>
               </q-toolbar>
             </q-header>
 
-            <q-drawer v-model="drawer" show-if-above :width="300" :breakpoint="400">
-              <q-scroll-area style="
+            <q-drawer
+              v-model="drawer"
+              show-if-above
+              :width="300"
+              :breakpoint="400"
+            >
+              <q-scroll-area
+                style="
                   height: calc(100% - 150px);
                   margin-top: 80px;
                   border-right: 1px solid #ddd;
-                ">
+                "
+              >
                 <q-list padding>
-                  <q-item clickable @click="setUpMessage(userChat)" v-ripple v-for="userChat in users">
+                  <q-item
+                    clickable
+                    @click="setUpMessage(userChat)"
+                    v-ripple
+                    v-for="userChat in users"
+                  >
                     <q-item-section avatar>
                       <q-avatar>
-                        <img src="https://thinksport.com.au/wp-content/uploads/2020/01/avatar-.jpg" />
+                        <img
+                          src="https://thinksport.com.au/wp-content/uploads/2020/01/avatar-.jpg"
+                        />
                       </q-avatar>
                     </q-item-section>
 
@@ -32,29 +57,61 @@
                 </q-list>
               </q-scroll-area>
 
-              <q-img class="absolute-top" src="https://cdn.quasar.dev/img/material.png" style="height: 80px">
+              <q-img
+                class="absolute-top"
+                src="https://cdn.quasar.dev/img/material.png"
+                style="height: 80px"
+              >
                 <div class="absolute-bottom bg-transparent">
                   <div class="text-weight-bold text-h4">Chats</div>
                 </div>
               </q-img>
-              <div class="bg-red" style="position: fixed; right: 80px; bottom: 80px" @click="getUsers">
-                <q-btn key="btn_size_round_md" round color="primary" size="lg" icon="add" class="absolute" />
+              <div
+                class="bg-red"
+                style="position: fixed; right: 80px; bottom: 80px"
+                @click="getUsers"
+              >
+                <q-btn
+                  key="btn_size_round_md"
+                  round
+                  color="primary"
+                  size="lg"
+                  icon="add"
+                  class="absolute"
+                />
               </div>
             </q-drawer>
 
             <q-page-container class="bg-white">
-              <q-page padding class="tw-relative tw-overflow-hidden" style="
+              <q-page
+                padding
+                class="tw-relative tw-overflow-hidden"
+                style="
                   width: 100%;
                   background-image: url(https://i.pinimg.com/600x315/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg);
-                ">
-                <div class="flex tw-overflow-auto tw-justify-center" style="max-height: 40rem;">
-                  <div class="tw-w-5/6 ">
-                    <div style="width: 100%; " class="text-left" v-for="message in messages">
-                      <q-chat-message :name="message.sender" :text="[message.text]" :stamp="message.stamp"
-                        :sent="message.isSender" :bg-color="message.color" :text-color="message.textColor" />
+                "
+              >
+                <div
+                  class="flex tw-overflow-auto tw-justify-center"
+                  style="max-height: 40rem"
+                >
+                  <div class="tw-w-5/6">
+                    <div
+                      style="width: 100%"
+                      class="text-left"
+                      v-for="message in messages"
+                    >
+                      <q-chat-message
+                        :name="message.sender"
+                        :text="[message.text]"
+                        :stamp="message.stamp"
+                        :sent="message.isSender"
+                        :bg-color="message.color"
+                        :text-color="message.textColor"
+                      />
                     </div>
 
-                    <div style="width: 100%;" class="text-left" :hidden="typing">
+                    <div style="width: 100%" class="text-left" :hidden="typing">
                       <q-chat-message bg-color="amber" sent>
                         <q-spinner-dots size="2rem" />
                       </q-chat-message>
@@ -62,13 +119,27 @@
                   </div>
                 </div>
 
-                <div class="flex justify-center items-center tw-absolute tw-bottom-5 tw-w-full">
+                <div
+                  class="flex justify-center items-center tw-absolute tw-bottom-5 tw-w-full"
+                >
                   <div class="tw-w-5/6 flex justify-start">
-                    <q-input rounded @keyup.enter="sendMessage" outlined v-model="inputMessage"
-                      class="input bg-white tw-w-full" placeholder="Type Here" ref="messageInput" />
+                    <q-input
+                      rounded
+                      @keyup.enter="sendMessage"
+                      outlined
+                      v-model="inputMessage"
+                      class="input bg-white tw-w-full"
+                      placeholder="Type Here"
+                      ref="messageInput"
+                    />
                   </div>
                   <div class="tw-w-1/6 flex tw-pl-2">
-                    <q-btn round color="green" icon="send" @click="sendMessage" />
+                    <q-btn
+                      round
+                      color="green"
+                      icon="send"
+                      @click="sendMessage"
+                    />
                   </div>
                 </div>
               </q-page>
@@ -87,13 +158,21 @@
 
       <q-card-section class="q-pt-none">
         <q-card class="tw-m-1 tw-cursor-pointer" v-for="user in dataUser">
-          <div class="flex justify-start items-center q-pa-md" clickable @click="newMessage(user)">
+          <div
+            class="flex justify-start items-center q-pa-md"
+            clickable
+            @click="newMessage(user)"
+          >
             <div class="tw-w-1/6">
               <q-avatar>
-                <img src="https://thinksport.com.au/wp-content/uploads/2020/01/avatar-.jpg" />
+                <img
+                  src="https://thinksport.com.au/wp-content/uploads/2020/01/avatar-.jpg"
+                />
               </q-avatar>
             </div>
-            <div class="flex tw-flex-col justify-start items-start q-pl-md tw-w-5/6">
+            <div
+              class="flex tw-flex-col justify-start items-start q-pl-md tw-w-5/6"
+            >
               <p class="text-bold text-h6">{{ user?.full_name }}</p>
             </div>
           </div>
@@ -111,7 +190,7 @@
 import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
 import { ref } from "vue";
 import Swal from "sweetalert2";
-import socket from "../../socket"
+import socket from "../../socket";
 
 export default {
   components: {
@@ -137,11 +216,11 @@ export default {
   },
   mounted() {
     this.getUserChats();
-    socket.connect()
-    socket.on('cc_refresh', () => {
-      this.getUserChats()
-      this.getMessages()
-    })
+    socket.connect();
+    socket.on("cc_refresh", () => {
+      this.getUserChats();
+      this.getMessages();
+    });
   },
   watch: {
     currentMessageId: {
@@ -259,7 +338,7 @@ export default {
           });
         }
         this.getMessages();
-        socket.emit('cc', {})
+        socket.emit("cc", {});
         this.inputMessage = "";
       } catch (err) {
         console.log(err);
@@ -274,7 +353,6 @@ export default {
           },
         });
         this.dataUser = response.data.data;
-
       } catch (err) {
         console.log(err);
       }

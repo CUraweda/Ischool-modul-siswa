@@ -23,7 +23,11 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" :path="number_path" />
+          <NumberRaport
+            :TabPilihan="TabPilihan"
+            :tahun="tahun"
+            :path="number_path"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -140,7 +144,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'"/>
+                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'" />
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">
@@ -209,7 +213,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <MergedRapotPortofolio :path="merged_path"/>
+                  <MergedRapotPortofolio :path="merged_path" />
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -348,7 +352,6 @@ export default {
     };
   },
   methods: {
-
     async getIdSiswa() {
       const idSiswa = sessionStorage.getItem("idSiswa");
       const token = sessionStorage.getItem("token");
@@ -370,6 +373,8 @@ export default {
     async getCommentParent() {
       // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
       const token = sessionStorage.getItem("token");
+      const idSiswa = this.idSiswa;
+      console.log(idSiswa);
       try {
         const response = await this.$api.get(
           `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
@@ -560,9 +565,9 @@ export default {
 
   watch: {
     tahun(newVal) {
-      console.log("🚀 ~ tahun ~ newVal:", this.tahun)
-      this.getCommentParent()
-    }
+      console.log("🚀 ~ tahun ~ newVal:", this.tahun);
+      this.getCommentParent();
+    },
   },
 
   name: "Rapot",
