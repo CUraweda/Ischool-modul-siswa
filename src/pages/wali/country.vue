@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col">
-        <q-card class="text-center bg-blue-2  tw-min-h-screen">
+        <q-card class="text-center bg-blue-2 tw-min-h-screen">
           <q-card-section>
             <div class="text-center">
               <p>
@@ -54,7 +54,7 @@
                         color="blue"
                         label="Tambah"
                         @click="alert = true"
-                        v-if="this.countryActivity.lengt > 1"
+                        v-if="this.countryActivity.lengt < 1"
                       />
                       <q-btn
                         v-else
