@@ -225,10 +225,10 @@ export default {
     },
     async checkPasswordsMatch(new_password, password_match) {
       if (new_password !== password_match) {
-        Notify.create({
+        Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Passwords tidak sama!",
+          text: "Password tidak sama!",
         });
         this.modalEditPassword = false;
         (this.old_password = null),

@@ -476,7 +476,7 @@ export default {
           }
         );
         console.log(res);
-        
+
         this.dataParent = res.data?.data ?? null;
         this.dataParent.status = res.data?.data.parent_type ?? null;
       } catch (error) {
