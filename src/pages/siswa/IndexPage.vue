@@ -284,6 +284,7 @@ export default {
   components: {
     NavbarSiswa,
   },
+  
   setup() {
     return {
       presensi: ref({}),
@@ -304,7 +305,6 @@ export default {
       target: ref(),
     };
   },
-
   methods: {
     getDateTime(date) {
       const now = new Date(date);
@@ -315,8 +315,31 @@ export default {
       });
       return formattedDate;
     },
-    async getPresensi() {
-      const idSiswa = sessionStorage.getItem("idSiswa");
+    async getDataSiswa() {
+      const idUser = sessionStorage.getItem("idUser");
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await this.$api.get(
+          `/user-access/show-by-user/${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const id = response.data.data[0].student.id;
+        this.getPresensi(id)
+        this.getAchevment(id)
+        this.getSiswaById(id)
+        this.getRaport(id)
+        this.getRekapSampah(id)
+        this.getRekapSampahbulan(id)
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getPresensi(idSiswa) {
+      
       try {
         const response = await this.$api.get(
           `student-attendance/show-by-student/${idSiswa}`,
@@ -342,10 +365,12 @@ export default {
         this.izin = filterIzin.length;
         this.sakit = filterSakit.length;
         this.alfa = filterAlfa.length;
+      
       } catch (err) {
         console.log(err);
       }
     },
+    
     async getAgenda() {
       try {
         const response = await this.$api.get(
@@ -402,10 +427,10 @@ export default {
         console.log(err);
       }
     },
-    async getAchevment() {
+    async getAchevment(idSiswa) {
       try {
         const response = await this.$api.get(
-          `/achievement/show-by-student/${this.idSiswa}`,
+          `/achievement/show-by-student/${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -434,8 +459,8 @@ export default {
         console.log(err);
       }
     },
-    async getSiswaById() {
-      const idSiswa = sessionStorage.getItem("idSiswa");
+    async getSiswaById(idSiswa) {
+
       try {
         const response = await this.$api.get(`/student/show/${idSiswa}`, {
           headers: {
@@ -448,10 +473,10 @@ export default {
         console.log(err);
       }
     },
-    async getRaport() {
+    async getRaport(idSiswa) {
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${this.idSiswa}&semester=1`,
+          `/student-report/show-by-student?id=${idSiswa}&semester=1`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -491,10 +516,9 @@ export default {
         console.error("Error downloading file:", error);
       }
     },
-    async getRekapSampah() {
+    async getRekapSampah(idSiswa) {
       try {
-        const idSiswa = sessionStorage.getItem("idSiswa");
-
+       
         const response = await this.$api.get(
           `waste-collection/target-achievement-by-student/${idSiswa}?is_current=1`,
           {
@@ -514,9 +538,9 @@ export default {
         this.target = target;
       } catch (error) {}
     },
-    async getRekapSampahbulan() {
+    async getRekapSampahbulan(idSiswa) {
       try {
-        const idSiswa = sessionStorage.getItem("idSiswa");
+       
         const response = await this.$api.get(
           `waste-collection/show-recap-history/${idSiswa}`,
           {
@@ -529,17 +553,15 @@ export default {
       } catch (error) {}
     },
   },
+
   mounted() {
-    this.getRekapSampah();
-    this.getRekapSampahbulan();
-    this.getRaport();
-    this.getSiswaById();
-    this.getPresensi();
-    this.getAgenda();
-    this.getPengumuman();
-    this.getOverview();
-    this.getAchevment();
+    this.getDataSiswa()
+    this.getAgenda()
+    this.getPengumuman()
+    this.getOverview()
+    
   },
+ 
 };
 </script>
 

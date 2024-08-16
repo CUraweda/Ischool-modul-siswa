@@ -64,7 +64,7 @@
 
               <q-tab-panel name="page13">
                 <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
-                <div class="tw-flex tw-w-full">
+                <div class="tw-flex tw-w-full" >
                   <div
                     class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
                     style="min-height: 200px"
@@ -72,7 +72,7 @@
                     <p>
                       {{ submittedComment }}
                     </p>
-                    <div v-if="!submittedComment && parseInt(role) === 8">
+                    <div v-if="!submittedComment && parseInt(role) === 8 && avaibleraport">
                       <q-input
                         v-model="editedComment"
                         filled
@@ -157,7 +157,7 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="!submittedCommentPorto && parseInt(role) === 8">
+                    <div v-if="!submittedCommentPorto && parseInt(role) === 8 && avaibleraport">
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -348,6 +348,7 @@ export default {
       portofolio_path: ref(),
       merged_path: ref(),
       medium: ref(false),
+      avaibleraport: false
     };
   },
   methods: {
@@ -453,6 +454,36 @@ export default {
         console.log(error);
       }
     },
+    async getPortofolioRapot() {
+      const token = sessionStorage.getItem("token");
+      const idReport = sessionStorage.getItem("raportId");
+
+      try {
+        const response = await this.$api.get(
+          `portofolio-report/show-all-by-student-report/${idReport}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        let filteredData;
+        if (Array.isArray(data)) {
+          filteredData = data.filter((item) => item.type === "Orang Tua");
+          const path = filteredData[0]?.file_path ?? null;
+          console.log(path)
+          if (path) {
+          this.avaibleraport = true;
+          } else {
+            this.avaibleraport = false;
+          }
+
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitCommentPorto() {
       const RaportId = sessionStorage.getItem("raportId");
 
@@ -526,6 +557,7 @@ export default {
     // console.log("gedagedi", this.avabile)
     this.getCommentParent();
     this.getIdSiswa();
+    this.getPortofolioRapot()
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
