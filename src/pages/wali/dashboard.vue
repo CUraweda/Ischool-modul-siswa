@@ -380,16 +380,15 @@ export default {
             },
           }
         );
-
         const data = response.data.data.result;
         let currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
 
-        let futureDate = new Date();
+        let futureDate = new Date(currentDate);
         futureDate.setDate(currentDate.getDate() + 5);
         futureDate.setHours(23, 59, 59, 999);
 
-        const filterData = data?.filter((item) => {
+        let filterData = data?.filter((item) => {
           let itemDate = new Date(item?.start_date);
           return itemDate >= currentDate && itemDate <= futureDate;
         });
@@ -397,6 +396,7 @@ export default {
         if (filterData?.length > 5) {
           filterData = filterData.slice(0, 5);
         }
+        //as
 
         this.agenda = filterData;
       } catch (error) {}
