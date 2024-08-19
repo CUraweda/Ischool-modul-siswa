@@ -284,7 +284,7 @@ export default {
   components: {
     NavbarSiswa,
   },
-  
+
   setup() {
     return {
       presensi: ref({}),
@@ -328,18 +328,17 @@ export default {
           }
         );
         const id = response.data.data[0].student.id;
-        this.getPresensi(id)
-        this.getAchevment(id)
-        this.getSiswaById(id)
-        this.getRaport(id)
-        this.getRekapSampah(id)
-        this.getRekapSampahbulan(id)
+        this.getPresensi(id);
+        this.getAchevment(id);
+        this.getSiswaById(id);
+        this.getRaport(id);
+        this.getRekapSampah(id);
+        this.getRekapSampahbulan(id);
       } catch (error) {
         console.log(error);
       }
     },
     async getPresensi(idSiswa) {
-      
       try {
         const response = await this.$api.get(
           `student-attendance/show-by-student/${idSiswa}`,
@@ -365,12 +364,11 @@ export default {
         this.izin = filterIzin.length;
         this.sakit = filterSakit.length;
         this.alfa = filterAlfa.length;
-      
       } catch (err) {
         console.log(err);
       }
     },
-    
+
     async getAgenda() {
       try {
         const response = await this.$api.get(
@@ -381,16 +379,15 @@ export default {
             },
           }
         );
-
         const data = response.data.data.result;
         let currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
 
-        let futureDate = new Date();
+        let futureDate = new Date(currentDate);
         futureDate.setDate(currentDate.getDate() + 5);
         futureDate.setHours(23, 59, 59, 999);
 
-        const filterData = data?.filter((item) => {
+        let filterData = data?.filter((item) => {
           let itemDate = new Date(item?.start_date);
           return itemDate >= currentDate && itemDate <= futureDate;
         });
@@ -453,6 +450,7 @@ export default {
             },
           }
         );
+        console.log(response);
 
         this.overview = response.data.data;
       } catch (err) {
@@ -460,7 +458,6 @@ export default {
       }
     },
     async getSiswaById(idSiswa) {
-
       try {
         const response = await this.$api.get(`/student/show/${idSiswa}`, {
           headers: {
@@ -518,7 +515,6 @@ export default {
     },
     async getRekapSampah(idSiswa) {
       try {
-       
         const response = await this.$api.get(
           `waste-collection/target-achievement-by-student/${idSiswa}?is_current=1`,
           {
@@ -540,7 +536,6 @@ export default {
     },
     async getRekapSampahbulan(idSiswa) {
       try {
-       
         const response = await this.$api.get(
           `waste-collection/show-recap-history/${idSiswa}`,
           {
@@ -555,13 +550,11 @@ export default {
   },
 
   mounted() {
-    this.getDataSiswa()
-    this.getAgenda()
-    this.getPengumuman()
-    this.getOverview()
-    
+    this.getDataSiswa();
+    this.getAgenda();
+    this.getPengumuman();
+    this.getOverview();
   },
- 
 };
 </script>
 
