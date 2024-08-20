@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <q-card class="text-center bg-blue-2" style="height: 87vh">
+        <q-card class="text-center bg-blue-2">
           <q-card-section>
             <div class="text-center">
               <p>
@@ -351,7 +351,7 @@ export default {
   text-align: center;
   cursor: pointer;
   position: relative;
-  background-color: #f0f8ff; /* Background color for dropzone */
+  background-color: #f0f8ff;
   transition: background-color 0.3s ease;
 }
 
