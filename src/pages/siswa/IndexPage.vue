@@ -328,6 +328,8 @@ export default {
           }
         );
         const id = response.data.data[0].student.id;
+        
+        
         this.getPresensi(id);
         this.getAchevment(id);
         this.getSiswaById(id);
@@ -400,9 +402,7 @@ export default {
         this.agenda = filterData;
       } catch (error) {}
     },
-    async getPengumuman() {
-      const idClass = sessionStorage.getItem("idClass");
-
+    async getPengumuman(idClass ) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
@@ -441,18 +441,17 @@ export default {
         console.log(err);
       }
     },
-    async getOverview() {
+    async getOverview(idClass) {
       try {
         const response = await this.$api.get(
-          `/overview/show-active?class_id=${this.idClass || ""}`,
+          `/overview/show-active?class_id=${idClass || ""}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
           }
         );
-        console.log(response);
-
+      
         this.overview = response.data.data;
       } catch (err) {
         console.log(err);
@@ -481,7 +480,9 @@ export default {
             },
           }
         );
-        console.log(response.data.data[0]);
+        const idClass = response.data.data[0].student_class_id
+        this.getOverview(idClass);
+        this.getPengumuman(idClass);
         this.raport = response.data.data[0];
       } catch (err) {
         console.log(err);
@@ -553,8 +554,8 @@ export default {
   mounted() {
     this.getDataSiswa();
     this.getAgenda();
-    this.getPengumuman();
-    this.getOverview();
+    
+    
   },
 };
 </script>
