@@ -419,7 +419,7 @@ export default {
             },
           }
         );
-
+        
         this.pengumuman = response.data.data;
       } catch (err) {
         console.log(err);
@@ -480,7 +480,9 @@ export default {
             },
           }
         );
-        const idClass = response.data.data[0].student_class_id
+        const idClass = response.data.data[0].studentclass.class_id
+        console.log(response.data.data[0]);
+        
         this.getOverview(idClass);
         this.getPengumuman(idClass);
         this.raport = response.data.data[0];
