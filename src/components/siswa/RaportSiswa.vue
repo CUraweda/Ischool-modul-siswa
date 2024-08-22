@@ -64,7 +64,7 @@
 
               <q-tab-panel name="page13">
                 <div class="text-h4 q-mb-md">Komentar Orang Tua</div>
-                <div class="tw-flex tw-w-full" >
+                <div class="tw-flex tw-w-full">
                   <div
                     class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
                     style="min-height: 200px"
@@ -72,7 +72,13 @@
                     <p>
                       {{ submittedComment }}
                     </p>
-                    <div v-if="!submittedComment && parseInt(role) === 8 && avaibleraport">
+                    <div
+                      v-if="
+                        !submittedComment &&
+                        parseInt(role) === 8 &&
+                        avaibleraport
+                      "
+                    >
                       <q-input
                         v-model="editedComment"
                         filled
@@ -157,7 +163,13 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="!submittedCommentPorto && parseInt(role) === 8 && avaibleraport">
+                    <div
+                      v-if="
+                        !submittedCommentPorto &&
+                        parseInt(role) === 8 &&
+                        avaibleraport
+                      "
+                    >
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -348,7 +360,7 @@ export default {
       portofolio_path: ref(),
       merged_path: ref(),
       medium: ref(false),
-      avaibleraport: false
+      avaibleraport: ref(false),
     };
   },
   methods: {
@@ -455,6 +467,8 @@ export default {
       }
     },
     async getPortofolioRapot() {
+      console.log("role: ", this.role);
+
       const token = sessionStorage.getItem("token");
       const idReport = sessionStorage.getItem("raportId");
 
@@ -468,18 +482,21 @@ export default {
           }
         );
         let filteredData;
+        const data = response.data.data;
+
         if (Array.isArray(data)) {
+          console.log(this.sub);
           filteredData = data.filter((item) => item.type === "Orang Tua");
+          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
           const path = filteredData[0]?.file_path ?? null;
-          console.log(path)
+          console.log("🚀 ~ getPortofolioRapot ~ path:", path);
           if (path) {
-          this.avaibleraport = true;
+            this.avaibleraport = true;
+            this.downloadTask(path);
           } else {
             this.avaibleraport = false;
           }
-
         }
-
       } catch (error) {
         console.log(error);
       }
@@ -554,10 +571,9 @@ export default {
     },
   },
   mounted() {
-    // console.log("gedagedi", this.avabile)
     this.getCommentParent();
     this.getIdSiswa();
-    this.getPortofolioRapot()
+    this.getPortofolioRapot();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }

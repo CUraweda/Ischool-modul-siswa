@@ -337,7 +337,7 @@ export default {
 
     async createDataCountry() {
       try {
-        const id = this.activity?.id;
+        const id = 1;
         const token = sessionStorage.getItem("token");
 
         const formData = new FormData();

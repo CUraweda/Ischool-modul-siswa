@@ -28,12 +28,12 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <!-- <th class="text-center">Deskripsi</th> -->
+                        <th class="text-center">Deskripsi</th>
 
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <!-- <th class="text-center">Nilai</th> -->
+                        <th class="text-center">Feed Forward</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -44,7 +44,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <!-- <td class="text-center">{{ item?.description  }}</td> -->
+                        <td class="text-center">
+                          {{ item?.description ? item.description : "-" }}
+                        </td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -53,7 +55,9 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <!-- <td class="text-center">{{ item?.feed_fwd }}</td> -->
+                        <td class="text-center">
+                          {{ item?.feed_fwd ? item.feed_fwd : "-" }}
+                        </td>
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -115,10 +119,11 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <!-- <th class="text-center">Deskripsi</th> -->
+                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
+                        <th class="text-center">Feedback</th>
                         <!-- <th class="text-center">Nilai</th> -->
                         <th class="text-center">Action</th>
                       </tr>
@@ -130,7 +135,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
+                        <td class="text-center">
+                          {{ item?.description ? item.description : "-" }}
+                        </td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -139,7 +146,17 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">{{ item?.feed_fwd }}</td>
+                        <td class="text-center">
+                          <div v-if="item?.taskdetails.length">
+                            <div
+                              v-for="(detail, index) in item.taskdetails"
+                              :key="index"
+                            >
+                              {{ detail.feedback || "-" }}
+                            </div>
+                          </div>
+                          <div v-else>-</div>
+                        </td>
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -163,11 +180,23 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <!-- <td>{{ item?.description }}</td> -->
+                        <td>
+                          {{ item?.description ? item.description : "-" }}
+                        </td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <!-- <td>-</td> -->
+                        <td class="text-center">
+                          <div v-if="item?.taskdetails.length">
+                            <div
+                              v-for="(detail, index) in item.taskdetails"
+                              :key="index"
+                            >
+                              {{ detail.feedback || "-" }}
+                            </div>
+                          </div>
+                          <div v-else>-</div>
+                        </td>
                         <td>
                           <div>
                             <q-btn
@@ -200,11 +229,11 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <!-- <th class="text-center">Deskripsi</th> -->
+                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <!-- <th class="text-center">Nilai</th> -->
+                        <th class="text-center">Feed Forward</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -215,7 +244,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <!-- <td class="text-center">{{ item?.description }}</td> -->
+                        <td class="text-center">
+                          {{ item?.description ? item.description : "-" }}
+                        </td>
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -224,7 +255,9 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <!-- <td class="text-center">{{ item?.feed_fwd }}</td> -->
+                        <td class="text-center">
+                          {{ item?.feed_fwd ? item.feed_fwd : "-" }}
+                        </td>
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -314,7 +347,9 @@
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
-              <td class="text-left">{{ dataDetailTask?.feedback}} </td>
+              <td class="text-left">
+                {{ dataDetailTask?.feedback ? dataDetailTask.feedback : "-" }}
+              </td>
               <!-- <tr v-for="(item, index) in dataDetailTask?.feedback" :key="index">
                 <td class="text-left">
                   : {{ item.feedback }}
@@ -436,9 +471,7 @@
             </tr>
             <tr>
               <td class="text-left text-bold">Deskripsi</td>
-              <td class="text-left">
-                : {{ dataTaskClass?.decscripton }}
-              </td>
+              <td class="text-left">: {{ dataTaskClass.description }}</td>
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
@@ -454,7 +487,7 @@
 
         <br />
         <q-uploader
-        v-if="!dataDetailTask"
+          v-if="!dataDetailTask"
           style="width: 100%"
           label="Custom header"
           accept=".pdf, .docx, .word"
@@ -718,7 +751,7 @@ export default {
     async getDataTugasKelas() {
       try {
         const idKelas = sessionStorage.getItem("idClass");
-        console.log("🚀 ~ getDataTugasKelas ~ idKelas:", idKelas)
+        console.log("🚀 ~ getDataTugasKelas ~ idKelas:", idKelas);
         const taskWWP = await this.$api.get(
           `task/show-by-class/${idKelas}?cat=1`,
           {
@@ -766,7 +799,9 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        const detailTask = response.data.data.find(item => item.student_id === parseInt(this.idSiswa));
+        const detailTask = response.data.data.find(
+          (item) => item.student_id === parseInt(this.idSiswa)
+        );
         this.dataDetailTask = detailTask;
       } catch (error) {
         console.log(error);
@@ -781,7 +816,10 @@ export default {
           },
         });
         this.getTaskDetailById(id);
-        console.log("🚀 ~ getTaskById ~ this.dataDetailTask:", this.dataDetailTask)
+        console.log(
+          "🚀 ~ getTaskById ~ this.dataDetailTask:",
+          this.dataDetailTask
+        );
         this.dataTask = response.data.data[0];
       } catch (error) {
         console.log(error);
@@ -796,7 +834,10 @@ export default {
           },
         });
         this.getTaskDetailById(id);
-        console.log("🚀 ~ getTaskById ~ this.dataDetailTask:", this.dataDetailTask)
+        console.log(
+          "🚀 ~ getTaskById ~ this.dataDetailTask:",
+          this.dataDetailTask
+        );
         this.dataTaskClass = response.data.data;
         console.log(response.data.data);
       } catch (error) {
