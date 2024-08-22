@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="!tersedia"
-    class="flex tw-flex-col tw-items-center q-pb-none"
-  >
+  <div v-if="!tersedia" class="flex tw-flex-col tw-items-center q-pb-none">
     <span class="tw-text-xl">Raport Belum Tersedia</span>
     <img
       src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
@@ -22,7 +19,7 @@ export default {
     path: {
       type: String,
       required: true,
-    }
+    },
   },
 
   data() {
@@ -35,7 +32,7 @@ export default {
   setup(props) {
     return {
       path: props.path,
-    }
+    };
   },
 
   methods: {
@@ -53,23 +50,21 @@ export default {
           }
         );
         const data = response.data.data;
-        console.log("🚀 ~ getPortofolioRapot ~ data:", data)
+        console.log("🚀 ~ getPortofolioRapot ~ data:", data);
         let filteredData;
         if (Array.isArray(data)) {
-          console.log(this.sub)
+          console.log(this.sub);
           filteredData = data.filter((item) => item.type === "Orang Tua");
-          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData)
+          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
           const path = filteredData[0]?.file_path ?? null;
-          console.log("🚀 ~ getPortofolioRapot ~ path:", path)
+          console.log("🚀 ~ getPortofolioRapot ~ path:", path);
           if (path) {
-          this.tersedia = true;
-          this.downloadTask(path);
+            this.tersedia = true;
+            this.downloadTask(path);
           } else {
             this.tersedia = false;
           }
-
         }
-
       } catch (error) {
         console.log(error);
       }
