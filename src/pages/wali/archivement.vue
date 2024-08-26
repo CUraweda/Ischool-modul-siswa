@@ -228,9 +228,7 @@ export default {
 
         Swal.fire({
           icon: "success",
-          title: this.editingActivityId
-            ? "Update Successful!"
-            : "Creation Successful!",
+          title: this.editingActivityId ? "Update Sukses!" : "Tambah Sukses!",
           text: this.editingActivityId
             ? "Your activity has been updated."
             : "Your activity has been created.",
@@ -292,8 +290,7 @@ export default {
 
     async confirmDelete(id) {
       const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Apakah kamu yakin?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
