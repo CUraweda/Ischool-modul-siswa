@@ -28,12 +28,12 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
+                        <!-- <th class="text-center">Deskripsi</th> -->
 
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feed Forward</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -44,9 +44,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                           {{ item?.description ? item.description : "-" }}
-                        </td>
+                        </td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -119,7 +119,7 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
+                        <!-- <th class="text-center">Deskripsi</th> -->
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
@@ -135,9 +135,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                           {{ item?.description ? item.description : "-" }}
-                        </td>
+                        </td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -180,9 +180,9 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>
+                        <!-- <td>
                           {{ item?.description ? item.description : "-" }}
-                        </td>
+                        </td> -->
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
@@ -229,11 +229,11 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
+                        <!-- <th class="text-center">Deskripsi</th> -->
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feed Forward</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -244,9 +244,9 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                           {{ item?.description ? item.description : "-" }}
-                        </td>
+                        </td> -->
 
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
@@ -471,7 +471,12 @@
             </tr>
             <tr>
               <td class="text-left text-bold">Deskripsi</td>
-              <td class="text-left">: {{ dataTaskClass.description }}</td>
+              <td class="text-left">
+                :
+                {{
+                  dataTaskClass.description ? dataTaskClass.description : "-"
+                }}
+              </td>
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
