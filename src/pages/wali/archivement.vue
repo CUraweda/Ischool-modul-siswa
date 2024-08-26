@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
-    <div class="row">
+  <div class="container" style="width: 100%">
+    <div style="width: 100%">
       <div class="col-md-12">
-        <q-card class="text-center bg-blue-2">
+        <q-card class="text-center bg-blue-2" style="width: 100%">
           <q-card-section>
             <div class="text-center">
               <p>
