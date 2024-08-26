@@ -73,11 +73,7 @@
                       {{ submittedComment }}
                     </p>
                     <div
-                      v-if="
-                        !submittedComment &&
-                        parseInt(role) === 8 &&
-                        avaibleraport
-                      "
+                      v-if="parseInt(role) === 8 && readyStatusRaport === true"
                     >
                       <q-input
                         v-model="editedComment"
@@ -163,13 +159,7 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div
-                      v-if="
-                        !submittedCommentPorto &&
-                        parseInt(role) === 8 &&
-                        avaibleraport
-                      "
-                    >
+                    <div v-if="avaibleraport">
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -255,7 +245,11 @@
 
       <br />
       <q-card-section class="q-pt-none">
-        <q-uploader style="width: 100%" label="Custom header" accept=".pdf">
+        <q-uploader
+          style="width: 100%"
+          label="Custom header"
+          accept="image/*, .bmp, .webp"
+        >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
               <q-btn
@@ -361,6 +355,7 @@ export default {
       merged_path: ref(),
       medium: ref(false),
       avaibleraport: ref(false),
+      readyStatusRaport: ref(false),
     };
   },
   methods: {
@@ -409,13 +404,16 @@ export default {
           this.merged_path = dataState?.merged_path;
 
           sessionStorage.setItem("raportId", dataState.id);
+          console.log("HDUASGVDJBASJDBJKA", dataState?.narrative_path);
+          dataState?.narrative_path
+            ? (this.readyStatusRaport = true)
+            : (this.readyStatusRaport = false);
+
           this.reportId = dataState.id;
         } else {
           this.trigerRapot = false;
           // console.log("kosong");
         }
-
-        console.log("HDUASGVDJBASJDBJKA", this.trigerRapot);
       } catch (error) {
         console.log(error);
       }
@@ -471,7 +469,18 @@ export default {
 
       const token = sessionStorage.getItem("token");
       const idReport = sessionStorage.getItem("raportId");
-
+      const responsenarrative = await this.$api.get(
+        `narrative-report/show-by-student/${this.idSiswa}?semester=${
+          this.semester ? this.semester : "1"
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        }
+      );
+      const dataRest = responsenarrative.data?.data?.narrative_categories;
+      console.log("test", responsenarrative.data?.data);
       try {
         const response = await this.$api.get(
           `portofolio-report/show-all-by-student-report/${idReport}`,
@@ -490,12 +499,7 @@ export default {
           console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
           const path = filteredData[0]?.file_path ?? null;
           console.log("🚀 ~ getPortofolioRapot ~ path:", path);
-          if (path) {
-            this.avaibleraport = true;
-            this.downloadTask(path);
-          } else {
-            this.avaibleraport = false;
-          }
+          path ? (this.avaibleraport = true) : (this.avaibleraport = false);
         }
       } catch (error) {
         console.log(error);

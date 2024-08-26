@@ -495,7 +495,7 @@
           v-if="!dataDetailTask"
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word"
+          accept="image/*, .bmp, .webp"
           multiple
         >
           <template v-slot:header="scope">
