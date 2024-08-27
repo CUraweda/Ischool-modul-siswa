@@ -28,12 +28,10 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
-
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feedforward</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -44,10 +42,6 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">
-                          {{ item?.description ? item.description : "-" }}
-                        </td>
-
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
                         </td>
@@ -126,7 +120,6 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
@@ -141,8 +134,6 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
-
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
                         </td>
@@ -188,7 +179,6 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description ?? "" }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
@@ -239,11 +229,10 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feed Forward</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -254,10 +243,6 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">
-                          {{ item?.description ?? "-" }}
-                        </td>
-
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
                         </td>
@@ -295,7 +280,6 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
