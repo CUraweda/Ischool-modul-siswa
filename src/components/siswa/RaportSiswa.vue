@@ -73,7 +73,11 @@
                       {{ submittedComment }}
                     </p>
                     <div
-                      v-if="parseInt(role) === 8 && readyStatusRaport === true"
+                      v-if="
+                        parseInt(role) === 8 &&
+                        readyStatusRaport === true &&
+                        !submittedComment
+                      "
                     >
                       <q-input
                         v-model="editedComment"
@@ -159,7 +163,7 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="avaibleraport">
+                    <div v-if="parseInt(role) === 8 && avaibleraport">
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -225,16 +229,33 @@
     </template>
   </q-splitter>
 
-  <div
-    v-if="!trigerRapot"
-    class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
-  >
-    <span class="tw-text-xl">Raport Belum Tersedia</span>
-    <img
-      src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
-      alt="no data available"
-      class="tw-w-1/3"
-    />
+  <div v-if="!trigerRapot">
+    <div v-if="avaibleraporthistory === false">
+      <div
+        class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
+      >
+        <span class="tw-text-xl">Raport Belum Tersedia</span>
+        <img
+          src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
+          alt="no data available"
+          class="tw-w-1/3"
+        />
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
+    >
+      <iframe height="100%" width="100%" :src="pdfUrlHistory"></iframe>
+      <!--
+      <q-spinner
+        color="primary"
+        size="3em"
+        :thickness="5"
+        class="tw-justify-center"
+      /> -->
+    </div>
   </div>
 
   <q-dialog v-model="medium">
@@ -356,6 +377,8 @@ export default {
       medium: ref(false),
       avaibleraport: ref(false),
       readyStatusRaport: ref(false),
+      avaibleraporthistory: ref(false),
+      pdfUrlHistory: ref(),
     };
   },
   methods: {
@@ -377,11 +400,25 @@ export default {
         console.error(error);
       }
     },
+    async getRaportBefore() {
+      try {
+        const response = await this.$api.get(
+          `student-report-file/show-by-student/${this.idSiswa}`
+        );
+        if (response.data.data.length > 0) {
+          this.avaibleraporthistory = true;
+          const blob = new Blob([response.data], { type: "application/pdf" }); //
+          const blobUrl = window.URL.createObjectURL(blob);
+          this.pdfUrlHistory = blobUrl;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getCommentParent() {
       // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
       const token = sessionStorage.getItem("token");
       const idSiswa = this.idSiswa;
-      console.log(idSiswa);
       try {
         const response = await this.$api.get(
           `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
@@ -392,7 +429,7 @@ export default {
           }
         );
         const dataState = response.data.data[0];
-        // console.log(dataState);
+        console.log(dataState);
         if (dataState) {
           this.trigerRapot = true;
           this.dataRapot = dataState;
@@ -404,7 +441,7 @@ export default {
           this.merged_path = dataState?.merged_path;
 
           sessionStorage.setItem("raportId", dataState.id);
-          console.log("HDUASGVDJBASJDBJKA", dataState?.narrative_path);
+          console.log("Narative", dataState?.narrative_path);
           dataState?.narrative_path
             ? (this.readyStatusRaport = true)
             : (this.readyStatusRaport = false);
@@ -437,7 +474,23 @@ export default {
         console.log(error);
       }
     },
+    async mergePorto() {
+      try {
+        const idSiswa = this.idSiswa;
 
+        const response = await this.$api.put(
+          `/portofolio-report/merge/${idSiswa}`
+        );
+        if (response.data.status == 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil Merge",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitComment() {
       const idSiswa = this.idSiswa;
       const RaportId = sessionStorage.getItem("raportId");
@@ -523,6 +576,9 @@ export default {
             },
           }
         );
+        // if (response.data.code == 200) {
+        //   this.mergePorto();
+        // }
 
         this.getCommentParent();
         // console.log('sukses');
@@ -587,6 +643,7 @@ export default {
     tahun(newVal) {
       console.log("🚀 ~ tahun ~ newVal:", this.tahun);
       this.getCommentParent();
+      this.getRaportBefore();
     },
   },
 
