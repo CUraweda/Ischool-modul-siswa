@@ -245,9 +245,11 @@
 
     <div
       v-else
-      class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
+      class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4 tw-min-h-[300px]"
     >
-      <iframe height="100%" width="100%" :src="pdfUrlHistory"></iframe>
+      <div style="height: 100%; width: 90%">
+        <iframe height="100%" width="100%" :src="pdfUrlHistory"></iframe>
+      </div>
       <!--
       <q-spinner
         color="primary"
@@ -269,7 +271,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept="image/*, .bmp, .webp"
+          accept="image/*, .bmp, .webp, .pdf"
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -402,14 +404,25 @@ export default {
     },
     async getRaportBefore() {
       try {
+        const token = sessionStorage.getItem("token");
+
         const response = await this.$api.get(
-          `student-report-file/show-by-student/${this.idSiswa}`
+          `student-report-file/show-by-student/${this.idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        if (response.data.data.length > 0) {
+        if (response.data) {
+          this.trigerRapot = true;
           this.avaibleraporthistory = true;
           const blob = new Blob([response.data], { type: "application/pdf" }); //
           const blobUrl = window.URL.createObjectURL(blob);
           this.pdfUrlHistory = blobUrl;
+        } else {
+          this.trigerRapot = false;
+          swal("Oops!", "Tidak ada rapot", "error");
         }
       } catch (error) {
         console.log(error);
@@ -642,8 +655,8 @@ export default {
   watch: {
     tahun(newVal) {
       console.log("🚀 ~ tahun ~ newVal:", this.tahun);
-      this.getCommentParent();
       this.getRaportBefore();
+      this.getCommentParent();
     },
   },
 
