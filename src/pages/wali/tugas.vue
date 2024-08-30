@@ -28,12 +28,10 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
-
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Feedforward</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -44,8 +42,6 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
-
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
                         </td>
@@ -53,7 +49,9 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">-</td>
+                        <td class="text-center">
+                          {{ item.feed_fwd ? item.feed_fwd : "-" }}
+                        </td>
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -62,8 +60,17 @@
                               :disable="!item.up_file"
                               color="green"
                               @click="downloadTask(item.up_file)"
-                            />
-                            <!-- <q-btn class="q-mx-sm" icon="upload" color="blue" @click="getTaskId(item.id)" /> -->
+                            >
+                              <q-tooltip>Download file tugas</q-tooltip>
+                            </q-btn>
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="blue"
+                              @click="downloadTaskHasil(item.id)"
+                            >
+                              <q-tooltip>Download hasil tugas</q-tooltip>
+                            </q-btn>
                           </div>
                         </td>
                       </tr>
@@ -74,7 +81,7 @@
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td>-</td>
+                        <!-- <td>-</td> -->
                         <td>
                           <div>
                             <q-btn
@@ -83,8 +90,17 @@
                               color="green"
                               @click="downloadTask(item.task_file)"
                               :disable="!item.task_file"
-                            />
-                            <!-- <q-btn class="q-mx-sm" icon="upload" color="blue" @click="uploadTugas(item.id)" /> -->
+                            >
+                              <q-tooltip>Download file tugas</q-tooltip>
+                            </q-btn>
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="blue"
+                              @click="downloadTaskHasil(item.id)"
+                            >
+                              <q-tooltip>Download hasil tugas</q-tooltip>
+                            </q-btn>
                           </div>
                         </td>
                       </tr>
@@ -104,11 +120,10 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -119,8 +134,6 @@
                         </td>
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
-                        <td class="text-center">{{ item?.description }}</td>
-
                         <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
                         </td>
@@ -128,7 +141,17 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">-</td>
+                        <td class="text-center">
+                          <div v-if="item?.taskdetails.length">
+                            <div
+                              v-for="(detail, index) in item.taskdetails"
+                              :key="index"
+                            >
+                              {{ detail.feedback || "-" }}
+                            </div>
+                          </div>
+                          <div v-else>-</div>
+                        </td>
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -137,8 +160,17 @@
                               color="green"
                               @click="downloadTask(item.up_file)"
                               :disable="!item.up_file"
-                            />
-                            <!-- <q-btn class="q-mx-sm" icon="upload" color="blue" @click="getTaskId(item.id)" /> -->
+                            >
+                              <q-tooltip>Download file tugas</q-tooltip>
+                            </q-btn>
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="blue"
+                              @click="downloadTaskHasil(item.id)"
+                            >
+                              <q-tooltip>Download hasil tugas</q-tooltip>
+                            </q-btn>
                           </div>
                         </td>
                       </tr>
@@ -147,11 +179,20 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description ?? "" }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td>-</td>
+                        <td class="text-center">
+                          <div v-if="item?.taskdetails.length">
+                            <div
+                              v-for="(detail, index) in item.taskdetails"
+                              :key="index"
+                            >
+                              {{ detail.feedback || "-" }}
+                            </div>
+                          </div>
+                          <div v-else>-</div>
+                        </td>
                         <td>
                           <div>
                             <q-btn
@@ -160,8 +201,17 @@
                               color="green"
                               @click="downloadTask(item.task_file)"
                               :disable="!item.task_file"
-                            />
-                            <!-- <q-btn class="q-mx-sm" icon="upload" color="blue" @click="uploadTugas(item.id)" /> -->
+                            >
+                              <q-tooltip>Download file tugas</q-tooltip>
+                            </q-btn>
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="blue"
+                              @click="downloadTaskHasil(item.id)"
+                            >
+                              <q-tooltip>Download hasil tugas</q-tooltip>
+                            </q-btn>
                           </div>
                         </td>
                       </tr>
@@ -179,11 +229,10 @@
                         <th class="text-center">Tanggal</th>
                         <th class="text-center">Mata Pelajaran</th>
                         <th class="text-center">Topik</th>
-                        <th class="text-center">Deskripsi</th>
                         <th class="text-center">Mulai</th>
                         <th class="text-center">selesai</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Nilai</th>
+                        <th class="text-center">Feedback</th>
                         <th class="text-center">Action</th>
                       </tr>
                     </thead>
@@ -195,17 +244,15 @@
                         <td class="text-center">{{ item?.subject.name }}</td>
                         <td class="text-center">{{ item?.topic }}</td>
                         <td class="text-center">
-                          {{ item?.description ?? "-" }}
-                        </td>
-
-                        <td class="text-center">
                           {{ getDateTime(item?.start_date) }}
                         </td>
                         <td class="text-center">
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">-</td>
+                        <td class="text-center">
+                          {{ item.feed_fwd ? item.feed_fwd : "-" }}
+                        </td>
                         <td class="text-center">
                           <div>
                             <q-btn
@@ -214,8 +261,17 @@
                               color="green"
                               @click="downloadTask(item.up_file)"
                               :disable="!item.up_file"
-                            />
-                            <!-- <q-btn class="q-mx-sm" icon="upload" color="blue" @click="getTaskId(item.id)" /> -->
+                            >
+                              <q-tooltip>Download file tugas</q-tooltip>
+                            </q-btn>
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="blue"
+                              @click="downloadTaskHasil(item.id)"
+                            >
+                              <q-tooltip>Download hasil tugas</q-tooltip>
+                            </q-btn>
                           </div>
                         </td>
                       </tr>
@@ -224,11 +280,11 @@
                         <td>{{ getDateTime(item?.createdAt) }}</td>
                         <td>{{ item?.subject.name }}</td>
                         <td>{{ item?.topic }}</td>
-                        <td>{{ item?.description }}</td>
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td>-</td>
+                        <td>{{ item.feed_fwd ? item.feed_fwd : "-" }}</td>
+                        <!-- <td>-</td> -->
                         <td>
                           <div>
                             <q-btn
@@ -237,8 +293,17 @@
                               color="green"
                               @click="downloadTask(item.task_file)"
                               :disable="!item.task_file"
-                            />
-                            <!-- <q-btn class="q-mx-sm" icon="upload" color="blue" @click="uploadTugas(item.id)" /> -->
+                            >
+                              <q-tooltip>Download file tugas</q-tooltip>
+                            </q-btn>
+                            <q-btn
+                              class="q-mx-sm"
+                              icon="download"
+                              color="blue"
+                              @click="downloadTaskHasil(item.id)"
+                            >
+                              <q-tooltip>Download hasil tugas</q-tooltip>
+                            </q-btn>
                           </div>
                         </td>
                       </tr>
@@ -506,6 +571,7 @@ export default {
       task3: ref(),
       idTask: ref(""),
       dataTask: ref(),
+      dataDetailTask: ref(),
       taskClass1: ref(),
       taskClass2: ref(),
       taskClass3: ref(),
@@ -567,7 +633,7 @@ export default {
           formData.append("up_file", file);
         });
 
-        const response = await this.$api.put(`task-detail/create`, formData, {
+        const response = await this.$api.post(`task-detail/create`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${this.token}`,
@@ -612,7 +678,6 @@ export default {
 
     async getDataTugas() {
       try {
-        console.log("🚀 ~ getDataTugas ~ this.idSiswa:", this.idSiswa)
         const taskParent = await this.$api.get(
           `student-task/show-by-student/${this.idSiswa}?cat=Work With Parents`,
           {
@@ -664,8 +729,9 @@ export default {
     async getDataTugasKelas() {
       try {
         const idKelas = sessionStorage.getItem("idClass");
+        const idSiswa = sessionStorage.getItem("idSiswa");
         const taskWWP = await this.$api.get(
-          `task/show-by-class/${idKelas}?cat=1`,
+          `task/show-by-class/${idKelas}?cat=1&student_id=${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -674,7 +740,7 @@ export default {
         );
 
         const taskProject = await this.$api.get(
-          `task/show-by-class/${idKelas}?cat=2`,
+          `task/show-by-class/${idKelas}?cat=2&student_id=${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -682,14 +748,13 @@ export default {
           }
         );
         const taskPribadi = await this.$api.get(
-          `task/show-by-class/${idKelas}?cat=3`,
+          `task/show-by-class/${idKelas}?cat=3&student_id=${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
           }
         );
-
         this.taskClass1 = taskWWP.data.data.filter(
           (task) => task.status === "Open"
         );
@@ -704,6 +769,23 @@ export default {
       }
     },
 
+    async getTaskDetailById(id) {
+      const idSiswa = sessionStorage.getItem("idSiswa");
+      try {
+        const response = await this.$api.get(`task-detail/show-by-task/${id}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        const detailTask = response.data.data.find(
+          (item) => item.student_id === parseInt(idSiswa)
+        );
+        return detailTask.task_file;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async getTaskById(id) {
       try {
         const response = await this.$api.get(`student-task/show/${id}`, {
@@ -711,11 +793,16 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        this.dataTask = response.data.data[0];
+        console.log(
+          "🚀 ~ getTaskById ~ this.dataDetailTask:",
+          response.data.data[0].file_path
+        );
+        return response.data.data[0];
       } catch (error) {
         console.log(error);
       }
     },
+
     async getTaskClassById(id) {
       try {
         const response = await this.$api.get(`task/show/${id}`, {
@@ -723,10 +810,51 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
+        this.getTaskDetailById(id);
+        console.log(
+          "🚀 ~ getTaskById ~ this.dataDetailTask:",
+          this.dataDetailTask
+        );
         this.dataTaskClass = response.data.data;
         console.log(response.data.data);
       } catch (error) {
         console.log(error);
+      }
+    },
+
+    async downloadTaskHasil(id) {
+      try {
+        const path = await this.getTaskDetailById(id);
+        console.log("🚀 ~ downloadTaskHasil ~ path:", path);
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop();
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName);
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        Swal.fire({
+          title: "File Bukti Tidak Tersedia !",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "Oke",
+        });
+        console.error("Error downloading file:", error);
       }
     },
 
@@ -754,6 +882,12 @@ export default {
         link.remove();
         window.URL.revokeObjectURL(blobUrl);
       } catch (error) {
+        Swal.fire({
+          title: "File Bukti Tidak Tersedia !",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "Oke",
+        });
         console.error("Error downloading file:", error);
       }
     },

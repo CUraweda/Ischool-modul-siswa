@@ -11,16 +11,6 @@
           label="Raport Gabungan"
         />
         <!-- <q-tab name="raport-merge" icon="text_snippet" label="Raport Merge" /> -->
-        <div class="q-mt-md flex justify-center">
-          <!-- <q-select
-            class="text-center"
-            style="width: 150px"
-            filled
-            v-model="tahun"
-            :options="options"
-            label="Tahun"
-          /> -->
-        </div>
       </q-tabs>
     </template>
 
@@ -33,7 +23,11 @@
         style="width: 100%; height: 600px"
       >
         <q-tab-panel name="innerMails">
-          <NumberRaport :TabPilihan="TabPilihan" :tahun="tahun" />
+          <NumberRaport
+            :TabPilihan="TabPilihan"
+            :tahun="tahun"
+            :path="number_path"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="innerAlarms">
@@ -78,7 +72,13 @@
                     <p>
                       {{ submittedComment }}
                     </p>
-                    <div v-if="!submittedComment && parseInt(role) === 8">
+                    <div
+                      v-if="
+                        parseInt(role) === 8 &&
+                        readyStatusRaport === true &&
+                        !submittedComment
+                      "
+                    >
                       <q-input
                         v-model="editedComment"
                         filled
@@ -116,7 +116,7 @@
                     class="tw-w-full tw-p-3 text-left tw-border-2 tw-rounded-md"
                     style="height: 100%"
                   >
-                    <Narasi :TabPilihan="TabPilihan"></Narasi>
+                    <Narasi :TabPilihan="TabPilihan" :path="narrative_path" />
                   </div>
                 </div>
               </q-tab-panel>
@@ -150,7 +150,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :sub="'Merged'" />
+                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'" />
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">
@@ -163,7 +163,7 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="!submittedCommentPorto && parseInt(role) === 8">
+                    <div v-if="parseInt(role) === 8 && avaibleraport">
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -219,7 +219,7 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <MergedRapotPortofolio />
+                  <MergedRapotPortofolio :path="merged_path" />
                 </div>
               </q-tab-panel>
             </q-tab-panels>
@@ -229,16 +229,33 @@
     </template>
   </q-splitter>
 
-  <div
-    v-if="!trigerRapot"
-    class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
-  >
-    <span class="tw-text-xl">Raport Belum Tersedia</span>
-    <img
-      src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
-      alt="no data available"
-      class="tw-w-1/3"
-    />
+  <div v-if="!trigerRapot">
+    <div v-if="avaibleraporthistory === false">
+      <div
+        class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
+      >
+        <span class="tw-text-xl">Raport Belum Tersedia</span>
+        <img
+          src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
+          alt="no data available"
+          class="tw-w-1/3"
+        />
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
+    >
+      <iframe height="100%" width="100%" :src="pdfUrlHistory"></iframe>
+      <!--
+      <q-spinner
+        color="primary"
+        size="3em"
+        :thickness="5"
+        class="tw-justify-center"
+      /> -->
+    </div>
   </div>
 
   <q-dialog v-model="medium">
@@ -249,7 +266,11 @@
 
       <br />
       <q-card-section class="q-pt-none">
-        <q-uploader style="width: 100%" label="Custom header" accept=".pdf">
+        <q-uploader
+          style="width: 100%"
+          label="Custom header"
+          accept="image/*, .bmp, .webp"
+        >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
               <q-btn
@@ -349,9 +370,15 @@ export default {
       trigerRapot: ref(true),
       reportId: ref(),
       idSiswa: ref(),
+      number_path: ref(),
+      narrative_path: ref(),
+      portofolio_path: ref(),
+      merged_path: ref(),
       medium: ref(false),
-      tahun: ref("2023/2024"),
-      options: ["2023/2024", "2024/2025"],
+      avaibleraport: ref(false),
+      readyStatusRaport: ref(false),
+      avaibleraporthistory: ref(false),
+      pdfUrlHistory: ref(),
     };
   },
   methods: {
@@ -367,17 +394,34 @@ export default {
         });
         this.idSiswa = response.data.data[0].id;
         // this.submitComment();
-        this.getCommnentParent();
+        this.getCommentParent();
         console.log(this.idSiswa);
       } catch (error) {
         console.error(error);
       }
     },
-    async getCommnentParent() {
-      const token = sessionStorage.getItem("token");
+    async getRaportBefore() {
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}`,
+          `student-report-file/show-by-student/${this.idSiswa}`
+        );
+        if (response.data.data.length > 0) {
+          this.avaibleraporthistory = true;
+          const blob = new Blob([response.data], { type: "application/pdf" }); //
+          const blobUrl = window.URL.createObjectURL(blob);
+          this.pdfUrlHistory = blobUrl;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getCommentParent() {
+      // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
+      const token = sessionStorage.getItem("token");
+      const idSiswa = this.idSiswa;
+      try {
+        const response = await this.$api.get(
+          `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -391,15 +435,22 @@ export default {
           this.dataRapot = dataState;
           this.submittedComment = dataState?.nar_parent_comments;
           this.submittedCommentPorto = dataState?.por_parent_comments;
+          this.number_path = dataState?.number_path;
+          this.narrative_path = dataState?.narrative_path;
+          this.portofolio_path = dataState?.portofolio_path;
+          this.merged_path = dataState?.merged_path;
 
           sessionStorage.setItem("raportId", dataState.id);
+          console.log("Narative", dataState?.narrative_path);
+          dataState?.narrative_path
+            ? (this.readyStatusRaport = true)
+            : (this.readyStatusRaport = false);
+
           this.reportId = dataState.id;
         } else {
           this.trigerRapot = false;
           // console.log("kosong");
         }
-
-        console.log("HDUASGVDJBASJDBJKA", this.trigerRapot);
       } catch (error) {
         console.log(error);
       }
@@ -423,7 +474,23 @@ export default {
         console.log(error);
       }
     },
+    async mergePorto() {
+      try {
+        const idSiswa = this.idSiswa;
 
+        const response = await this.$api.put(
+          `/portofolio-report/merge/${idSiswa}`
+        );
+        if (response.data.status == 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil Merge",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitComment() {
       const idSiswa = this.idSiswa;
       const RaportId = sessionStorage.getItem("raportId");
@@ -444,8 +511,49 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         this.editedComment = "";
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getPortofolioRapot() {
+      console.log("role: ", this.role);
+
+      const token = sessionStorage.getItem("token");
+      const idReport = sessionStorage.getItem("raportId");
+      const responsenarrative = await this.$api.get(
+        `narrative-report/show-by-student/${this.idSiswa}?semester=${
+          this.semester ? this.semester : "1"
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        }
+      );
+      const dataRest = responsenarrative.data?.data?.narrative_categories;
+      console.log("test", responsenarrative.data?.data);
+      try {
+        const response = await this.$api.get(
+          `portofolio-report/show-all-by-student-report/${idReport}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        let filteredData;
+        const data = response.data.data;
+
+        if (Array.isArray(data)) {
+          console.log(this.sub);
+          filteredData = data.filter((item) => item.type === "Orang Tua");
+          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
+          const path = filteredData[0]?.file_path ?? null;
+          console.log("🚀 ~ getPortofolioRapot ~ path:", path);
+          path ? (this.avaibleraport = true) : (this.avaibleraport = false);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -468,8 +576,11 @@ export default {
             },
           }
         );
+        // if (response.data.code == 200) {
+        //   this.mergePorto();
+        // }
 
-        this.getCommnentParent();
+        this.getCommentParent();
         // console.log('sukses');
         this.editedCommentPorto = "";
       } catch (error) {
@@ -499,7 +610,7 @@ export default {
           }
         );
 
-        this.getCommnentParent();
+        this.getCommentParent();
         this.medium = false;
         Swal.fire({
           title: "Portofolio berhasil di upload !",
@@ -520,18 +631,20 @@ export default {
     },
   },
   mounted() {
-    // console.log("gedagedi", this.avabile)
-    this.getCommnentParent();
+    this.getCommentParent();
     this.getIdSiswa();
+    this.getPortofolioRapot();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
   },
 
   watch: {
-    // avabile(newVal) {
-    // console.log("OHIO:", newVal);
-    // }
+    tahun(newVal) {
+      console.log("🚀 ~ tahun ~ newVal:", this.tahun);
+      this.getCommentParent();
+      this.getRaportBefore();
+    },
   },
 
   name: "Rapot",
@@ -544,6 +657,10 @@ export default {
     //   type: Boolean,
     //   required: true,
     // },
+    tahun: {
+      type: String,
+      required: true,
+    },
   },
 
   components: {
@@ -568,6 +685,7 @@ export default {
       editor: ref("Sangat Baik !"),
       TabPilihan: props.TabPilihan,
       // avabile: props.avabile,
+      // tahun: props.tahun,
       editedComment: ref(""),
       submittedComment: ref(""),
       kategori: ref(),

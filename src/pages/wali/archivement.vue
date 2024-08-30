@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
-    <div class="row">
+  <div class="container" style="width: 100%">
+    <div style="width: 100%">
       <div class="col-md-12">
-        <q-card class="text-center bg-blue-2" style="height: 87vh">
+        <q-card class="text-center bg-blue-2" style="width: 100%">
           <q-card-section>
             <div class="text-center">
               <p>
@@ -55,10 +55,24 @@
                         <td>
                           <q-btn
                             class="q-mx-sm"
+                            icon="edit"
+                            color="primary"
+                            @click="editActivity(item)"
+                          />
+
+                          <q-btn
+                            class="q-mx-sm"
                             icon="download"
                             color="green"
                             @click="downloadTask(item?.certificate_path)"
                             :disable="!item.certificate_path"
+                          />
+
+                          <q-btn
+                            class="q-mx-sm"
+                            icon="delete"
+                            color="negative"
+                            @click="confirmDelete(item.id)"
                           />
                         </td>
                       </tr>
@@ -71,88 +85,47 @@
         </q-card>
       </div>
     </div>
-    <!-- Dialog untuk menambahkan aktivitas -->
+
     <q-dialog v-model="showAddDialog" persistent>
       <q-card style="width: 700px; max-width: 80vw">
         <q-card-section>
           <q-input v-model="newActivityName" label="Kegiatan" />
           <q-input v-model="newActivityDate" label="Tanggal" type="date" />
-          <q-uploader
-            style="width: 100%"
-            label="Custom header"
-            accept=".pdf, .docx, .word,"
-          >
-            <template v-slot:header="scope">
-              <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
-                <q-btn
-                  v-if="scope.queuedFiles.length > 0"
-                  icon="clear_all"
-                  @click="scope.removeQueuedFiles"
-                  round
-                  dense
-                  flat
-                >
-                  <q-tooltip>Clear All</q-tooltip>
-                </q-btn>
-                <q-btn
-                  v-if="scope.uploadedFiles.length > 0"
-                  icon="done_all"
-                  @click="scope.removeUploadedFiles"
-                  round
-                  dense
-                  flat
-                >
-                  <q-tooltip>Remove Uploaded Files</q-tooltip>
-                </q-btn>
-                <q-spinner
-                  v-if="scope.isUploading"
-                  class="q-uploader__spinner"
-                />
-                <div class="col">
-                  <div class="q-uploader__title">Upload your files</div>
-                  <div class="q-uploader__subtitle">
-                    {{ scope.uploadSizeLabel }}
-                  </div>
-                </div>
-                <q-btn
-                  v-if="scope.canAddFiles"
-                  type="a"
-                  icon="add_box"
-                  @click="scope.pickFiles"
-                  round
-                  dense
-                  flat
-                >
-                  <q-uploader-add-trigger />
-                  <q-tooltip>Pick Files</q-tooltip>
-                </q-btn>
-                <q-btn
-                  v-if="scope.canUpload"
-                  icon="cloud_upload"
-                  @click="submitNewActivity(scope)"
-                  round
-                  dense
-                  flat
-                >
-                  <q-tooltip>Upload Files</q-tooltip>
-                </q-btn>
 
-                <q-btn
-                  v-if="scope.isUploading"
-                  icon="clear"
-                  @click="scope.abort"
-                  round
-                  dense
-                  flat
-                >
-                  <q-tooltip>Abort Upload</q-tooltip>
-                </q-btn>
+          <!-- Custom File Upload -->
+          <div class="file-upload">
+            <div
+              class="file-upload-dropzone"
+              @dragover.prevent
+              @drop.prevent="handleDrop"
+            >
+              <span class="file-upload-placeholder">
+                Drag & Drop files here or
+                <label class="file-upload-button">
+                  <input
+                    ref="fileInput"
+                    type="file"
+                    @change="handleFileChange"
+                    class="file-upload-input"
+                  />
+                  Select File
+                </label>
+              </span>
+            </div>
+            <div v-if="files.length" class="file-upload-preview">
+              <div
+                v-for="file in files"
+                :key="file.name"
+                class="file-upload-file"
+              >
+                {{ file.name }}
               </div>
-            </template>
-          </q-uploader>
+            </div>
+          </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn label="Cancel" color="secondary" @click="cancelAddActivity" />
+          <q-btn label="Save" color="primary" @click="submitNewActivity" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -160,7 +133,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from "vue";
+import { ref } from "vue";
 import Swal from "sweetalert2";
 
 export default {
@@ -171,7 +144,9 @@ export default {
       showAddDialog: ref(false),
       newActivityName: ref(""),
       newActivityDate: ref(""),
-      uploadedFiles: ref([]),
+      files: ref([]),
+      editingActivityId: ref(null),
+      fileInput: ref(null),
     };
   },
 
@@ -186,6 +161,7 @@ export default {
       const year = date.getFullYear().toString();
       return `${day}-${month}-${year}`;
     },
+
     async fetchData() {
       try {
         const token = sessionStorage.getItem("token");
@@ -201,51 +177,91 @@ export default {
           }
         );
         this.data = response.data.data;
-        console.log(response.data.data);
       } catch (err) {
         console.error(err);
       }
     },
 
-    async submitNewActivity(scope) {
-      const filesToUpload = scope.queuedFiles;
+    editActivity(item) {
+      this.editingActivityId = item.id;
+      this.newActivityName = item.achievement_desc;
+      this.newActivityDate = item.issued_at;
+      this.showAddDialog = true;
+    },
 
+    handleFileChange(event) {
+      const file = event.target.files;
+      this.files = file;
+    },
+
+    handleDrop(event) {
+      const file = event.dataTransfer.files;
+      this.files = file;
+    },
+
+    async submitNewActivity() {
+      const formData = new FormData();
       const idSiswa = sessionStorage.getItem("idSiswa");
 
-      const formData = new FormData();
       formData.append("student_id", idSiswa);
       formData.append("achievement_desc", this.newActivityName);
       formData.append("issued_at", this.newActivityDate);
-      filesToUpload.forEach((file) => {
-        formData.append("file", file);
-      });
+      formData.append("file", this.files[0]);
 
       try {
         const token = sessionStorage.getItem("token");
-        const response = await this.$api.post(
-          `achievement/create`,
-          // data,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+
+        let endpoint = `achievement/create`;
+        let method = "post";
+
+        if (this.editingActivityId) {
+          endpoint = `achievement/update/${this.editingActivityId}`;
+          method = "put";
+        }
+
+        await this.$api[method](endpoint, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: this.editingActivityId ? "Update Sukses!" : "Tambah Sukses!",
+          text: this.editingActivityId
+            ? "Your activity has been updated."
+            : "Your activity has been created.",
+        });
 
         this.showAddDialog = false;
+        this.fetchData();
+        this.resetForm();
       } catch (err) {
         console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
       }
+    },
+
+    resetForm() {
+      this.newActivityName = "";
+      this.newActivityDate = "";
+      this.files = [];
+      this.editingActivityId = null;
     },
 
     async cancelAddActivity() {
       this.showAddDialog = false;
+      this.resetForm(); // Reset form ketika membatalkan
     },
+
     async downloadTask(path) {
       try {
-        const token = sessionStorage.getItem('token')
+        const token = sessionStorage.getItem("token");
         const response = await this.$api.get(
           `student-task/download?filepath=${path}`,
           {
@@ -271,6 +287,102 @@ export default {
         console.error("Error downloading file:", error);
       }
     },
+
+    async confirmDelete(id) {
+      const result = await Swal.fire({
+        title: "Apakah kamu yakin?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      });
+
+      if (result.isConfirmed) {
+        await this.deleteActivity(id);
+      }
+    },
+
+    async deleteActivity(id) {
+      try {
+        const token = sessionStorage.getItem("token");
+        await this.$api.delete(`achievement/delete/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your activity has been deleted.",
+        });
+
+        this.fetchData(); // Refresh the list after deletion
+      } catch (err) {
+        console.error(err);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+      }
+    },
   },
 };
 </script>
+
+<style scoped>
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.file-upload-dropzone {
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  background-color: #f0f8ff;
+  transition: background-color 0.3s ease;
+}
+
+.file-upload-dropzone:hover {
+  background-color: #e6f7ff;
+}
+
+.file-upload-placeholder {
+  color: #007bff;
+  font-size: 16px;
+}
+
+.file-upload-button {
+  display: inline-block;
+  font-weight: 700;
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.file-upload-input {
+  display: none;
+}
+
+.file-upload-preview {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.file-upload-file {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+</style>

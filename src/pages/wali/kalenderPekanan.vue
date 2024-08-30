@@ -88,11 +88,24 @@ export default {
       },
       tahun: ref("2024/2025"),
       smt: ref("1"),
-      options: ["2023/2024", "2024/2025"],
+      options: ref([]),
       options2: ["1", "2"],
     };
   },
   methods: {
+    async getYearAcademic() {
+      try {
+        const response = await this.$api.get(`/academic-year`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        const data = response.data.data.result;
+        this.options = data.map((item) => item.name);
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async getKalender() {
       console.log("ini jalan ya");
       try {
@@ -143,6 +156,7 @@ export default {
     },
   },
   mounted() {
+    this.getYearAcademic();
     this.getKalender();
   },
 };

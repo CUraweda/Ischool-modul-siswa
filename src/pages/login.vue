@@ -54,28 +54,41 @@
                             </template>
                           </q-input>
 
-                          <q-input
-                            v-model="password"
-                            class="text-center"
-                            bottom-slots
-                            filled
-                            :type="showPassword ? 'text' : 'password'"
-                            label="Password"
-                            style="width: 70%"
-                          >
-                            <template v-slot:prepend>
-                              <q-icon name="key" />
-                            </template>
-                            <template v-slot:append>
-                              <q-icon
-                                :name="
-                                  showPassword ? 'visibility_off' : 'visibility'
-                                "
-                                class="cursor-pointer"
-                                @click="toggleShow"
+                          <div class="block w-full" style="width: 70%">
+                            <q-input
+                              v-model="password"
+                              class="text-center"
+                              bottom-slots
+                              filled
+                              :type="showPassword ? 'text' : 'password'"
+                              label="Password"
+                              style="width: 100%"
+                            >
+                              <template v-slot:prepend>
+                                <q-icon name="key" />
+                              </template>
+                              <template v-slot:append>
+                                <q-icon
+                                  :name="
+                                    showPassword
+                                      ? 'visibility_off'
+                                      : 'visibility'
+                                  "
+                                  class="cursor-pointer"
+                                  @click="toggleShow"
+                                />
+                              </template>
+                            </q-input>
+                            <div class="flex items-end">
+                              <q-btn
+                                size="sm"
+                                label="Lupa Password?"
+                                style="color: #00ccff"
+                                flat
+                                @click="alert = true"
                               />
-                            </template>
-                          </q-input>
+                            </div>
+                          </div>
 
                           <q-btn
                             type="submit"
@@ -97,6 +110,40 @@
                         </div>
                       </div>
                     </div>
+
+                    <q-dialog v-model="alert">
+                      <q-card>
+                        <q-card-section>
+                          <div class="text-h6">Lupa Password</div>
+                        </q-card-section>
+
+                        <q-card-section class="q-pt-none">
+                          <q-input
+                            v-model="emailforgot"
+                            class="text-center"
+                            bottom-slots
+                            filled
+                            type="text"
+                            label="Masukan Email"
+                            style="width: 100%; min-width: 300px"
+                          >
+                            <template v-slot:prepend>
+                              <q-icon name="email" />
+                            </template>
+                          </q-input>
+                        </q-card-section>
+
+                        <q-card-actions align="right">
+                          <q-btn
+                            flat
+                            label="Kirim"
+                            color="primary"
+                            v-close-popup
+                            @click="forgotPassword"
+                          />
+                        </q-card-actions>
+                      </q-card>
+                    </q-dialog>
                   </div>
                 </div>
               </div>
@@ -161,7 +208,25 @@ export default {
         this.submit = false;
       }
     },
-
+    async forgotPassword() {
+      const forgotData = {
+        email: this.emailforgot,
+      };
+      try {
+        const response = await this.$api.post(
+          "/auth/forgot-password",
+          forgotData
+        );
+        if (!response.ok) return Error("Gagal mengirimkan email");
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Konfirmasi password akan diinformasikan di email terkait",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getUserAccess(data) {
       const idCust = data.id;
       const token = data.token;
@@ -198,6 +263,8 @@ export default {
       password: "",
       showPassword: false,
       submit: false,
+      alert: false,
+      emailforgot: "",
     };
   },
 };

@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="!tersedia"
-    class="flex tw-flex-col tw-items-center q-pb-none"
-  >
+  <div v-if="!tersedia" class="flex tw-flex-col tw-items-center q-pb-none">
     <span class="tw-text-xl">Raport Belum Tersedia</span>
     <img
       src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
@@ -18,11 +15,23 @@
 <script>
 import { ref } from "vue";
 export default {
-  props: ["sub"],
+  props: {
+    path: {
+      type: String,
+      required: true,
+    },
+  },
+
   data() {
     return {
       pdfUrl: ref(),
       tersedia: true,
+    };
+  },
+
+  setup(props) {
+    return {
+      path: props.path,
     };
   },
 
@@ -41,23 +50,21 @@ export default {
           }
         );
         const data = response.data.data;
-        console.log("🚀 ~ getPortofolioRapot ~ data:", data)
+        console.log("🚀 ~ getPortofolioRapot ~ data:", data);
         let filteredData;
         if (Array.isArray(data)) {
-          console.log(this.sub)
+          console.log(this.sub);
           filteredData = data.filter((item) => item.type === "Orang Tua");
-          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData)
+          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
           const path = filteredData[0]?.file_path ?? null;
-          console.log("🚀 ~ getPortofolioRapot ~ path:", path)
+          console.log("🚀 ~ getPortofolioRapot ~ path:", path);
           if (path) {
-          this.tersedia = true;
-          this.downloadTask(path);
+            this.tersedia = true;
+            this.downloadTask(path);
           } else {
             this.tersedia = false;
           }
-
         }
-
       } catch (error) {
         console.log(error);
       }
@@ -68,7 +75,7 @@ export default {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
         const response = await this.$api.get(
-          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          `student-task/download?filepath=${this.path}&student_id=${idUser}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
