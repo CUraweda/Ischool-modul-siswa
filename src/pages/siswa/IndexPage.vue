@@ -254,7 +254,7 @@
     <div class="q-pa-sm">
       <q-card flat bordered class="">
         <q-card-section class="q-pb-none">
-          <div class="row items-center no-wrap">
+        <div class="row items-center no-wrap">
             <div class="text-h5 q-ml-md text-bold">Pengumuman</div>
           </div>
         </q-card-section>

@@ -49,7 +49,7 @@
                                     class="text-right"
                                     style="font-size: larger"
                                   >
-                                    {{ rekapSampah[0]?.today }}
+                                    {{ rekapSampah.today || 0 }}
                                   </td>
                                   <td
                                     class="text-left text-red"
@@ -69,7 +69,7 @@
                                     class="text-right"
                                     style="font-size: larger"
                                   >
-                                    {{ rekapSampah[0]?.this_month }}
+                                    {{ rekapSampah.this_month || 0 }}
                                   </td>
                                   <td
                                     class="text-left text-red"
@@ -293,19 +293,19 @@ export default {
     return {
       series: [
         {
-          name: "senin",
+          name: "Senin",
           data: [],
         },
         {
-          name: "selasa",
+          name: "Selasa",
           data: [],
         },
         {
-          name: "rabu",
+          name: "Rabu",
           data: [],
         },
         {
-          name: "kamis",
+          name: "Kamis",
           data: [],
         },
         {
@@ -451,11 +451,11 @@ export default {
         this.chartOptions.xaxis.categories = categories;
 
         data.forEach((item) => {
-          this.series[0].data.push(item.weekday.senin);
-          this.series[1].data.push(item.weekday.selasa);
-          this.series[2].data.push(item.weekday.rabu);
-          this.series[3].data.push(item.weekday.kamis);
-          this.series[4].data.push(item.weekday.jumat);
+          this.series[0].data.push(item.weekday.Senin);
+          this.series[1].data.push(item.weekday.Selasa);
+          this.series[2].data.push(item.weekday.Rabu);
+          this.series[3].data.push(item.weekday.Kamis);
+          this.series[4].data.push(item.weekday.Jumat);
         });
 
         this.chartCollection = true;
