@@ -3,7 +3,9 @@
     <!-- <NavbarSiswa /> -->
     <div class="row">
       <div class="col-md-12">
-        <div class="text-center bg-blue-2 tw-min-h-screen">
+        <div
+          class="text-center bg-blue-2 tw-min-h-screen tw-w-screen md:tw-w-full"
+        >
           <q-card-section>
             <div class="text-center">
               <p>
@@ -17,26 +19,36 @@
           </q-card-section>
 
           <q-card-section>
-            <q-card style="height: 700px" class="tw-p-3 tw-overflow-auto">
-              <div class="tw-w-full flex tw-justify-end text-right">
-                <q-select
-                  class="tw-w-32"
-                  filled
-                  v-model="tahun"
-                  :options="options"
-                  label="Tahun"
-                  @change="getKalender"
-                />
-                <q-select
-                  class="tw-w-32"
-                  filled
-                  v-model="smt"
-                  :options="options2"
-                  label="Semester"
-                  @change="getKalender"
-                />
+            <q-card style="height: 700px" class="tw-p-3">
+              <div class="w-full tw-overflow-x-auto">
+                <div class="tw-w-[700px] md:tw-w-fit">
+                  <div
+                    class="tw-w-full flex tw-justify-end text-right tw-gap-2"
+                  >
+                    <q-select
+                      class="tw-w-32"
+                      filled
+                      v-model="tahun"
+                      :options="options"
+                      label="Tahun"
+                      @change="getKalender"
+                    />
+                    <q-select
+                      class="tw-w-24"
+                      filled
+                      v-model="smt"
+                      :options="options2"
+                      label="Semester"
+                      @change="getKalender"
+                    />
+                  </div>
+                  <FullCalendar
+                    class="text-xs"
+                    :options="calendarOptions"
+                    :key="calendarKey"
+                  />
+                </div>
               </div>
-              <FullCalendar :options="calendarOptions" :key="calendarKey" />
             </q-card>
           </q-card-section>
         </div>

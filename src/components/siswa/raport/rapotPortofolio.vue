@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       pdfUrl: ref(),
-      tersedia: true,
+      tersedia: ref(false),
     };
   },
 
@@ -56,7 +56,12 @@ export default {
           console.log(this.sub);
           filteredData = data.filter((item) => item.type === "Orang Tua");
           console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
+          // const blob = new Blob([filteredData], { type: "application/pdf" }); //
+          // const blobUrl = window.URL.createObjectURL(blob);
           const path = filteredData[0]?.file_path ?? null;
+          // this.pdfUrl = blobUrl;
+          this.downloadTask(path);
+
           console.log("🚀 ~ getPortofolioRapot ~ path:", path);
           if (path) {
             this.tersedia = true;
@@ -75,7 +80,7 @@ export default {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
         const response = await this.$api.get(
-          `student-task/download?filepath=${this.path}&student_id=${idUser}`,
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -82,16 +82,50 @@ export default {
     return {
       isAvabile: ref(true),
       yearOptions: ref([]),
-      tahun: ref("2023/2024"),
-    };
-  },
-
-  setup() {
-    return {
+      tahun: ref(""),
       tab: ref("1"),
     };
   },
+  setup() {
+    const tahun = ref("");
 
+    // const getDataUnpaidBiling = async () => {
+    //   const idSiswa = sessionStorage.getItem("idSiswa");
+    //   const token = sessionStorage.getItem("token");
+    //   try {
+    //     const response = await axios.get(
+    //       `/student-bills/get-by-student-id/${idSiswa}`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //         params: {
+    //           status: "belum lunas",
+    //         },
+    //       }
+    //     );
+    //     const dataBilling = response.data.data.length;
+    //     isAvabile.value = dataBilling <= 0;
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    onMounted(() => {
+      const currentYear = new Date().getFullYear();
+      const nextYear = currentYear + 1;
+      tahun.value = `${currentYear}/${nextYear}`;
+      // getDataUnpaidBiling();
+    });
+
+    // watch(tahun, () => {
+    //   getDataUnpaidBiling(); // Call function when 'tahun' changes
+    // });
+
+    return {
+      tab: ref("1"),
+      tahun: ref(tahun),
+    };
+  },
   watch: {
     tab(newVal) {
       sessionStorage.setItem("smt", newVal);

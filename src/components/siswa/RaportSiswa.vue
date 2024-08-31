@@ -73,7 +73,11 @@
                       {{ submittedComment }}
                     </p>
                     <div
-                      v-if="parseInt(role) === 8 && readyStatusRaport === true"
+                      v-if="
+                        parseInt(role) === 8 &&
+                        readyStatusRaport === true &&
+                        !submittedComment
+                      "
                     >
                       <q-input
                         v-model="editedComment"
@@ -93,6 +97,7 @@
                   </div>
                 </div>
               </q-tab-panel>
+
               <q-tab-panel name="page14">
                 <div class="text-h4 q-mb-md">Komentar Guru</div>
                 <div class="tw-flex tw-w-full">
@@ -159,7 +164,14 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="avaibleraport">
+                    <div
+                      v-if="
+                        parseInt(role) === 8 &&
+                        avaibleraport &&
+                        !submittedCommentPorto
+                      "
+                    >
+                      <!-- <div v-if="parseInt(role) === 8 && portofolio_path"> -->
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -192,8 +204,13 @@
                 </div>
               </q-tab-panel>
               <q-tab-panel name="porto-siswa">
-                <div class="text-h4 q-mb-md">Upload Portofolio Siswa</div>
-                <div class="tw-flex tw-w-full tw-flex-col">
+                <div class="text-h4 q-mb-md">
+                  {{ !avaibleraport ? "Upload" : "" }} Portofolio Siswa
+                </div>
+                <div
+                  class="tw-flex tw-w-full tw-flex-col"
+                  v-if="!avaibleraport"
+                >
                   <div class="tw-w-full flex tw-my-3 tw-justify-end">
                     <q-btn
                       color="secondary"
@@ -202,7 +219,7 @@
                     />
                   </div>
                 </div>
-                <div style="width: 100%; height: 600px">
+                <div style="width: 100%; height: 600px" v-else>
                   <RapotPortofolio :sub="'Orang Tua'" />
                 </div>
               </q-tab-panel>
@@ -225,16 +242,43 @@
     </template>
   </q-splitter>
 
-  <div
-    v-if="!trigerRapot"
-    class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
-  >
-    <span class="tw-text-xl">Raport Belum Tersedia</span>
-    <img
-      src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
-      alt="no data available"
-      class="tw-w-1/3"
-    />
+  <div v-if="!trigerRapot">
+    <div v-if="avaibleraporthistory === false">
+      <div
+        class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4"
+      >
+        <span class="tw-text-xl">Raport Belum Tersedia</span>
+        <img
+          src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
+          alt="no data available"
+          class="tw-w-1/3"
+        />
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4 tw-min-h-[300px]"
+    >
+      <div style="height: 100%; width: 90%">
+        <iframe height="800" width="100%" :src="pdfUrlHistory"></iframe>
+        <div v-if="!pdfUrlHistory">
+          <q-spinner
+            color="primary"
+            size="3em"
+            :thickness="5"
+            class="tw-justify-center"
+          />
+        </div>
+      </div>
+      <!--
+      <q-spinner
+        color="primary"
+        size="3em"
+        :thickness="5"
+        class="tw-justify-center"
+      /> -->
+    </div>
   </div>
 
   <q-dialog v-model="medium">
@@ -248,7 +292,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept="image/*, .bmp, .webp"
+          accept="image/*, .bmp, .webp, .pdf"
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -335,6 +379,7 @@ import Narasi from "./raport/narasi.vue";
 import RapotPortofolio from "./raport/rapotPortofolio.vue";
 import MergedRapotPortofolio from "./raport/mergedRapotPortofolio.vue";
 import Swal from "sweetalert2";
+import Raport from "src/pages/siswa/raport.vue";
 
 export default {
   data() {
@@ -354,8 +399,11 @@ export default {
       portofolio_path: ref(),
       merged_path: ref(),
       medium: ref(false),
-      avaibleraport: ref(false),
+      avaibleraport: false,
+      avaibleraporthistory: false,
       readyStatusRaport: ref(false),
+      avaibleraporthistory: ref(false),
+      pdfUrlHistory: ref(),
     };
   },
   methods: {
@@ -377,11 +425,78 @@ export default {
         console.error(error);
       }
     },
+    async getRaportBefore() {
+      const idSiswa = sessionStorage.getItem("idSiswa");
+
+      try {
+        const token = sessionStorage.getItem("token");
+
+        const response = await this.$api.get(
+          `student-report-file/show-by-student/${idSiswa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.data) {
+          const semester = sessionStorage.getItem("smt");
+          const filteredData = response.data.data.filter(
+            (report) =>
+              report.academic_year === this.tahun &&
+              report.semester === parseInt(semester)
+          );
+          console.log("datanya", filteredData, this.TabPilihan);
+          if (filteredData.length >= 1) {
+            this.trigerRapot = false;
+            this.avaibleraporthistory = true;
+            const path = filteredData[0]?.file_path ?? null;
+            this.downloadTask(path);
+
+            console.log("🚀 ~ data:", filteredData);
+          } else {
+            this.trigerRapot = false;
+            this.avaibleraporthistory = false;
+            swal("Oops!", "Tidak ada rapot untuk tahun akademik ini", "error");
+            this.downloadTask(null);
+          }
+        } else {
+          this.trigerRapot = false;
+          this.avaibleraporthistory = false;
+          swal("Oops!", "Tidak ada rapot", "error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async downloadTask(path) {
+      console.log(path);
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const blob = new Blob([response.data], { type: "application/pdf" }); //
+        const blobUrl = window.URL.createObjectURL(blob);
+        this.pdfUrlHistory = blobUrl;
+        console.log("test");
+      } catch (error) {
+        this.tersedia = false;
+        console.error("Error downloading file:", error);
+      }
+    },
     async getCommentParent() {
       // console.log("🚀 ~ getCommentParent ~ this.tahun:", this.tahun)
       const token = sessionStorage.getItem("token");
       const idSiswa = this.idSiswa;
-      console.log(idSiswa);
       try {
         const response = await this.$api.get(
           `/student-report/show-by-student?id=${this.idSiswa}&semester=${this.TabPilihan}&academic=${this.tahun}`,
@@ -392,9 +507,14 @@ export default {
           }
         );
         const dataState = response.data.data[0];
-        // console.log(dataState);
+        if (!dataState) {
+          this.avaibleraporthistory = true;
+          this.getRaportBefore();
+        }
+        console.log(dataState);
         if (dataState) {
           this.trigerRapot = true;
+          this.avaibleraporthistory = false;
           this.dataRapot = dataState;
           this.submittedComment = dataState?.nar_parent_comments;
           this.submittedCommentPorto = dataState?.por_parent_comments;
@@ -404,7 +524,7 @@ export default {
           this.merged_path = dataState?.merged_path;
 
           sessionStorage.setItem("raportId", dataState.id);
-          console.log("HDUASGVDJBASJDBJKA", dataState?.narrative_path);
+          console.log("Narative", dataState?.narrative_path);
           dataState?.narrative_path
             ? (this.readyStatusRaport = true)
             : (this.readyStatusRaport = false);
@@ -437,7 +557,28 @@ export default {
         console.log(error);
       }
     },
-
+    async mergePorto(RaportId) {
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await this.$api.put(
+          `/portofolio-report/merge/${RaportId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.status == 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil Merge",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitComment() {
       const idSiswa = this.idSiswa;
       const RaportId = sessionStorage.getItem("raportId");
@@ -469,18 +610,18 @@ export default {
 
       const token = sessionStorage.getItem("token");
       const idReport = sessionStorage.getItem("raportId");
-      const responsenarrative = await this.$api.get(
-        `narrative-report/show-by-student/${this.idSiswa}?semester=${
-          this.semester ? this.semester : "1"
-        }`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        }
-      );
-      const dataRest = responsenarrative.data?.data?.narrative_categories;
-      console.log("test", responsenarrative.data?.data);
+      // const responsenarrative = await this.$api.get(
+      //   `narrative-report/show-by-student/${this.idSiswa}?semester=${
+      //     this.semester ? this.semester : "1"
+      //   }`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${this.token}`,
+      //     },
+      //   }
+      // );
+      // const dataRest = responsenarrative.data?.data?.narrative_categories;
+      // console.log("test", responsenarrative.data?.data);
       try {
         const response = await this.$api.get(
           `portofolio-report/show-all-by-student-report/${idReport}`,
@@ -490,16 +631,23 @@ export default {
             },
           }
         );
-        let filteredData;
+
         const data = response.data.data;
 
         if (Array.isArray(data)) {
-          console.log(this.sub);
-          filteredData = data.filter((item) => item.type === "Orang Tua");
-          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
-          const path = filteredData[0]?.file_path ?? null;
-          console.log("🚀 ~ getPortofolioRapot ~ path:", path);
-          path ? (this.avaibleraport = true) : (this.avaibleraport = false);
+          console.log("🚀 ~ Data is an array:", data);
+
+          // Filter data untuk mengecek apakah ada item dengan type "Orang Tua"
+          const containsOrangTua = data.some(
+            (item) => item.type === "Orang Tua"
+          );
+          console.log("🚀 ~ Contains 'Orang Tua':", containsOrangTua);
+
+          // Set avaibleraport berdasarkan hasil pengecekan
+          this.avaibleraport = containsOrangTua;
+          console.log("🚀 ~ avaibleraport:", this.avaibleraport);
+        } else {
+          this.avaibleraport = false;
         }
       } catch (error) {
         console.log(error);
@@ -523,7 +671,7 @@ export default {
             },
           }
         );
-
+        this.mergePorto(RaportId);
         this.getCommentParent();
         // console.log('sukses');
         this.editedCommentPorto = "";
@@ -575,21 +723,24 @@ export default {
     },
   },
   mounted() {
+    this.getPortofolioRapot();
     this.getCommentParent();
     this.getIdSiswa();
-    this.getPortofolioRapot();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
   },
-
   watch: {
     tahun(newVal) {
-      console.log("🚀 ~ tahun ~ newVal:", this.tahun);
+      console.log("🚀 ~ tahun ~ newVal:", newVal);
       this.getCommentParent();
     },
+    TabPilihan(newVal) {
+      console.log("🚀 ~ TabPilihan ~ newVal:", newVal);
+      this.getCommentParent();
+      console.log("🚀 ~ testtstst:", newVal);
+    },
   },
-
   name: "Rapot",
   props: {
     TabPilihan: {
@@ -626,7 +777,7 @@ export default {
       shape: ref("line"),
       splitterModel: ref(20),
       editor: ref("Sangat Baik !"),
-      TabPilihan: props.TabPilihan,
+      // TabPilihan: props.TabPilihan,
       // avabile: props.avabile,
       // tahun: props.tahun,
       editedComment: ref(""),
