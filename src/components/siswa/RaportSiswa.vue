@@ -97,6 +97,7 @@
                   </div>
                 </div>
               </q-tab-panel>
+
               <q-tab-panel name="page14">
                 <div class="text-h4 q-mb-md">Komentar Guru</div>
                 <div class="tw-flex tw-w-full">
@@ -163,7 +164,14 @@
                     <p>
                       {{ submittedCommentPorto }}
                     </p>
-                    <div v-if="parseInt(role) === 8 && avaibleraport">
+                    <div
+                      v-if="
+                        parseInt(role) === 8 &&
+                        avaibleraport &&
+                        !submittedCommentPorto
+                      "
+                    >
+                      <!-- <div v-if="parseInt(role) === 8 && portofolio_path"> -->
                       <q-input
                         v-model="editedCommentPorto"
                         filled
@@ -196,8 +204,13 @@
                 </div>
               </q-tab-panel>
               <q-tab-panel name="porto-siswa">
-                <div class="text-h4 q-mb-md">Upload Portofolio Siswa</div>
-                <div class="tw-flex tw-w-full tw-flex-col">
+                <div class="text-h4 q-mb-md">
+                  {{ !avaibleraport ? "Upload" : "" }} Portofolio Siswa
+                </div>
+                <div
+                  class="tw-flex tw-w-full tw-flex-col"
+                  v-if="!avaibleraport"
+                >
                   <div class="tw-w-full flex tw-my-3 tw-justify-end">
                     <q-btn
                       color="secondary"
@@ -206,7 +219,7 @@
                     />
                   </div>
                 </div>
-                <div style="width: 100%; height: 600px">
+                <div style="width: 100%; height: 600px" v-else>
                   <RapotPortofolio :sub="'Orang Tua'" />
                 </div>
               </q-tab-panel>
@@ -248,7 +261,15 @@
       class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4 tw-min-h-[300px]"
     >
       <div style="height: 100%; width: 90%">
-        <iframe height="100%" width="100%" :src="pdfUrlHistory"></iframe>
+        <iframe height="800" width="100%" :src="pdfUrlHistory"></iframe>
+        <div v-if="!pdfUrlHistory">
+          <q-spinner
+            color="primary"
+            size="3em"
+            :thickness="5"
+            class="tw-justify-center"
+          />
+        </div>
       </div>
       <!--
       <q-spinner
@@ -358,6 +379,7 @@ import Narasi from "./raport/narasi.vue";
 import RapotPortofolio from "./raport/rapotPortofolio.vue";
 import MergedRapotPortofolio from "./raport/mergedRapotPortofolio.vue";
 import Swal from "sweetalert2";
+import Raport from "src/pages/siswa/raport.vue";
 
 export default {
   data() {
@@ -377,7 +399,8 @@ export default {
       portofolio_path: ref(),
       merged_path: ref(),
       medium: ref(false),
-      avaibleraport: ref(false),
+      avaibleraport: false,
+      avaibleraporthistory: false,
       readyStatusRaport: ref(false),
       avaibleraporthistory: ref(false),
       pdfUrlHistory: ref(),
@@ -403,29 +426,71 @@ export default {
       }
     },
     async getRaportBefore() {
+      const idSiswa = sessionStorage.getItem("idSiswa");
+
       try {
         const token = sessionStorage.getItem("token");
 
         const response = await this.$api.get(
-          `student-report-file/show-by-student/${this.idSiswa}`,
+          `student-report-file/show-by-student/${idSiswa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        if (response.data) {
-          this.trigerRapot = true;
-          this.avaibleraporthistory = true;
-          const blob = new Blob([response.data], { type: "application/pdf" }); //
-          const blobUrl = window.URL.createObjectURL(blob);
-          this.pdfUrlHistory = blobUrl;
+        if (response.data.data) {
+          const semester = sessionStorage.getItem("smt");
+          const filteredData = response.data.data.filter(
+            (report) =>
+              report.academic_year === this.tahun &&
+              report.semester === parseInt(semester)
+          );
+          console.log("datanya", filteredData, this.TabPilihan);
+          if (filteredData.length >= 1) {
+            this.trigerRapot = false;
+            this.avaibleraporthistory = true;
+            const path = filteredData[0]?.file_path ?? null;
+            this.downloadTask(path);
+
+            console.log("🚀 ~ data:", filteredData);
+          } else {
+            this.trigerRapot = false;
+            this.avaibleraporthistory = false;
+            swal("Oops!", "Tidak ada rapot untuk tahun akademik ini", "error");
+            this.downloadTask(null);
+          }
         } else {
           this.trigerRapot = false;
+          this.avaibleraporthistory = false;
           swal("Oops!", "Tidak ada rapot", "error");
         }
       } catch (error) {
         console.log(error);
+      }
+    },
+
+    async downloadTask(path) {
+      console.log(path);
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const blob = new Blob([response.data], { type: "application/pdf" }); //
+        const blobUrl = window.URL.createObjectURL(blob);
+        this.pdfUrlHistory = blobUrl;
+        console.log("test");
+      } catch (error) {
+        this.tersedia = false;
+        console.error("Error downloading file:", error);
       }
     },
     async getCommentParent() {
@@ -442,9 +507,14 @@ export default {
           }
         );
         const dataState = response.data.data[0];
+        if (!dataState) {
+          this.avaibleraporthistory = true;
+          this.getRaportBefore();
+        }
         console.log(dataState);
         if (dataState) {
           this.trigerRapot = true;
+          this.avaibleraporthistory = false;
           this.dataRapot = dataState;
           this.submittedComment = dataState?.nar_parent_comments;
           this.submittedCommentPorto = dataState?.por_parent_comments;
@@ -487,12 +557,17 @@ export default {
         console.log(error);
       }
     },
-    async mergePorto() {
+    async mergePorto(RaportId) {
+      const token = sessionStorage.getItem("token");
       try {
-        const idSiswa = this.idSiswa;
-
         const response = await this.$api.put(
-          `/portofolio-report/merge/${idSiswa}`
+          `/portofolio-report/merge/${RaportId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         if (response.data.status == 200) {
           Swal.fire({
@@ -535,18 +610,18 @@ export default {
 
       const token = sessionStorage.getItem("token");
       const idReport = sessionStorage.getItem("raportId");
-      const responsenarrative = await this.$api.get(
-        `narrative-report/show-by-student/${this.idSiswa}?semester=${
-          this.semester ? this.semester : "1"
-        }`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        }
-      );
-      const dataRest = responsenarrative.data?.data?.narrative_categories;
-      console.log("test", responsenarrative.data?.data);
+      // const responsenarrative = await this.$api.get(
+      //   `narrative-report/show-by-student/${this.idSiswa}?semester=${
+      //     this.semester ? this.semester : "1"
+      //   }`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${this.token}`,
+      //     },
+      //   }
+      // );
+      // const dataRest = responsenarrative.data?.data?.narrative_categories;
+      // console.log("test", responsenarrative.data?.data);
       try {
         const response = await this.$api.get(
           `portofolio-report/show-all-by-student-report/${idReport}`,
@@ -556,16 +631,23 @@ export default {
             },
           }
         );
-        let filteredData;
+
         const data = response.data.data;
 
         if (Array.isArray(data)) {
-          console.log(this.sub);
-          filteredData = data.filter((item) => item.type === "Orang Tua");
-          console.log("🚀 ~ getPortofolioRapot ~ filteredData:", filteredData);
-          const path = filteredData[0]?.file_path ?? null;
-          console.log("🚀 ~ getPortofolioRapot ~ path:", path);
-          path ? (this.avaibleraport = true) : (this.avaibleraport = false);
+          console.log("🚀 ~ Data is an array:", data);
+
+          // Filter data untuk mengecek apakah ada item dengan type "Orang Tua"
+          const containsOrangTua = data.some(
+            (item) => item.type === "Orang Tua"
+          );
+          console.log("🚀 ~ Contains 'Orang Tua':", containsOrangTua);
+
+          // Set avaibleraport berdasarkan hasil pengecekan
+          this.avaibleraport = containsOrangTua;
+          console.log("🚀 ~ avaibleraport:", this.avaibleraport);
+        } else {
+          this.avaibleraport = false;
         }
       } catch (error) {
         console.log(error);
@@ -589,10 +671,7 @@ export default {
             },
           }
         );
-        // if (response.data.code == 200) {
-        //   this.mergePorto();
-        // }
-
+        this.mergePorto(RaportId);
         this.getCommentParent();
         // console.log('sukses');
         this.editedCommentPorto = "";
@@ -644,22 +723,24 @@ export default {
     },
   },
   mounted() {
+    this.getPortofolioRapot();
     this.getCommentParent();
     this.getIdSiswa();
-    this.getPortofolioRapot();
     if (this.trigerRapot) {
       this.getKategoriRapot();
     }
   },
-
   watch: {
     tahun(newVal) {
-      console.log("🚀 ~ tahun ~ newVal:", this.tahun);
-      this.getRaportBefore();
+      console.log("🚀 ~ tahun ~ newVal:", newVal);
       this.getCommentParent();
     },
+    TabPilihan(newVal) {
+      console.log("🚀 ~ TabPilihan ~ newVal:", newVal);
+      this.getCommentParent();
+      console.log("🚀 ~ testtstst:", newVal);
+    },
   },
-
   name: "Rapot",
   props: {
     TabPilihan: {
@@ -696,7 +777,7 @@ export default {
       shape: ref("line"),
       splitterModel: ref(20),
       editor: ref("Sangat Baik !"),
-      TabPilihan: props.TabPilihan,
+      // TabPilihan: props.TabPilihan,
       // avabile: props.avabile,
       // tahun: props.tahun,
       editedComment: ref(""),
