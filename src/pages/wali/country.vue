@@ -37,7 +37,7 @@
                       <br /><br />
                       <span style="font-size: large">
                         Target : <br />
-                        {{ forCountryId?.target }} Jam Pertahun
+                        {{ handleTarget }} Jam Pertahun
                       </span>
                     </div>
                   </div>
@@ -264,6 +264,7 @@ export default {
       group: ref(null),
       inputActivity: ref(),
       durasi: ref(),
+      handleTarget: ref(),
       durasi: ref(),
       keterangan: ref(),
       dateOptions: [],
@@ -430,6 +431,7 @@ export default {
         this.activity = response.data.data[0];
         this.optionAcademic = response.data.data.map((item) => {
           this.handleId = item.id;
+          this.handleTarget = item.target;
           this.countryActivity = [
             this.countryActivity,
             ...item.forcountrydetails,
