@@ -432,10 +432,7 @@ export default {
         this.optionAcademic = response.data.data.map((item) => {
           this.handleId = item.id;
           this.handleTarget = item.target;
-          this.countryActivity = [
-            this.countryActivity,
-            ...item.forcountrydetails,
-          ];
+          this.countryActivity = [...item.forcountrydetails];
 
           return {
             label: item.academic_year,
