@@ -1,4 +1,4 @@
-import { boot } from "quasar/wrappers";
+// import { boot } from "quasar/wrappers";
 import axios from "axios";
 
 // Be careful when using SSR for cross-request state pollution
@@ -7,10 +7,10 @@ import axios from "axios";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-// const api = axios.create({
-//   baseURL: "https://prod.curaweda.com/stg-server1/api",
-// });
-const api = axios.create({ baseURL: 'http://localhost:5000/stg-server1/api' })
+const api = axios.create({
+  baseURL: "https://prod.curaweda.com/stg-server1/api",
+});
+// const api = axios.create({ baseURL: 'http://localhost:5000/stg-server1/api' })
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
