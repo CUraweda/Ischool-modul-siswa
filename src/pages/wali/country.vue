@@ -256,6 +256,7 @@ export default {
       countryDialog: ref(false),
       activity: ref(),
       countryActivity: ref([]),
+      handleId: ref(),
       alert: ref(false),
       optionAcademic: ref([]),
       pickDateDialog: ref(false),
@@ -337,25 +338,30 @@ export default {
 
     async createDataCountry() {
       try {
-        const id = 1;
+        const id = this.handleId;
         const token = sessionStorage.getItem("token");
 
-        const formData = new FormData();
-        formData.append("for_country_id", id);
-        formData.append(
-          "activity",
-          this.model === "Lainnya" ? this.inputActivity : this.model
-        );
-        formData.append("student_id", this.idSiswa);
+        const data = {
+          for_country_id: id,
+          activity: this.model === "Lainnya" ? this.inputActivity : this.model,
+          student_id: this.idSiswa,
+        };
+
+        // const formData = new FormData();
+        // formData.append("for_country_id", id);
+        // formData.append(
+        //   "activity",
+        //   this.model === "Lainnya" ? this.inputActivity : this.model
+        // );
+        // formData.append("student_id", this.idSiswa);
         // formData.append("duration", this.durasi);
         // formData.append("remark", this.keterangan);
 
         const response = await this.$api.post(
           `for-country-detail/create`,
-          formData,
+          data,
           {
             headers: {
-              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${token}`,
             },
           }
@@ -423,6 +429,7 @@ export default {
         if (response.data.data.length < 1) return;
         this.activity = response.data.data[0];
         this.optionAcademic = response.data.data.map((item) => {
+          this.handleId = item.id;
           this.countryActivity = [
             this.countryActivity,
             ...item.forcountrydetails,
