@@ -383,6 +383,7 @@
           label="Custom header"
           accept=".pdf, .docx, .word,"
           multiple
+          v-if="!dataTask?.down_file"
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -498,7 +499,7 @@
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
-              <td class="text-left">: {{ dataTask?.feed_fwd }}</td>
+              <td class="text-left">: {{ dataTaskClass?.feedback }}</td>
               <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
                 <td class="text-left">
                   : {{ item .feedback}}

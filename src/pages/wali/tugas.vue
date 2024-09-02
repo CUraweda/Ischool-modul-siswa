@@ -142,15 +142,7 @@
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
                         <td class="text-center">
-                          <div v-if="item?.taskdetails.length">
-                            <div
-                              v-for="(detail, index) in item.taskdetails"
-                              :key="index"
-                            >
-                              {{ detail.feedback || "-" }}
-                            </div>
-                          </div>
-                          <div v-else>-</div>
+                          {{ item.feed_fwd ? item.feed_fwd : "-" }}
                         </td>
                         <td class="text-center">
                           <div>
