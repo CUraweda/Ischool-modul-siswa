@@ -359,7 +359,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word"
+          accept=".pdf, .docx, .word, .png, .jpg, .jpeg"
           multiple
         >
           <template v-slot:header="scope">
@@ -472,7 +472,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word,"
+          accept=".pdf, .docx, .word, .png, .jpg, .jpeg"
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
