@@ -379,7 +379,6 @@ import Narasi from "./raport/narasi.vue";
 import RapotPortofolio from "./raport/rapotPortofolio.vue";
 import MergedRapotPortofolio from "./raport/mergedRapotPortofolio.vue";
 import Swal from "sweetalert2";
-import Raport from "src/pages/siswa/raport.vue";
 
 export default {
   data() {
