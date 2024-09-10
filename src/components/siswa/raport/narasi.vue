@@ -13,7 +13,6 @@
   </div>
 </template>
 
-
 <script>
 import { ref } from "vue";
 
@@ -28,7 +27,7 @@ export default {
     path: {
       type: String,
       required: true,
-    }
+    },
   },
 
   data() {
@@ -97,6 +96,17 @@ export default {
         );
         const blob = new Blob([response.data], { type: "application/pdf" }); //
         const blobUrl = window.URL.createObjectURL(blob);
+
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop() || "";
+        const link = document.createElement("a");
+        document.body.appendChild(link);
+        link.href = blobUrl;
+        link.style.display = "none";
+        link.click();
+        link.remove();
+        link.setAttribute("download", fileName);
+        window.URL.revokeObjectURL(blobUrl);
         this.pdfUrl = blobUrl;
       } catch (error) {
         this.tersedia = false;

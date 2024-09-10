@@ -7,7 +7,9 @@
           <q-card-section>
             <div class="text-center tw-mb-10">
               <p>
-                <span class="text-center text-black text-bold" style="font-size: x-large"
+                <span
+                  class="text-center text-black text-bold"
+                  style="font-size: x-large"
                   >RAPORT SISWA</span
                 >
               </p>
@@ -40,11 +42,19 @@
 
                 <q-tab-panels v-model="tab" animated>
                   <q-tab-panel name="1" class="q-pa-none">
-                    <RapotSiswa :TabPilihan="'1'" :avabile="isAvabile" :tahun="tahun" />
+                    <RapotSiswa
+                      :TabPilihan="'1'"
+                      :avabile="isAvabile"
+                      :tahun="tahun"
+                    />
                   </q-tab-panel>
 
                   <q-tab-panel name="2">
-                    <RapotSiswa :TabPilihan="'2'" :avabile="isAvabile" :tahun="tahun" />
+                    <RapotSiswa
+                      :TabPilihan="'2'"
+                      :avabile="isAvabile"
+                      :tahun="tahun"
+                    />
                   </q-tab-panel>
                 </q-tab-panels>
               </q-card>
@@ -112,9 +122,15 @@ export default {
         );
 
         const result = response.data.data.result;
-        console.log("🚀 ~ getAcademicYear ~ respon:", response.data.data.result);
+        console.log(
+          "🚀 ~ getAcademicYear ~ respon:",
+          response.data.data.result
+        );
         this.yearOptions = result.map((item) => item.name);
-        console.log("🚀 ~ getKategoriRapot ~ this.yearOptions:", this.yearOptions);
+        console.log(
+          "🚀 ~ getKategoriRapot ~ this.yearOptions:",
+          this.yearOptions
+        );
       } catch (error) {
         console.log(error);
       }

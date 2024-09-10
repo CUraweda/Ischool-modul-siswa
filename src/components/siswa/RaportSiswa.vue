@@ -271,6 +271,14 @@
           />
         </div>
       </div>
+      <q-btn
+        no-caps
+        class="button"
+        style="margin: 2px"
+        @click="getRaportBefore()"
+      >
+        Download
+      </q-btn>
       <!--
       <q-spinner
         color="primary"
@@ -379,7 +387,6 @@ import Narasi from "./raport/narasi.vue";
 import RapotPortofolio from "./raport/rapotPortofolio.vue";
 import MergedRapotPortofolio from "./raport/mergedRapotPortofolio.vue";
 import Swal from "sweetalert2";
-import Raport from "src/pages/siswa/raport.vue";
 
 export default {
   data() {
@@ -471,7 +478,7 @@ export default {
     },
 
     async downloadTask(path) {
-      console.log(path);
+      console.log("test", path);
       try {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
@@ -484,10 +491,18 @@ export default {
             responseType: "blob",
           }
         );
-        const blob = new Blob([response.data], { type: "application/pdf" }); //
+        const blob = new Blob([response.data], { type: "application/pdf" });
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrlHistory = blobUrl;
-        console.log("test");
+
+        const link = document.createElement("a");
+        const urlParts = path.split("/");
+        const fileName = urlParts.pop() || "file.pdf";
+        link.href = blobUrl;
+        document.body.appendChild(link);
+        link.style.display = "none";
+        link.setAttribute("download", fileName); // Set download attribute before clicking the link
+        link.click();
       } catch (error) {
         this.tersedia = false;
         console.error("Error downloading file:", error);
@@ -642,7 +657,6 @@ export default {
             (item) => item.type === "Orang Tua"
           );
           console.log("🚀 ~ Contains 'Orang Tua':", containsOrangTua);
-
           // Set avaibleraport berdasarkan hasil pengecekan
           this.avaibleraport = containsOrangTua;
           console.log("🚀 ~ avaibleraport:", this.avaibleraport);
