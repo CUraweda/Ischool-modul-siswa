@@ -26,6 +26,7 @@ export default {
     return {
       pdfUrl: ref(),
       tersedia: ref(false),
+      raprotOrtu: ref(),
     };
   },
 
@@ -91,10 +92,28 @@ export default {
         const blob = new Blob([response.data], { type: "application/pdf" }); //
         const blobUrl = window.URL.createObjectURL(blob);
         this.pdfUrl = blobUrl;
+        // this.raprotOrtu = ;
+        console.log("test", blobUrl);
       } catch (error) {
         this.tersedia = false;
         console.error("Error downloading file:", error);
       }
+    },
+    async downloadType(type) {
+      try {
+        if (type === "Orang Tua") {
+          const urlParts = path.split("/");
+          const fileName = urlParts.pop() || "";
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.style.display = "none";
+          link.setAttribute("download", fileName);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.URL.revokeObjectURL(blobUrl);
+        }
+      } catch (err) {}
     },
   },
   mounted() {
