@@ -84,6 +84,9 @@
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
+                        <td class="text-center">
+                          {{ item?.feed_fwd ? item.feed_fwd : "-" }}
+                        </td>
                         <!-- <td>-</td> -->
                         <td>
                           <div>
@@ -146,7 +149,7 @@
                           {{ getDateTime(item?.end_date) }}
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                           <div v-if="item?.taskdetails.length">
                             <div
                               v-for="(detail, index) in item.taskdetails"
@@ -156,6 +159,9 @@
                             </div>
                           </div>
                           <div v-else>-</div>
+                        </td> -->
+                        <td class="text-center">
+                          {{ item?.feed_fwd ? item.feed_fwd : "-" }}
                         </td>
                         <td class="text-center">
                           <div>
@@ -186,7 +192,7 @@
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                           <div v-if="item?.taskdetails.length">
                             <div
                               v-for="(detail, index) in item.taskdetails"
@@ -196,6 +202,9 @@
                             </div>
                           </div>
                           <div v-else>-</div>
+                        </td> -->
+                        <td class="text-center">
+                          {{ item?.feed_fwd ? item.feed_fwd : "-" }}
                         </td>
                         <td>
                           <div>
@@ -285,6 +294,9 @@
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
+                        <td class="text-center">
+                          {{ item?.feed_fwd ? item.feed_fwd : "-" }}
+                        </td>
                         <!-- <td>-</td> -->
                         <td>
                           <div>
@@ -346,9 +358,15 @@
               </td>
             </tr>
             <tr>
+              <td class="text-left text-bold">Deskripsi</td>
+              <td class="text-left">
+                {{ dataTask?.description ? dataTask?.description : "-" }}
+              </td>
+            </tr>
+            <tr>
               <td class="text-left text-bold">Feedback</td>
               <td class="text-left">
-                {{ dataDetailTask?.feedback ? dataDetailTask.feedback : "-" }}
+                {{ dataTask?.feed_fwd ? dataTask.feed_fwd : "-" }}
               </td>
               <!-- <tr v-for="(item, index) in dataDetailTask?.feedback" :key="index">
                 <td class="text-left">
@@ -365,6 +383,7 @@
           label="Custom header"
           accept=".pdf, .docx, .word,"
           multiple
+          v-if="!dataTask?.down_file"
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -474,13 +493,13 @@
               <td class="text-left">
                 :
                 {{
-                  dataTaskClass.description ? dataTaskClass.description : "-"
+                  dataTaskClass?.description ? dataTaskClass?.description : "-"
                 }}
               </td>
             </tr>
             <tr>
               <td class="text-left text-bold">Feedback</td>
-              <td class="text-left">: {{ dataDetailTask?.feedback }}</td>
+              <td class="text-left">: {{ dataTaskClass?.feedback }}</td>
               <!-- <tr v-for="(item, index) in dataDetailTask" :key="index">
                 <td class="text-left">
                   : {{ item .feedback}}
@@ -592,7 +611,7 @@ export default {
       model: ref(null),
       token: ref(sessionStorage.getItem("token")),
       idSiswa: ref(sessionStorage.getItem("idSiswa")),
-      idKelas: ref(),
+      idKelas: ref(sessionStorage.getItem("idClass")),
       task: ref(),
       task2: ref(),
       task3: ref(),
@@ -825,7 +844,11 @@ export default {
           "🚀 ~ getTaskById ~ this.dataDetailTask:",
           this.dataDetailTask
         );
-        this.dataTask = response.data.data[0];
+        const detailTask = response.data.data.find(
+          (item) => item.studentclass.student_id === parseInt(this.idSiswa)
+        );
+
+        this.dataTask = detailTask;
       } catch (error) {
         console.log(error);
       }

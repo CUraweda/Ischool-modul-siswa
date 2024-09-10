@@ -25,6 +25,15 @@
             label="Nama lengkap"
             class="input"
           />
+
+          <!-- <q-input
+            outlined
+            v-model="dob"
+            type="date"
+            label="Tanggal lahir"
+            class="input q-mb-sm"
+          /> -->
+
           <q-btn type="submit" color="blue-grey-6" glossy label="Cari Data" />
         </q-form>
         <div
@@ -116,6 +125,7 @@ export default {
       inputFullName: ref(""),
       dataParent: ref(null),
       isBtnConfirmDisable: ref(null),
+      // dob: ref(""),
     };
   },
   methods: {
@@ -180,14 +190,17 @@ export default {
           icon: "success",
         });
 
-        this.$router.push("/wali/profil")
+        this.$router.push("/wali/profil");
       } catch (error) {
-        if (error.response?.status == 400 && error.response?.data?.message?.includes("already linked")) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Profil orang tua sudah ditautkan dengan akun lain",
-            });
+        if (
+          error.response?.status == 400 &&
+          error.response?.data?.message?.includes("already linked")
+        ) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Profil orang tua sudah ditautkan dengan akun lain",
+          });
         } else {
           Swal.fire({
             icon: "error",

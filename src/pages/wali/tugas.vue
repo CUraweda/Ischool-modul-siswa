@@ -67,7 +67,8 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTaskHasil(item.id)"
+                              @click="downloadTask(item.down_file)"
+                              :disable="!item.down_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -81,7 +82,7 @@
                         <td>{{ getDateTime(item?.start_date) }}</td>
                         <td>{{ getDateTime(item?.end_date) }}</td>
                         <td>{{ item?.status }}</td>
-                        <!-- <td>-</td> -->
+                        <td>-</td>
                         <td>
                           <div>
                             <q-btn
@@ -97,7 +98,10 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTaskHasil(item.id)"
+                              @click="
+                                downloadTask(item.taskdetails[0].task_file)
+                              "
+                              :disable="!item.taskdetails[0].task_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -142,15 +146,7 @@
                         </td>
                         <td class="text-center">{{ item?.status }}</td>
                         <td class="text-center">
-                          <div v-if="item?.taskdetails.length">
-                            <div
-                              v-for="(detail, index) in item.taskdetails"
-                              :key="index"
-                            >
-                              {{ detail.feedback || "-" }}
-                            </div>
-                          </div>
-                          <div v-else>-</div>
+                          {{ item.feed_fwd ? item.feed_fwd : "-" }}
                         </td>
                         <td class="text-center">
                           <div>
@@ -167,7 +163,8 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTaskHasil(item.id)"
+                              @click="downloadTask(item.down_file)"
+                              :disable="!item.down_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -208,7 +205,10 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTaskHasil(item.id)"
+                              @click="
+                                downloadTask(item.taskdetails[0].task_file)
+                              "
+                              :disable="!item.taskdetails[0].task_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -268,7 +268,8 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTaskHasil(item.id)"
+                              @click="downloadTask(item.down_file)"
+                              :disable="!item.down_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -300,7 +301,10 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTaskHasil(item.id)"
+                              @click="
+                                downloadTask(item.taskdetails[0].task_file)
+                              "
+                              :disable="!item.taskdetails[0].task_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -355,7 +359,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word"
+          accept=".pdf, .docx, .word, .png, .jpg, .jpeg"
           multiple
         >
           <template v-slot:header="scope">
@@ -468,7 +472,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word,"
+          accept=".pdf, .docx, .word, .png, .jpg, .jpeg"
         >
           <template v-slot:header="scope">
             <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -825,6 +829,7 @@ export default {
     async downloadTaskHasil(id) {
       try {
         const path = await this.getTaskDetailById(id);
+        console.log(path);
         console.log("🚀 ~ downloadTaskHasil ~ path:", path);
         const response = await this.$api.get(
           `student-task/download?filepath=${path}`,
