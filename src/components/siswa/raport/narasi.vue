@@ -70,10 +70,11 @@ export default {
           }
         );
         const dataState = response.data.data;
-        const path = dataState[0].narrative_path;
+        const path = dataState[0].narrative_path.split("./")[1];
+        downloadTask();
         if (path) {
           this.tersedia = true;
-          this.downloadTask(path);
+          this.downloadTask();
         } else {
           this.tersedia = false;
         }
@@ -85,6 +86,7 @@ export default {
     async downloadTask() {
       try {
         const token = sessionStorage.getItem("token");
+
         const response = await this.$api.get(
           `student-task/download?filepath=${this.path}`,
           {
@@ -97,16 +99,16 @@ export default {
         const blob = new Blob([response.data], { type: "application/pdf" }); //
         const blobUrl = window.URL.createObjectURL(blob);
 
-        const urlParts = path.split("/");
-        const fileName = urlParts.pop() || "";
-        const link = document.createElement("a");
-        document.body.appendChild(link);
-        link.href = blobUrl;
-        link.style.display = "none";
-        link.click();
-        link.remove();
-        link.setAttribute("download", fileName);
-        window.URL.revokeObjectURL(blobUrl);
+        // const urlParts = path.split("/");
+        // const fileName = urlParts.pop() || "";
+        // const link = document.createElement("a");
+        // document.body.appendChild(link);
+        // link.href = blobUrl;
+        // link.style.display = "none";
+        // link.click();
+        // link.remove();
+        // link.setAttribute("download", fileName);
+        // window.URL.revokeObjectURL(blobUrl);
         this.pdfUrl = blobUrl;
       } catch (error) {
         this.tersedia = false;
@@ -116,6 +118,7 @@ export default {
   },
 
   mounted() {
+    // this.getNumberRaport();
     this.downloadTask();
   },
 };

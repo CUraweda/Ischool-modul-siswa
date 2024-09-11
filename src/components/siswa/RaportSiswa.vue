@@ -597,9 +597,8 @@ export default {
     async mergeNarasi(NarasiId) {
       const token = sessionStorage.getItem("token");
       try {
-        const response = await this.$api.put(
-          `/api/narrative-report/generate/${this.studentClassId}?semester=${this.TabPilihan}&report_id=${NarasiId}`,
-          {},
+        const response = await this.$api.get(
+          `/narrative-report/generate/${this.studentClassId}?semester=${this.TabPilihan}&report_id=${NarasiId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -618,12 +617,12 @@ export default {
     },
     async submitComment() {
       const idSiswa = this.idSiswa;
-      const NarasiId = sessionStorage.getItem("narasiId");
+      const RaportId = sessionStorage.getItem("raportId");
 
       const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.put(
-          `/student-report/update/${NarasiId}`,
+          `/student-report/update/${RaportId}`,
           {
             student_class_id: this.studentClassId,
             semester: this.TabPilihan,
@@ -635,7 +634,7 @@ export default {
             },
           }
         );
-        mergeNarasi(NarasiId);
+        this.mergeNarasi(RaportId);
         this.getCommentParent();
         this.editedComment = "";
       } catch (error) {
