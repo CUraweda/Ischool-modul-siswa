@@ -594,14 +594,36 @@ export default {
         console.log(error);
       }
     },
+    async mergeNarasi(NarasiId) {
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await this.$api.put(
+          `/api/narrative-report/generate/${this.studentClassId}?semester=${this.TabPilihan}&report_id=${NarasiId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.status == 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil Merge",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitComment() {
       const idSiswa = this.idSiswa;
-      const RaportId = sessionStorage.getItem("raportId");
+      const NarasiId = sessionStorage.getItem("narasiId");
 
       const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.put(
-          `/student-report/update/${RaportId}`,
+          `/student-report/update/${NarasiId}`,
           {
             student_class_id: this.studentClassId,
             semester: this.TabPilihan,
@@ -613,7 +635,7 @@ export default {
             },
           }
         );
-
+        mergeNarasi(NarasiId);
         this.getCommentParent();
         this.editedComment = "";
       } catch (error) {
