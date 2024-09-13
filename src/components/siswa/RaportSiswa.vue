@@ -594,6 +594,27 @@ export default {
         console.log(error);
       }
     },
+    async mergeNarasi(NarasiId) {
+      const token = sessionStorage.getItem("token");
+      try {
+        const response = await this.$api.get(
+          `/narrative-report/generate/${this.studentClassId}?semester=${this.TabPilihan}&report_id=${NarasiId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.status == 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil Merge",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submitComment() {
       const idSiswa = this.idSiswa;
       const RaportId = sessionStorage.getItem("raportId");
@@ -613,7 +634,7 @@ export default {
             },
           }
         );
-
+        this.mergeNarasi(RaportId);
         this.getCommentParent();
         this.editedComment = "";
       } catch (error) {
@@ -701,10 +722,11 @@ export default {
 
         const formData = new FormData();
         filesToUpload.forEach((file) => {
-          formData.append("file", file);
-          formData.append("type", "Orang Tua");
-          formData.append("student_report_id", reportId);
+          formData.append(`file`, file); // Allows multiple files
+          formData.append(`type`, "Orang Tua");
+          formData.append(`student_report_id`, reportId);
         });
+
         const response = await this.$api.post(
           `portofolio-report/create`,
           formData,
