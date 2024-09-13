@@ -722,10 +722,11 @@ export default {
 
         const formData = new FormData();
         filesToUpload.forEach((file) => {
-          formData.append("file", file);
-          formData.append("type", "Orang Tua");
-          formData.append("student_report_id", reportId);
+          formData.append(`file`, file); // Allows multiple files
+          formData.append(`type`, "Orang Tua");
+          formData.append(`student_report_id`, reportId);
         });
+
         const response = await this.$api.post(
           `portofolio-report/create`,
           formData,
