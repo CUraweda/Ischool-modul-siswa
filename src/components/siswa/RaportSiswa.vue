@@ -152,6 +152,11 @@
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
                   <!-- <RapotPortofolio :path="portofolio_path" :sub="'Merged'" /> -->
+                  <div
+                    class="text-h4 text-semibold text-left q-mb-md flex tw-flex-col tw-items-center q-pb-none"
+                  >
+                    Raport Portofolio
+                  </div>
                   <RapotPortofolio :sub="'Guru'" />
                 </div>
               </q-tab-panel>
@@ -479,7 +484,6 @@ export default {
     },
 
     async downloadTask(path) {
-      console.log("test", path);
       try {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");

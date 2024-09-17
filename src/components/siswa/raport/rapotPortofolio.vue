@@ -64,11 +64,10 @@ export default {
   },
 
   methods: {
-    async downloadFile() {
+    async downloadFile(path) {
       try {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
-        const path = "path/to/your/file"; // Ganti dengan path file Anda
         const response = await this.$api.get(
           `student-task/download?filepath=${path}&student_id=${idUser}`,
           {
