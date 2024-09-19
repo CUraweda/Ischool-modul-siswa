@@ -349,12 +349,6 @@ export default {
       this.displayFile(this.detailPengumuman.file_path);
       this.isModalOpen = true;
     },
-    openLink() {
-      if (this.selectedLink) {
-        window.open(this.selectedLink, "_blank");
-        this.isModalOpen = false; // Close the modal after opening the link
-      }
-    },
     getDateTime(date) {
       const now = new Date(date);
       const formattedDate = now.toLocaleDateString("id-ID", {

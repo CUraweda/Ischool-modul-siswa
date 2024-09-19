@@ -261,18 +261,52 @@
 
         <q-card-section>
           <ul class="tw-list-disc q-pl-xl">
-            <li v-for="item in pengumuman" :key="item.id">
-              <span class="text-bold">
-                {{ getDateTime(item?.date_start) }} -
-                {{ getDateTime(item?.date_end) }}
-              </span>
-              <span>: {{ item?.announcement_desc ?? "-" }}</span>
+            <li v-for="item in pengumuman" :key="item.id" class="q-my-md">
+              <div class="row items-center">
+                <div class="col">
+                  <span class="text-bold">
+                    {{ getDateTime(item?.date_start) }} -
+                    {{ getDateTime(item?.date_end) }}
+                  </span>
+                  <span>: {{ item?.announcement_desc ?? "-" }}</span>
+                </div>
+                <div class="col-auto">
+                  <button class="right">
+                    <q-icon
+                      name="open_in_new"
+                      size="sm"
+                      @click="openModal(item)"
+                    />
+                  </button>
+                </div>
+              </div>
               <q-separator class="q-my-sm" />
             </li>
           </ul>
         </q-card-section>
       </q-card>
     </div>
+    <q-dialog v-model="isModalOpen" persistent maximized>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6 tw-m-2">
+            File Pengumuman {{ this.detailPengumuman?.announcement_desc }}
+          </div>
+          <q-btn
+            flat
+            label="download disini jika pdf tidak muncul"
+            color="primary"
+            @click="downloadFile(this.detailPengumuman.file_path)"
+          />
+          <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer">
+            <iframe :src="pdfUrl" width="100%"></iframe>
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Keluar" color="negative" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -287,6 +321,9 @@ export default {
 
   setup() {
     return {
+      isModalOpen: ref(false),
+      selectedFile: "",
+      detailPengumuman: ref([]),
       presensi: ref({}),
       agenda: ref(),
       achevment: ref(),
@@ -303,10 +340,15 @@ export default {
       rekapSampah: ref([]),
       hasiltarget: ref(),
       target: ref(),
-      pdfUrl: ref(),
     };
   },
   methods: {
+    openModal(data) {
+      this.detailPengumuman = data;
+      this.selectedFile = this.detailPengumuman.file_path;
+      this.displayFile(this.detailPengumuman.file_path);
+      this.isModalOpen = true;
+    },
     getDateTime(date) {
       const now = new Date(date);
       const formattedDate = now.toLocaleDateString("id-ID", {
@@ -427,6 +469,29 @@ export default {
         console.log(err);
       }
     },
+    async getPengumuman(idClass) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startDate = new Date();
+      const endDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+      const formattedStartDate = startDate.toISOString().slice(0, 10);
+      const formattedEndDate = endDate.toISOString().slice(0, 10);
+
+      try {
+        const response = await this.$api.get(
+          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}&class_id=${idClass}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+
+        this.pengumuman = response.data.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async displayFile(path) {
       try {
         const token = sessionStorage.getItem("token");
@@ -442,7 +507,6 @@ export default {
         );
         const typePath = path.split(".");
         const fileExtension = typePath[typePath.length - 1];
-
         // Cek apakah file bertipe PDF
         if (fileExtension === "pdf") {
           this.typePathFile = true;
@@ -455,12 +519,48 @@ export default {
           type: fileExtension === "pdf" ? "application/pdf" : contentType,
         });
         const blobUrl = window.URL.createObjectURL(blob);
-        console.log("🚀 ~ this.pdfUrl:", contentType);
+        console.log("🚀 ~ this.pdfUrl:", blob);
 
         // Set URL Blob berdasarkan tipe konten
         this.pdfUrl = blobUrl;
       } catch (error) {
         console.error("Error displaying file:", error);
+      }
+    },
+    async downloadFile(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+
+        // Buat Blob dari response
+        const contentType = response.headers["content-type"];
+        const blob = new Blob([response.data], { type: contentType });
+        const blobUrl = window.URL.createObjectURL(blob);
+        // Jika file PDF, tampilkan di iframe
+        if (contentType.includes("pdf")) {
+          this.pdfUrl = blobUrl;
+        } else if (contentType.includes("image")) {
+          // Jika file adalah gambar, tampilkan sebagai gambar
+          this.pdfUrl = blobUrl;
+        }
+        // Buat elemen anchor untuk mendownload file
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = path.split("/").pop(); // Nama file dari path
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error downloading file:", error);
       }
     },
     async getAchevment(idSiswa) {
@@ -612,5 +712,15 @@ export default {
     display: flex;
     width: 30%;
   }
+}
+.pdf-viewer {
+  width: 100%;
+  height: 80vh; /* 100% of the viewport height */
+  overflow: hidden; /* Ensure no scrolling */
+}
+iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
 }
 </style>
