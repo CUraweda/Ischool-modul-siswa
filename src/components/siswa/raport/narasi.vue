@@ -1,5 +1,12 @@
 <template>
-  <div class="text-h4 text-bold text-left q-mb-md">Raport Narasi</div>
+  <div
+    class="text-h4 text-bold text-left q-mb-md flex tw-flex-col tw-items-center q-pb-none"
+  >
+    Raport Narasi
+  </div>
+  <button v-if="pdfUrl" @click="downloadFile(this.path)" class="download-btn">
+    Download Narasi File
+  </button>
   <div v-if="!tersedia" class="flex tw-flex-col tw-items-center q-pb-none">
     <span class="tw-text-xl">Raport Belum Tersedia</span>
     <img
@@ -46,7 +53,7 @@ export default {
       dataPresensi: ref(),
       dataPersonality: ref(),
       semester: ref(sessionStorage.getItem("smt")),
-      path: props.path,
+      pathNarasi: null,
     };
   },
 
@@ -70,11 +77,13 @@ export default {
           }
         );
         const dataState = response.data.data;
-        const path = dataState[0].narrative_path.split("./")[1];
-        downloadTask();
-        if (path) {
+        // const path = dataState[0].narrative_path.split("./")[1];
+        const path = dataState[0].narrative_path;
+        this.pathNarasi = path;
+        if (this.pathNarasi) {
           this.tersedia = true;
-          this.downloadTask();
+          this.displayFile(this.pathNarasi);
+          console.log(this.pathNarasi, "narasi");
         } else {
           this.tersedia = false;
         }
@@ -82,13 +91,12 @@ export default {
         console.log(error);
       }
     },
-
-    async downloadTask() {
+    async displayFile() {
       try {
         const token = sessionStorage.getItem("token");
-
+        const idUser = sessionStorage.getItem("idSiswa");
         const response = await this.$api.get(
-          `student-task/download?filepath=${this.path}`,
+          `student-task/download?filepath=${this.path}&student_id=${idUser}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -96,30 +104,70 @@ export default {
             responseType: "blob",
           }
         );
-        const blob = new Blob([response.data], { type: "application/pdf" }); //
+        // Cek tipe konten dan buat Blob dari response
+        const contentType = response.headers["content-type"];
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
         const blobUrl = window.URL.createObjectURL(blob);
+        console.log("🚀 ~ this.pdfUrl:", contentType);
 
-        // const urlParts = path.split("/");
-        // const fileName = urlParts.pop() || "";
-        // const link = document.createElement("a");
-        // document.body.appendChild(link);
-        // link.href = blobUrl;
-        // link.style.display = "none";
-        // link.click();
-        // link.remove();
-        // link.setAttribute("download", fileName);
-        // window.URL.revokeObjectURL(blobUrl);
+        // Set URL Blob berdasarkan tipe konten
         this.pdfUrl = blobUrl;
       } catch (error) {
-        this.tersedia = false;
+        console.error("Error displaying file:", error);
+      }
+    },
+    async downloadFile(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+
+        // Buat Blob dari response
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Buat elemen anchor untuk mendownload file
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = path.split("/").pop(); // Nama file dari path
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.pdfUrl = blobUrl;
+        this.tersedia = true;
+      } catch (error) {
         console.error("Error downloading file:", error);
+        this.tersedia = false;
       }
     },
   },
 
   mounted() {
     // this.getNumberRaport();
-    this.downloadTask();
+    this.displayFile();
   },
 };
 </script>
+<style>
+.download-btn {
+  cursor: pointer;
+  color: white;
+  background: #5cb0f4;
+  font-weight: bold;
+  margin: 10px;
+  padding: 5px 15px;
+  border-radius: 5px;
+}
+</style>

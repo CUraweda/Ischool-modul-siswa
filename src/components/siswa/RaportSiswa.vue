@@ -151,7 +151,13 @@
             <q-tab-panels v-model="tab3" animated>
               <q-tab-panel name="porto">
                 <div style="width: 100%; height: 600px">
-                  <RapotPortofolio :path="portofolio_path" :sub="'Merged'" />
+                  <!-- <RapotPortofolio :path="portofolio_path" :sub="'Merged'" /> -->
+                  <div
+                    class="text-h4 text-semibold text-left q-mb-md flex tw-flex-col tw-items-center q-pb-none"
+                  >
+                    Raport Portofolio
+                  </div>
+                  <RapotPortofolio :sub="'Guru'" />
                 </div>
               </q-tab-panel>
               <q-tab-panel name="ortu">
@@ -261,6 +267,18 @@
       class="flex tw-w-full tw-justify-center tw-flex-col tw-items-center tw-py-4 tw-min-h-[300px]"
     >
       <div style="height: 100%; width: 90%">
+        <div
+          class="text-h4 text-bold text-left q-mb-md flex tw-flex-col tw-items-center q-pb-none"
+        >
+          Raport Siswa {{ this.tahun }}
+        </div>
+        <button
+          v-if="fileBeforePath"
+          @click="downloadFile(fileBeforePath)"
+          class="download-btn"
+        >
+          Download File
+        </button>
         <iframe height="800" width="100%" :src="pdfUrlHistory"></iframe>
         <div v-if="!pdfUrlHistory">
           <q-spinner
@@ -271,14 +289,6 @@
           />
         </div>
       </div>
-      <q-btn
-        no-caps
-        class="button"
-        style="margin: 2px"
-        @click="getRaportBefore()"
-      >
-        Download
-      </q-btn>
       <!--
       <q-spinner
         color="primary"
@@ -411,6 +421,7 @@ export default {
       readyStatusRaport: ref(false),
       avaibleraporthistory: ref(false),
       pdfUrlHistory: ref(),
+      fileBeforePath: ref(),
     };
   },
   methods: {
@@ -453,19 +464,17 @@ export default {
               report.academic_year === this.tahun &&
               report.semester === parseInt(semester)
           );
-          console.log("datanya", filteredData, this.TabPilihan);
           if (filteredData.length >= 1) {
             this.trigerRapot = false;
             this.avaibleraporthistory = true;
             const path = filteredData[0]?.file_path ?? null;
-            this.downloadTask(path);
-
+            this.fileBeforePath = path;
+            this.displayFile(path);
             console.log("🚀 ~ data:", filteredData);
           } else {
             this.trigerRapot = false;
             this.avaibleraporthistory = false;
             swal("Oops!", "Tidak ada rapot untuk tahun akademik ini", "error");
-            this.downloadTask(null);
           }
         } else {
           this.trigerRapot = false;
@@ -476,9 +485,7 @@ export default {
         console.log(error);
       }
     },
-
-    async downloadTask(path) {
-      console.log("test", path);
+    async displayFile(path) {
       try {
         const token = sessionStorage.getItem("token");
         const idUser = sessionStorage.getItem("idSiswa");
@@ -491,21 +498,61 @@ export default {
             responseType: "blob",
           }
         );
-        const blob = new Blob([response.data], { type: "application/pdf" });
-        const blobUrl = window.URL.createObjectURL(blob);
-        this.pdfUrlHistory = blobUrl;
+        const typePath = path.split(".");
+        const fileExtension = typePath[typePath.length - 1];
 
-        const link = document.createElement("a");
-        const urlParts = path.split("/");
-        const fileName = urlParts.pop() || "file.pdf";
-        link.href = blobUrl;
-        document.body.appendChild(link);
-        link.style.display = "none";
-        link.setAttribute("download", fileName); // Set download attribute before clicking the link
-        link.click();
+        // Cek apakah file bertipe PDF
+        if (fileExtension === "pdf") {
+          this.typePathFile = true;
+        } else {
+          this.typePathFile = false;
+        }
+        // Cek tipe konten dan buat Blob dari response
+        const contentType = response.headers["content-type"];
+        const blob = new Blob([response.data], {
+          type: fileExtension === "pdf" ? "application/pdf" : contentType,
+        });
+        const blobUrl = window.URL.createObjectURL(blob);
+        console.log("🚀 ~ this.pdfUrl:", contentType);
+
+        // Set URL Blob berdasarkan tipe konten
+        this.pdfUrlHistory = blobUrl;
       } catch (error) {
-        this.tersedia = false;
+        console.error("Error displaying file:", error);
+      }
+    },
+    async downloadFile(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+
+        // Buat Blob dari response
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Buat elemen anchor untuk mendownload file
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = path.split("/").pop(); // Nama file dari path
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.pdfUrl = blobUrl;
+        this.tersedia = true;
+      } catch (error) {
         console.error("Error downloading file:", error);
+        this.tersedia = false;
       }
     },
     async getCommentParent() {
