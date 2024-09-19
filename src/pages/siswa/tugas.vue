@@ -381,7 +381,7 @@
         <q-uploader
           style="width: 100%"
           label="Custom header"
-          accept=".pdf, .docx, .word,"
+           accept=".pdf, .docx, .word, .png, .jpg, .jpeg"
           multiple
           v-if="!dataTask?.down_file"
         >
