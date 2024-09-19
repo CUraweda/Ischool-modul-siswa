@@ -289,14 +289,6 @@
           />
         </div>
       </div>
-      <q-btn
-        no-caps
-        class="button"
-        style="margin: 2px"
-        @click="getRaportBefore()"
-      >
-        Download
-      </q-btn>
       <!--
       <q-spinner
         color="primary"

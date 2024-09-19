@@ -254,25 +254,59 @@
     <div class="q-pa-sm">
       <q-card flat bordered class="">
         <q-card-section class="q-pb-none">
-        <div class="row items-center no-wrap">
+          <div class="row items-center no-wrap">
             <div class="text-h5 q-ml-md text-bold">Pengumuman</div>
           </div>
         </q-card-section>
 
         <q-card-section>
           <ul class="tw-list-disc q-pl-xl">
-            <li v-for="item in pengumuman" :key="item.id">
-              <span class="text-bold">
-                {{ getDateTime(item?.date_start) }} -
-                {{ getDateTime(item?.date_end) }}
-              </span>
-              <span>: {{ item?.announcement_desc ?? "-" }}</span>
+            <li v-for="item in pengumuman" :key="item.id" class="q-my-md">
+              <div class="row items-center">
+                <div class="col">
+                  <span class="text-bold">
+                    {{ getDateTime(item?.date_start) }} -
+                    {{ getDateTime(item?.date_end) }}
+                  </span>
+                  <span>: {{ item?.announcement_desc ?? "-" }}</span>
+                </div>
+                <div class="col-auto">
+                  <button class="right">
+                    <q-icon
+                      name="open_in_new"
+                      size="sm"
+                      @click="openModal(item)"
+                    />
+                  </button>
+                </div>
+              </div>
               <q-separator class="q-my-sm" />
             </li>
           </ul>
         </q-card-section>
       </q-card>
     </div>
+    <q-dialog v-model="isModalOpen" persistent maximized>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6 tw-m-2">
+            File Pengumuman {{ this.detailPengumuman?.announcement_desc }}
+          </div>
+          <q-btn
+            flat
+            label="download disini jika pdf tidak muncul"
+            color="primary"
+            @click="downloadFile(this.detailPengumuman.file_path)"
+          />
+          <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer">
+            <iframe :src="pdfUrl" width="100%"></iframe>
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Keluar" color="negative" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -287,6 +321,9 @@ export default {
 
   setup() {
     return {
+      isModalOpen: ref(false),
+      selectedFile: "",
+      detailPengumuman: ref([]),
       presensi: ref({}),
       agenda: ref(),
       achevment: ref(),
@@ -306,6 +343,18 @@ export default {
     };
   },
   methods: {
+    openModal(data) {
+      this.detailPengumuman = data;
+      this.selectedFile = this.detailPengumuman.file_path;
+      this.displayFile(this.detailPengumuman.file_path);
+      this.isModalOpen = true;
+    },
+    openLink() {
+      if (this.selectedLink) {
+        window.open(this.selectedLink, "_blank");
+        this.isModalOpen = false; // Close the modal after opening the link
+      }
+    },
     getDateTime(date) {
       const now = new Date(date);
       const formattedDate = now.toLocaleDateString("id-ID", {
@@ -328,8 +377,7 @@ export default {
           }
         );
         const id = response.data.data[0].student.id;
-        
-        
+
         this.getPresensi(id);
         this.getAchevment(id);
         this.getSiswaById(id);
@@ -402,7 +450,7 @@ export default {
         this.agenda = filterData;
       } catch (error) {}
     },
-    async getPengumuman(idClass ) {
+    async getPengumuman(idClass) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
@@ -419,10 +467,81 @@ export default {
             },
           }
         );
-        
+
         this.pengumuman = response.data.data;
       } catch (err) {
         console.log(err);
+      }
+    },
+    async displayFile(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const typePath = path.split(".");
+        const fileExtension = typePath[typePath.length - 1];
+        // Cek apakah file bertipe PDF
+        if (fileExtension === "pdf") {
+          this.typePathFile = true;
+        } else {
+          this.typePathFile = false;
+        }
+        // Cek tipe konten dan buat Blob dari response
+        const contentType = response.headers["content-type"];
+        const blob = new Blob([response.data], {
+          type: fileExtension === "pdf" ? "application/pdf" : contentType,
+        });
+        const blobUrl = window.URL.createObjectURL(blob);
+        console.log("🚀 ~ this.pdfUrl:", blob);
+
+        // Set URL Blob berdasarkan tipe konten
+        this.pdfUrl = blobUrl;
+      } catch (error) {
+        console.error("Error displaying file:", error);
+      }
+    },
+    async downloadFile(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+
+        // Buat Blob dari response
+        const contentType = response.headers["content-type"];
+        const blob = new Blob([response.data], { type: contentType });
+        const blobUrl = window.URL.createObjectURL(blob);
+        // Jika file PDF, tampilkan di iframe
+        if (contentType.includes("pdf")) {
+          this.pdfUrl = blobUrl;
+        } else if (contentType.includes("image")) {
+          // Jika file adalah gambar, tampilkan sebagai gambar
+          this.pdfUrl = blobUrl;
+        }
+        // Buat elemen anchor untuk mendownload file
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = path.split("/").pop(); // Nama file dari path
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error downloading file:", error);
       }
     },
     async getAchevment(idSiswa) {
@@ -451,7 +570,7 @@ export default {
             },
           }
         );
-      
+
         this.overview = response.data.data;
       } catch (err) {
         console.log(err);
@@ -480,9 +599,9 @@ export default {
             },
           }
         );
-        const idClass = response.data.data[0].studentclass.class_id
+        const idClass = response.data.data[0].studentclass.class_id;
         console.log(response.data.data[0]);
-        
+
         this.getOverview(idClass);
         this.getPengumuman(idClass);
         this.raport = response.data.data[0];
@@ -556,8 +675,6 @@ export default {
   mounted() {
     this.getDataSiswa();
     this.getAgenda();
-    
-    
   },
 };
 </script>
@@ -575,5 +692,15 @@ export default {
   .img {
     display: flex;
   }
+}
+.pdf-viewer {
+  width: 100%;
+  height: 80vh; /* 100% of the viewport height */
+  overflow: hidden; /* Ensure no scrolling */
+}
+iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
 }
 </style>

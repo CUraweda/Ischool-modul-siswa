@@ -276,7 +276,6 @@
   </div>
 </template>
 
-
 <script>
 import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
 import { ref } from "vue";
@@ -304,6 +303,7 @@ export default {
       rekapSampah: ref([]),
       hasiltarget: ref(),
       target: ref(),
+      pdfUrl: ref(),
     };
   },
   methods: {
@@ -329,8 +329,7 @@ export default {
           }
         );
         const id = response.data.data[0].student.id;
-        
-        
+
         this.getPresensi(id);
         this.getAchevment(id);
         this.getSiswaById(id);
@@ -403,7 +402,7 @@ export default {
         this.agenda = filterData;
       } catch (error) {}
     },
-    async getPengumuman(idClass ) {
+    async getPengumuman(idClass) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const startDate = new Date();
@@ -420,10 +419,48 @@ export default {
             },
           }
         );
-        
+
         this.pengumuman = response.data.data;
+        this.displayFile(this.pengumuman[0].file_path);
+        console.log("test");
       } catch (err) {
         console.log(err);
+      }
+    },
+    async displayFile(path) {
+      try {
+        const token = sessionStorage.getItem("token");
+        const idUser = sessionStorage.getItem("idSiswa");
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}&student_id=${idUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
+        const typePath = path.split(".");
+        const fileExtension = typePath[typePath.length - 1];
+
+        // Cek apakah file bertipe PDF
+        if (fileExtension === "pdf") {
+          this.typePathFile = true;
+        } else {
+          this.typePathFile = false;
+        }
+        // Cek tipe konten dan buat Blob dari response
+        const contentType = response.headers["content-type"];
+        const blob = new Blob([response.data], {
+          type: fileExtension === "pdf" ? "application/pdf" : contentType,
+        });
+        const blobUrl = window.URL.createObjectURL(blob);
+        console.log("🚀 ~ this.pdfUrl:", contentType);
+
+        // Set URL Blob berdasarkan tipe konten
+        this.pdfUrl = blobUrl;
+      } catch (error) {
+        console.error("Error displaying file:", error);
       }
     },
     async getAchevment(idSiswa) {
@@ -452,7 +489,7 @@ export default {
             },
           }
         );
-      
+
         this.overview = response.data.data;
       } catch (err) {
         console.log(err);
@@ -481,9 +518,9 @@ export default {
             },
           }
         );
-        const idClass = response.data.data[0].studentclass.class_id
+        const idClass = response.data.data[0].studentclass.class_id;
         console.log(response.data.data[0]);
-        
+
         this.getOverview(idClass);
         this.getPengumuman(idClass);
         this.raport = response.data.data[0];
@@ -557,8 +594,6 @@ export default {
   mounted() {
     this.getDataSiswa();
     this.getAgenda();
-    
-    
   },
 };
 </script>

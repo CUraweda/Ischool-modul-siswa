@@ -20,13 +20,11 @@
     <!-- Menampilkan PDF menggunakan iframe -->
     <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer">
       <iframe :src="pdfUrl" width="100%" height="600px"></iframe>
-      {{ pdfUrl }}
     </div>
 
     <!-- Menampilkan Gambar jika file bukan PDF -->
     <div v-if="pdfUrl && typePathFile === false">
       <img :src="pdfUrl" alt="Report image" style="width: 100%; height: auto" />
-      {{ pdfUrl }}
     </div>
   </div>
 </template>
