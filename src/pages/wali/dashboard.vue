@@ -371,13 +371,14 @@ export default {
           }
         );
         const id = response.data.data[0].student.id;
-
-        this.getPresensi(id);
-        this.getAchevment(id);
-        this.getSiswaById(id);
-        this.getRaport(id);
-        this.getRekapSampah(id);
-        this.getRekapSampahbulan(id);
+        const idSiswaFix = this.idSiswa ? this.idSiswa : id
+     
+        this.getPresensi(idSiswaFix);
+        this.getAchevment(idSiswaFix);
+        this.getSiswaById(idSiswaFix);
+        this.getRaport(idSiswaFix);
+        this.getRekapSampah(idSiswaFix);
+        this.getRekapSampahbulan(idSiswaFix);
       } catch (error) {
         console.log(error);
       }
@@ -444,31 +445,7 @@ export default {
         this.agenda = filterData;
       } catch (error) {}
     },
-    async getPengumuman(idClass) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const startDate = new Date();
-      const endDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
-      const formattedStartDate = startDate.toISOString().slice(0, 10);
-      const formattedEndDate = endDate.toISOString().slice(0, 10);
-
-      try {
-        const response = await this.$api.get(
-          `/announcement/show-between?start=${formattedStartDate}&end=${formattedEndDate}&class_id=${idClass}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
-
-        this.pengumuman = response.data.data;
-        this.displayFile(this.pengumuman[0].file_path);
-        console.log("test");
-      } catch (err) {
-        console.log(err);
-      }
-    },
+  
     async getPengumuman(idClass) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -610,6 +587,8 @@ export default {
     },
     async getRaport(idSiswa) {
       try {
+        console.log({idSiswa});
+        
         const response = await this.$api.get(
           `/student-report/show-by-student?id=${idSiswa}&semester=1`,
           {
@@ -619,7 +598,7 @@ export default {
           }
         );
         const idClass = response.data.data[0].studentclass.class_id;
-        console.log(response.data.data[0]);
+        console.log(response.data);
 
         this.getOverview(idClass);
         this.getPengumuman(idClass);
