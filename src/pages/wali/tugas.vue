@@ -89,8 +89,8 @@
                               class="q-mx-sm"
                               icon="download"
                               color="green"
-                              @click="downloadTask(item.task_file)"
-                              :disable="!item.task_file"
+                              @click="downloadTask(item?.task_file)"
+                              :disable="!item?.task_file"
                             >
                               <q-tooltip>Download file tugas</q-tooltip>
                             </q-btn>
@@ -99,9 +99,9 @@
                               icon="download"
                               color="blue"
                               @click="
-                                downloadTask(item.taskdetails[0].task_file)
+                                downloadTask(item.taskdetails[0]?.task_file)
                               "
-                              :disable="!item.taskdetails[0].task_file"
+                              :disable="!item.taskdetails[0]?.task_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -154,8 +154,8 @@
                               class="q-mx-sm"
                               icon="download"
                               color="green"
-                              @click="downloadTask(item.up_file)"
-                              :disable="!item.up_file"
+                              @click="downloadTask(item?.up_file)"
+                              :disable="!item?.up_file"
                             >
                               <q-tooltip>Download file tugas</q-tooltip>
                             </q-btn>
@@ -163,7 +163,7 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTask(item.down_file)"
+                              @click="downloadTask(item?.down_file)"
                               :disable="!item.down_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
@@ -182,7 +182,7 @@
                         <td class="text-center">
                           <div v-if="item?.taskdetails.length">
                             <div
-                              v-for="(detail, index) in item.taskdetails"
+                              v-for="(detail, index) in item?.taskdetails"
                               :key="index"
                             >
                               {{ detail.feedback || "-" }}
@@ -206,9 +206,9 @@
                               icon="download"
                               color="blue"
                               @click="
-                                downloadTask(item.taskdetails[0].task_file)
+                                downloadTask(item.taskdetails[0]?.task_file)
                               "
-                              :disable="!item.taskdetails[0].task_file"
+                              :disable="!item.taskdetails[0]?.task_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
@@ -259,7 +259,7 @@
                               class="q-mx-sm"
                               icon="download"
                               color="green"
-                              @click="downloadTask(item.up_file)"
+                              @click="downloadTask(item?.up_file)"
                               :disable="!item.up_file"
                             >
                               <q-tooltip>Download file tugas</q-tooltip>
@@ -268,7 +268,7 @@
                               class="q-mx-sm"
                               icon="download"
                               color="blue"
-                              @click="downloadTask(item.down_file)"
+                              @click="downloadTask(item?.down_file)"
                               :disable="!item.down_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
@@ -292,8 +292,8 @@
                               class="q-mx-sm"
                               icon="download"
                               color="green"
-                              @click="downloadTask(item.task_file)"
-                              :disable="!item.task_file"
+                              @click="downloadTask(item?.task_file)"
+                              :disable="!item?.task_file"
                             >
                               <q-tooltip>Download file tugas</q-tooltip>
                             </q-btn>
@@ -302,9 +302,9 @@
                               icon="download"
                               color="blue"
                               @click="
-                                downloadTask(item.taskdetails[0].task_file)
+                                downloadTask(item.taskdetails[0]?.task_file)
                               "
-                              :disable="!item.taskdetails[0].task_file"
+                              :disable="!item.taskdetails[0]?.task_file"
                             >
                               <q-tooltip>Download hasil tugas</q-tooltip>
                             </q-btn>
