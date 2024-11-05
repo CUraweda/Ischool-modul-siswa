@@ -8,7 +8,7 @@ import axios from "axios";
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: "https://prod.curaweda.com/api",
+  baseURL: "https://api-sade-v2-ischool.curaweda.com/api/",
 });
 // const api = axios.create({ baseURL: 'http://localhost:5000/stg-server1/api' })
 
