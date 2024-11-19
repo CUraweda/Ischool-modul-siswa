@@ -160,13 +160,14 @@
                   <tr>
                     <td class="text-left">Terkumpul</td>
                     <td class="text-right">
-                      {{ (rekapSampah[0]?.this_month ?? 0) / 1000 }}
+                      <!-- {{   (rekapSampah[0]?.this_month ?? 0) / 1000 }} -->
+                      {{ totalSampah }}
                     </td>
                     <td class="text-left">Kg</td>
                   </tr>
                   <tr>
                     <td class="text-left">Target</td>
-                    <td class="text-right">{{ target }}</td>
+                    <td class="text-right">{{ targetSampah }}</td>
                     <td class="text-left">Kg</td>
                   </tr>
                 </tbody>
@@ -339,7 +340,8 @@ export default {
       pengumuman: ref([]),
       rekapSampah: ref([]),
       hasiltarget: ref(),
-      target: ref(),
+      targetSampah: ref(),
+      totalSampah: ref()
     };
   },
   methods: {
@@ -652,7 +654,8 @@ export default {
         const hasilTarget = (total / target) * 100;
         console.log(hasilTarget);
         this.hasiltarget = [Math.round(hasilTarget)];
-        this.target = target;
+        this.targetSampah = target;
+        this.totalSampah = total[0];
       } catch (error) {}
     },
     async getRekapSampahbulan(idSiswa) {
