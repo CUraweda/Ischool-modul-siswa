@@ -41,6 +41,7 @@
                     @click="setUpMessage(userChat)"
                     v-ripple
                     v-for="userChat in users"
+                    :key="userChat.with_id"
                   >
                     <q-item-section avatar>
                       <q-avatar>
@@ -49,7 +50,6 @@
                         />
                       </q-avatar>
                     </q-item-section>
-
                     <q-item-section>
                       <p class="text-bold">{{ userChat.withUser.full_name }}</p>
                     </q-item-section>
@@ -100,6 +100,7 @@
                       style="width: 100%"
                       class="text-left"
                       v-for="message in messages"
+                      :key="message.stamp + message.text"
                     >
                       <q-chat-message
                         :name="message.sender"
@@ -150,14 +151,33 @@
     </div>
   </div>
 
+  <!-- Dialog untuk Kirim Pesan -->
   <q-dialog v-model="medium">
     <q-card style="width: 700px; max-width: 80vw">
       <q-card-section>
         <div class="text-h6">Kirim Pesan</div>
       </q-card-section>
 
+      <!-- Search Input -->
+      <q-card-section>
+        <q-input
+          outlined
+          dense
+          v-model="searchQuery"
+          placeholder="Cari nama..."
+          debounce="300"
+          clearable
+          prefix="🔍"
+        />
+      </q-card-section>
+
+      <!-- List Users -->
       <q-card-section class="q-pt-none">
-        <q-card class="tw-m-1 tw-cursor-pointer" v-for="user in dataUser">
+        <q-card
+          class="tw-m-1 tw-cursor-pointer"
+          v-for="user in filteredUsers"
+          :key="user.id"
+        >
           <div
             class="flex justify-start items-center q-pa-md"
             clickable
@@ -188,7 +208,7 @@
 
 <script>
 import NavbarSiswa from "../../components/siswa/HederSiswa.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Swal from "sweetalert2";
 import socket from "../../socket";
 
@@ -197,21 +217,41 @@ export default {
     NavbarSiswa,
   },
   setup() {
+    const medium = ref(false);
+    const drawer = ref(true);
+    const users = ref([]);
+    const messages = ref([]);
+    const currentMessageId = ref();
+    const currentReceiverId = ref();
+    const currentReceiverName = ref("");
+    const token = ref(sessionStorage.getItem("token"));
+    const idUser = ref(sessionStorage.getItem("idUser"));
+    const inputMessage = ref("");
+    const dataUser = ref([]);
+    const typing = ref(true);
+    const searchQuery = ref("");
+
+    const filteredUsers = computed(() =>
+      dataUser.value.filter((user) =>
+        user.full_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      )
+    );
+
     return {
-      medium: ref(false),
-      drawer: ref(true),
-      users: ref([]),
-      messages: ref([]),
-      currentMessageId: ref(),
-      currentReceiverId: ref(),
-      currentReceiverName: ref(""),
-      token: ref(sessionStorage.getItem("token")),
-      idUser: ref(sessionStorage.getItem("idUser")),
-      idSender: ref(""),
-      inputMessage: ref(""),
-      dataUser: ref([]),
-      fokus: ref(false),
-      typing: ref(true),
+      medium,
+      drawer,
+      users,
+      messages,
+      currentMessageId,
+      currentReceiverId,
+      currentReceiverName,
+      token,
+      idUser,
+      inputMessage,
+      dataUser,
+      typing,
+      searchQuery,
+      filteredUsers,
     };
   },
   mounted() {
@@ -224,16 +264,15 @@ export default {
   },
   watch: {
     currentMessageId: {
-      handler(value) {
+      handler() {
         this.getMessages();
       },
     },
     inputMessage(newVal) {
-      newVal ? (this.typing = false) : (this.typing = true);
+      this.typing = !newVal;
     },
   },
   methods: {
-    //GET ALL USER CHAT
     async getUserChats() {
       try {
         const response = await this.$api.get(
@@ -244,7 +283,6 @@ export default {
             },
           }
         );
-
         this.users = response.data.data;
       } catch (err) {
         Swal.fire({
@@ -268,6 +306,7 @@ export default {
       this.currentReceiverName = rowData.withUser.full_name;
       this.getMessages();
     },
+
     async newMessage(rowData) {
       this.currentReceiverId = rowData.id;
       this.currentReceiverName = rowData.full_name;
@@ -279,9 +318,9 @@ export default {
       this.medium = true;
       this.getDataGuru();
     },
+
     async getMessages() {
       try {
-        const currentTime = new Date();
         const response = await this.$api.get(
           `user-chat/show-conversation?userid=${this.idUser}&withid=${this.currentReceiverId}`,
           {
@@ -297,7 +336,7 @@ export default {
             message.sender_id != this.idUser ? this.currentReceiverName : "Me",
           color: message.sender_id != this.idUser ? "primary" : "amber-7",
           textColor: message.sender_id != this.idUser ? "white" : "black",
-          isSender: message.sender_id != this.idUser ? false : true,
+          isSender: message.sender_id == this.idUser,
           stamp: this.getCurrentDateTime(message.createdAt),
         }));
         this.getUserChats();
@@ -317,7 +356,7 @@ export default {
         hour: "numeric",
         minute: "numeric",
       });
-      return `${formattedDate} , ${formattedTime}`;
+      return `${formattedDate}, ${formattedTime}`;
     },
 
     async sendMessage() {
@@ -327,23 +366,22 @@ export default {
           with_id: parseInt(this.currentReceiverId),
           message: this.inputMessage,
         };
-        if (!this.inputMessage || !this.currentReceiverId) {
-          console.log("no message");
-        } else {
-          const response = await this.$api.post("message/create", data, {
+        if (this.inputMessage && this.currentReceiverId) {
+          await this.$api.post("message/create", data, {
             headers: {
               Authorization: `Bearer ${this.token}`,
               "Content-Type": "Application/json",
             },
           });
+          this.getMessages();
+          socket.emit("cc", {});
+          this.inputMessage = "";
         }
-        this.getMessages();
-        socket.emit("cc", {});
-        this.inputMessage = "";
       } catch (err) {
         console.log(err);
       }
     },
+
     async getDataGuru() {
       try {
         const response = await this.$api.get("user/show-by-roles?ids=6,2", {

@@ -291,12 +291,13 @@
       <q-card>
         <q-card-section>
           <div class="text-h6 tw-m-2">
-            File Pengumuman {{ this.detailPengumuman?.announcement_desc }}
+            {{ this.detailPengumuman?.announcement_desc }}
           </div>
           <q-btn
             flat
             label="download disini jika pdf tidak muncul"
             color="primary"
+            v-if="pdfUrl && typePathFile === true"
             @click="downloadFile(this.detailPengumuman.file_path)"
           />
           <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer">
@@ -341,7 +342,7 @@ export default {
       rekapSampah: ref([]),
       hasiltarget: ref(),
       targetSampah: ref(),
-      totalSampah: ref()
+      totalSampah: ref(),
     };
   },
   methods: {
@@ -373,8 +374,8 @@ export default {
           }
         );
         const id = response.data.data[0].student.id;
-        const idSiswaFix = this.idSiswa ? this.idSiswa : id
-     
+        const idSiswaFix = this.idSiswa ? this.idSiswa : id;
+
         this.getPresensi(idSiswaFix);
         this.getAchevment(idSiswaFix);
         this.getSiswaById(idSiswaFix);
@@ -447,7 +448,7 @@ export default {
         this.agenda = filterData;
       } catch (error) {}
     },
-  
+
     async getPengumuman(idClass) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -589,8 +590,8 @@ export default {
     },
     async getRaport(idSiswa) {
       try {
-        console.log({idSiswa});
-        
+        console.log({ idSiswa });
+
         const response = await this.$api.get(
           `/student-report/show-by-student?id=${idSiswa}&semester=1`,
           {
@@ -602,7 +603,6 @@ export default {
         const idClass = response.data.data[0].studentclass.class_id;
         console.log(response.data);
 
-        this.getOverview(idClass);
         this.getPengumuman(idClass);
         this.raport = response.data.data[0];
       } catch (err) {
@@ -676,6 +676,7 @@ export default {
   mounted() {
     this.getDataSiswa();
     this.getAgenda();
+    this.getOverview(sessionStorage.getItem("idClass"));
   },
 };
 </script>
