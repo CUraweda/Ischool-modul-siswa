@@ -297,10 +297,13 @@
             flat
             label="download disini jika pdf tidak muncul"
             color="primary"
-            v-if="pdfUrl && typePathFile === true"
+            v-if="this.detailPengumuman.file_path != null"
             @click="downloadFile(this.detailPengumuman.file_path)"
           />
-          <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer">
+          <div
+            v-if="this.detailPengumuman.file_path != null"
+            class="pdf-viewer"
+          >
             <iframe :src="pdfUrl" width="100%"></iframe>
           </div>
         </q-card-section>
@@ -343,6 +346,7 @@ export default {
       hasiltarget: ref(),
       targetSampah: ref(),
       totalSampah: ref(),
+      pdfUrl: ref(),
     };
   },
   methods: {
