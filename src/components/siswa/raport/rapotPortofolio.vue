@@ -7,7 +7,7 @@
       class="tw-w-1/3"
     />
   </div>
-  <div style="height: 100%" v-else>
+  <div style="height: 900px" v-else>
     <!-- Tombol Download -->
     <button
       v-if="filePath"
@@ -18,8 +18,8 @@
     </button>
 
     <!-- Menampilkan PDF menggunakan iframe -->
-    <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer">
-      <iframe :src="pdfUrl" width="100%" height="600px"></iframe>
+    <div v-if="pdfUrl && typePathFile === true" class="pdf-viewer" style="height: 500px">
+      <iframe :src="pdfUrl" width="100%" height="900px"></iframe>
     </div>
 
     <!-- Menampilkan Gambar jika file bukan PDF -->
