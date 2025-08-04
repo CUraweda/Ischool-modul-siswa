@@ -607,6 +607,7 @@ export default {
         const idClass = response.data.data[0].studentclass.class_id;
         console.log(response.data);
 
+        this.getOverview(idClass);
         this.getPengumuman(idClass);
         this.raport = response.data.data[0];
       } catch (err) {
@@ -680,7 +681,6 @@ export default {
   mounted() {
     this.getDataSiswa();
     this.getAgenda();
-    this.getOverview(sessionStorage.getItem("idClass"));
   },
 };
 </script>
