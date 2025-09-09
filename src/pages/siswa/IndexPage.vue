@@ -161,7 +161,7 @@
                     <td class="text-left">Terkumpul</td>
                     <td class="text-right">
                       <!-- {{ (rekapSampah[0]?.this_month ?? 0) / 1000 }} -->
-                        {{ totalSampah }}
+                      {{ totalSampah }}
                     </td>
                     <td class="text-left">Kg</td>
                   </tr>
@@ -341,7 +341,7 @@ export default {
       rekapSampah: ref([]),
       hasiltarget: ref(),
       targetSampah: ref(),
-      totalSampah: ref()
+      totalSampah: ref(),
     };
   },
   methods: {
@@ -595,11 +595,7 @@ export default {
             },
           }
         );
-        const idClass = response.data.data[0].studentclass.class_id;
-        console.log(response.data.data[0]);
 
-        this.getOverview(idClass);
-        this.getPengumuman(idClass);
         this.raport = response.data.data[0];
       } catch (err) {
         console.log(err);
@@ -670,8 +666,13 @@ export default {
   },
 
   mounted() {
+    const idKelas = sessionStorage.getItem("idClass");
+
     this.getDataSiswa();
     this.getAgenda();
+
+    this.getOverview(idKelas);
+    this.getPengumuman(idKelas);
   },
 };
 </script>
