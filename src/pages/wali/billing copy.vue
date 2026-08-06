@@ -134,7 +134,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none text-center tw-mt-3">
-          No Rekening: 1570000005034 an Sekolah Alam Depok
+          No Rekening: 1570000005034 a.n. Sekolah Alam Depok (Bank Mandiri)
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">

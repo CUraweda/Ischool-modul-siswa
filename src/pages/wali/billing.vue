@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-    <div class="col ">
+    <div class="col">
       <q-card class="text-center bg-blue-2 tw-min-h-screen">
         <q-card-section>
           <div class="text-center">
             <p>
-              <span class="text-center text-black text-bold" style="font-size: x-large"
+              <span
+                class="text-center text-black text-bold"
+                style="font-size: x-large"
                 >PEMBAYARAN</span
               >
             </p>
@@ -20,7 +22,8 @@
                         <span style="font-size: large">Histori Pembayaran</span>
                         <br />
                         <span style="font-size: smaller">
-                          Kelola informasi penagihan dan lihat tanda terima</span
+                          Kelola informasi penagihan dan lihat tanda
+                          terima</span
                         >
                       </p>
 
@@ -44,7 +47,9 @@
                       spread
                       no-caps
                       :toggle-color="
-                        bill !== 'unpaid' ? 'blue-2 text-black' : 'red-5 text-black'
+                        bill !== 'unpaid'
+                          ? 'blue-2 text-black'
+                          : 'red-5 text-black'
                       "
                       class="no-shadow q-mt-lg q-px-md"
                       color="grey-3"
@@ -95,11 +100,15 @@
                             {{ formatDate(item?.studentpaymentbill.due_date) }}
                           </td>
                           <td class="text-center">
-                            {{ item?.studentpaymentbill.paymentpost.billing_cycle }}
+                            {{
+                              item?.studentpaymentbill.paymentpost.billing_cycle
+                            }}
                           </td>
                           <td class="text-center">
                             Rp.{{
-                              item?.studentpaymentbill.total.toLocaleString("id-ID")
+                              item?.studentpaymentbill.total.toLocaleString(
+                                "id-ID"
+                              )
                             }}
                           </td>
                           <td class="text-center">
@@ -165,13 +174,14 @@
           </div>
         </q-card-section>
       </q-card>
-     
     </div>
     <!-- Dialog -->
     <q-dialog v-model="showDialog">
       <q-card style="width: 500px; max-width: 80vw">
         <q-card-section>
-          <p class="bg-blue-2 text-center">Membayar {{ selectedRows.length }} tagihan</p>
+          <p class="bg-blue-2 text-center">
+            Membayar {{ selectedRows.length }} tagihan
+          </p>
           <ul>
             <!-- <li v-for="(row, index) in selectedRows" :key="index">
             {{ row.id }} - {{ formatDate(row.createdAt) }} - {{ row.paymentcategory.billing_cycle }}
@@ -188,18 +198,22 @@
               </td>
               <td class="text-center"></td>
               <td class="text-right justify-end">
-                Senilai Rp.{{ item?.studentpaymentbill.total.toLocaleString("id-ID") }}
+                Senilai Rp.{{
+                  item?.studentpaymentbill.total.toLocaleString("id-ID")
+                }}
               </td>
             </tr>
           </ul>
         </q-card-section>
 
         <q-card-section>
-          <div class="text-h6 text-center">Nomor Rekening Pembayaran Billing</div>
+          <div class="text-h6 text-center">
+            Nomor Rekening Pembayaran Billing
+          </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none text-center tw-mt-3">
-          No Rekening: 1570000005034 an Sekolah Alam Depok
+          No Rekening: 1570000005034 a.n. Sekolah Alam Depok (Bank Mandiri)
         </q-card-section>
 
         <q-card-section class="q-px-xl">
@@ -231,7 +245,10 @@
                 >
                   <q-tooltip>Remove Uploaded Files</q-tooltip>
                 </q-btn>
-                <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+                <q-spinner
+                  v-if="scope.isUploading"
+                  class="q-uploader__spinner"
+                />
                 <div class="col">
                   <div class="q-uploader__title">Upload bukti pembayaran</div>
                   <div class="q-uploader__subtitle">
@@ -402,7 +419,9 @@ export default {
           }
         );
 
-        const filterDataBilling = response.data.data.filter((a) => a.paidoff_at === null);
+        const filterDataBilling = response.data.data.filter(
+          (a) => a.paidoff_at === null
+        );
 
         const dataBillingWithSelection = filterDataBilling.map((item) => ({
           ...item,
@@ -450,7 +469,7 @@ export default {
         );
 
         this.showDialog = false;
-        this.bill = "bulanan"
+        this.bill = "bulanan";
         this.getDataBiling();
         Swal.fire({
           title: "File Bukti berhasil di upload !",
@@ -490,12 +509,15 @@ export default {
     async downloadTask(path) {
       try {
         const token = sessionStorage.getItem("token");
-        const response = await this.$api.get(`student-task/download?filepath=${path}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          responseType: "blob",
-        });
+        const response = await this.$api.get(
+          `student-task/download?filepath=${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: "blob",
+          }
+        );
         const urlParts = path.split("/");
         const fileName = urlParts.pop();
         const blobUrl = window.URL.createObjectURL(response.data);

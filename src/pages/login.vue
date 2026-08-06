@@ -99,14 +99,26 @@
                             style="width: 70%"
                           />
                         </q-form>
-                        <div class="tw-mt-5 flex justify-center items-center">
-                          <p>Belum Punya akun?</p>
-                          <q-btn
-                            flat
-                            style="color: #00ccff"
-                            label="Registrasi"
-                            to="/registrasi"
-                          />
+                        <div class="tw-flex tw-flex-col">
+                          <div class="tw-mt-5 flex justify-center items-center">
+                            <p>Belum Punya akun?</p>
+                            <q-btn
+                              flat
+                              style="color: #00ccff"
+                              label="Registrasi"
+                              to="/registrasi"
+                            />
+                          </div>
+                          <div class="flex justify-center items-center">
+                            <p>Butuh bantuan teknis?</p>
+                            <q-btn
+                              flat
+                              style="color: #00ccff"
+                              label="Helpdesk"
+                              href="https://wa.me/6281548424561"
+                              target="_blank"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -174,17 +186,16 @@ export default {
         const id = response.data.data.id;
 
         if (verif == 1) {
-
-          const token = response.data.tokens.access.token
-          const name = response.data.data.full_name
-          const role = response.data.data.role_id
-          if(response.data.data.useraccesses.length > 0){
-            const idSiswa = response.data.data.useraccesses[0].student_id
-            sessionStorage.setItem("idSiswa", idSiswa)
+          const token = response.data.tokens.access.token;
+          const name = response.data.data.full_name;
+          const role = response.data.data.role_id;
+          if (response.data.data.useraccesses.length > 0) {
+            const idSiswa = response.data.data.useraccesses[0].student_id;
+            sessionStorage.setItem("idSiswa", idSiswa);
           }
-          sessionStorage.setItem("token", token)
-          sessionStorage.setItem("role", role)
-          sessionStorage.setItem("idUser", id)
+          sessionStorage.setItem("token", token);
+          sessionStorage.setItem("role", role);
+          sessionStorage.setItem("idUser", id);
 
           const data = {
             id,

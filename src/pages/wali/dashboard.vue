@@ -604,10 +604,7 @@ export default {
             },
           }
         );
-        const idClass = response.data.data[0].studentclass.class_id;
-        console.log(response.data);
 
-        this.getPengumuman(idClass);
         this.raport = response.data.data[0];
       } catch (err) {
         console.log(err);
@@ -678,9 +675,13 @@ export default {
   },
 
   mounted() {
+    const idKelas = sessionStorage.getItem("idClass");
+
     this.getDataSiswa();
     this.getAgenda();
-    this.getOverview(sessionStorage.getItem("idClass"));
+
+    this.getOverview(idKelas);
+    this.getPengumuman(idKelas);
   },
 };
 </script>

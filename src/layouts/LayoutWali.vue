@@ -198,6 +198,22 @@
             Customer Care
           </q-item-section>
         </q-item>
+        <q-item
+          href="https://wa.me/6281548424561"
+          target="_blank"
+          class="text-blue-4"
+          active-class="text-orange"
+          clickable
+          v-ripple
+        >
+          <q-item-section avatar>
+            <q-icon name="chat" style="font-size: 2rem" />
+          </q-item-section>
+
+          <q-item-section class="text-bold" style="font-size: 1rem">
+            Helpdesk Whatsapp
+          </q-item-section>
+        </q-item>
       </q-list>
       <div class="text-center">
         <q-btn
