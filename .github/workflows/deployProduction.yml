@@ -1,27 +1,52 @@
 name: Deploy Modul Siswa App to cPanel
 
+name: Deploy React App to cPanel
+
 on:
   push:
     branches:
-      - main # Atau branch yang Anda gunakan
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: production
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Install Dependencies
-      run: npm install
-    - name: Build
-      run: npm run build
-    - name: Upload to cPanel via SFTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.SFTP_HOSTNAME_SADE }}
-        username: ${{ secrets.SFTP_USERNAME_SADE }}
-        password: ${{ secrets.SFTP_PASSWORD_SADE }}
-        local-dir: ./dist/spa/
-        server-dir: /
-        protocol: sftp
-        passive: true
-        timeout: 60000 # Timeout in milliseconds
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Clean Build Folder
+        run: rm -rf dist
+
+      - name: Build App
+        run: npm run build
+
+      - name: Deploy via FTP to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOSTNAME }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/spa/
+          server-dir: /
+          protocol: ftp
+          port: 21
+          log-level: minimal
+          dry-run: false
+
+      - name: Deployment Success
+        if: success()
+        run: echo "✅ Deployment successful!"
+
+      - name: Deployment Failed
+        if: failure()
+        run: echo "❌ Deployment failed."
