@@ -56,7 +56,7 @@
                       text-color="black"
                       :options="bill_options"
                     />
-                    <q-markup-table flat class="q-px-lg">
+                    <q-markup-table flat class="tw-relative">
                       <template v-slot:body-cell="props">
                         <q-td :props="props">
                           <q-checkbox v-model="props.row.selected" />
@@ -64,10 +64,10 @@
                       </template>
 
                       <thead>
-                        <tr class="q-gutter-sm">
+                        <tr >
                           <th
                             v-if="bill == 'unpaid'"
-                            class="text-center"
+                            class="text-center sticky-col"
                             style="width: 10px"
                           >
                             <q-checkbox
@@ -86,7 +86,7 @@
                       </thead>
                       <tbody>
                         <tr v-for="(item, index) in dataBilling" :key="item.id">
-                          <q-td v-if="bill == 'unpaid'">
+                          <q-td v-if="bill == 'unpaid'" class="sticky-col">
                             <q-checkbox
                               v-model="item.selected"
                               @update:model-value="updateAllSelected"
@@ -301,6 +301,15 @@
     </q-dialog>
   </div>
 </template>
+
+<style scoped>
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: white;
+}
+</style>
 
 <script>
 import { ref } from "vue";
