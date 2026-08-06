@@ -1,7 +1,5 @@
 name: Deploy Modul Siswa App to cPanel
 
-name: Deploy React App to cPanel
-
 on:
   push:
     branches:
