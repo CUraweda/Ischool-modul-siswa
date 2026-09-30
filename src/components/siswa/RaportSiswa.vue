@@ -408,7 +408,7 @@ export default {
       role: ref(sessionStorage.getItem("role")),
       studentClassId: ref(sessionStorage.getItem("studentClassId")),
       dataRapot: ref([]),
-      trigerRapot: ref(true),
+      trigerRapot: ref(false),
       reportId: ref(),
       idSiswa: ref(),
       number_path: ref(),
