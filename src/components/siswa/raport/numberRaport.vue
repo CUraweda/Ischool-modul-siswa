@@ -23,6 +23,7 @@ export default {
   name: "NumberRapot",
   props: {
     sub: String, // Assuming 'sub' is a prop with type String
+    tahun: String,
     TabPilihan: {
       type: String,
       required: true,
@@ -49,8 +50,11 @@ export default {
   },
 
   watch: {
-    semester(newVal) {
-      this.getRaport();
+    TabPilihan() {
+      this.getNumberRaport();
+    },
+    tahun() {
+      this.getNumberRaport();
     },
   },
 
@@ -60,7 +64,7 @@ export default {
       const token = sessionStorage.getItem("token");
       try {
         const response = await this.$api.get(
-          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}&`,
+          `/student-report/show-by-student?id=${idUser}&semester=${this.TabPilihan}&academic=${this.tahun}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
